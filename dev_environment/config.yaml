@@ -1,0 +1,8 @@
+configs:
+    host_http_port1: '18080'
+    host_http_port2: '18081'
+    host_grafana_port: '33000'
+    host_prometheus_port: '39090'
+    host_l3af_config_port: '37080'
+    host_l3af_debug_port: '38899'
+    host_l3afd_code_dir: '/home/bgmerrell/code/tb/oss/oss_l3af_l3afd'
