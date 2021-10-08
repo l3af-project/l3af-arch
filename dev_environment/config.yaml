@@ -5,4 +5,4 @@ configs:
     host_prometheus_port: '39090'
     host_l3af_config_port: '37080'
     host_l3af_debug_port: '38899'
-    host_l3afd_code_dir: '/home/bgmerrell/code/tb/oss/oss_l3af_l3afd'
+    host_l3afd_code_dir: '/home/bgmerrell/code/l3afd'
