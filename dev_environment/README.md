@@ -43,8 +43,8 @@ Here is a visual overview:
   and result in successful HTTP responses (200 OK).
 * Run `vagrant ssh`, this will log you into the virtual machine
 * On the VM, go to `~/code/l3afd` and run `go install .` 
-* On the VM, go to `~/go/bin` and run `l3afd` as root: `l3afd --config
-  /vagrant/cfg/l3afd.cfg`
+* On the VM, go to `~/go/bin` and run `l3afd` as root:
+  `./l3afd --config /vagrant/cfg/l3afd.cfg`
 * On the host, configure L3AFD to execute sample Kernel Functions by running
   `curl -X POST http://localhost:37080/l3af/configs/v1/update -d "@cfg/payload.json"`.
   The `payload.json` file can be inspected and modified as desired. For more
@@ -52,8 +52,8 @@ Here is a visual overview:
   [L3AFD API documentation](https://github.com/l3af-project/l3afd).
 * Verify the eBPF programs from `payload.json` are running by querying the
   L3AFD debug API from the host:
-  `curl http://localhost:38899/kfs/enp0s3|jq '.'`. This command assumes
-   `enp0s3` is a valid network interface on the VM.
+  `curl http://localhost:38899/kfs/enp0s3`. This command assumes `enp0s3` is a
+  valid network interface on the VM.
 * Once again send traffic to the VM web server:
   `hey -n 200 -c 20 http://localhost:18080`. The traffic will now be running
   through the Kernel Functions (which may affect results dramatically depending
