@@ -184,7 +184,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(rate(l3afd_NFMonitorMap{map_name=\"rl_drop_count_map_0_scalar\",network_function=\"ratelimiting\"}[5m])) by (host)",
+          "expr": "sum(irate(l3afd_NFMonitorMap{map_name=\"rl_drop_count_map_0_scalar\",network_function=\"ratelimiting\"}[5m])) by (host)",
           "interval": "",
           "legendFormat": "{{host}}",
           "refId": "A"
