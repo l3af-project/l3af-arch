@@ -1,2 +1,25 @@
-# l3af-arch
-L3AF Architecture Documentation and Discussion
+# L3AFD: Lightweight eBPF Application Foundation Daemon
+
+![L3AF_Logo](https://raw.githubusercontent.com/l3af-project/l3af-arch/54e95037f1a51b924ec2ce0eee3d3bb27f488878/images/logos/Color/L3AF_logo.svg?token=AABDYXRRPD5TUVHE4QKNORLBL7FZ2)
+
+L3AFD is a crucial part of the L3AF ecosystem. For more information on L3AF see
+https://l3af.io/
+
+# Design
+
+L3AFD is the primary component of the L3AF control plane. L3AFD is a daemon
+that orchestrates and manages multiple eBPF programs, which we refer to as
+Kernel Functions. L3AFD runs on each node where the user wishes to run Kernel
+Functions. L3AFD reads configuration data and manages the execution and
+monitoring of KFs running on the node.
+
+L3AFD downloads pre-built eBPF programs from a user-configured file repository.
+However, we envision the creation of a community-driven Kernel Function
+Marketplace where L3AF users can obtain a variety of Kernel Functions developed
+by multiple sources.
+
+![L3AF Platform](https://raw.githubusercontent.com/l3af-project/l3af-arch/main/images/L3AF_platform.png?token=AABDYXRP6TODKIX6JJ5DILLBL7GIW)
+
+# Try it out
+
+TODO
