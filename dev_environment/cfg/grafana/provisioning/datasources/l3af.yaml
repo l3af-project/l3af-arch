@@ -1,0 +1,7 @@
+apiVersion: 1
+
+datasources:
+  - name: l3af
+    isDefault: true
+    type: prometheus
+    url: http://localhost:9090

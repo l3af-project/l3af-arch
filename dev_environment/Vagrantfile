@@ -1,0 +1,75 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+require 'yaml'
+
+cfg = YAML.load_file(File.join(
+  File.dirname(File.expand_path(__FILE__)),
+  "config.yaml"))['configs']
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/focal64"
+
+  config.vm.network "forwarded_port", guest: 8080, host: cfg['host_http_port1']
+  config.vm.network "forwarded_port", guest: 8081, host: cfg['host_http_port2']
+  config.vm.network "forwarded_port", guest: 3000, host: cfg['host_grafana_port']
+  config.vm.network "forwarded_port", guest: 9090, host: cfg['host_prometheus_port']
+  config.vm.network "forwarded_port", guest: 7080, host: cfg['host_l3af_config_port']
+  config.vm.network "forwarded_port", guest: 8899, host: cfg['host_l3af_debug_port']
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = "2048"
+  end
+
+  config.vm.hostname = "l3af-local-test.local"
+  config.ssh.forward_agent = true
+
+  config.vm.synced_folder cfg['host_l3afd_code_dir'], "/home/vagrant/code/l3afd"
+
+  # Add Grafana apt repo
+  config.vm.provision "shell", inline: <<-SHELL
+    sudo apt-get install -y apt-transport-https
+    sudo apt-get install -y software-properties-common wget
+    wget -q -O - https://packages.grafana.com/gpg.key | sudo apt-key add -
+    echo "deb https://packages.grafana.com/oss/deb stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
+    sudo apt-get update
+  SHELL
+
+  # Install package dependencies
+  config.vm.provision "shell", inline: <<-SHELL
+    apt-get install -y bc \
+      bison \
+      build-essential \
+      clang \
+      curl \
+      exuberant-ctags \
+      flex \
+      gcc-8 \
+      gcc-multilib \
+      golang \
+      gnutls-bin \
+      grafana \
+      libc6-dev \
+      libcurl4-openssl-dev \
+      libelf-dev \
+      libjson-c-dev \
+      libncurses5-dev \
+      libpcap-dev \
+      libssl-dev \
+      linux-headers-generic \
+      linux-tools-common \
+      linux-tools-generic \
+      llvm \
+      prometheus \
+      rsync
+  SHELL
+
+  # Reboot for updated kernel to load
+  config.vm.provision :reload
+
+  config.vm.provision :shell, path: "provision.sh"
+
+  # Always start test servers because they aren't managed services
+  config.vm.provision :shell, path: "start_test_servers.sh", run: 'always'
+
+end
