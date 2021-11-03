@@ -1,6 +1,6 @@
 # Ideas for Simplifying eBPF program chaining
 
-The purpose of this document is to discuss 1) why we do eBPF program chaining, 2) how chaining is implmented currently in L3AF, and 3) ideas and plans for chaining enhancements.
+The purpose of this document is to discuss 1) why we do eBPF program chaining, 2) how chaining is implemented currently in L3AF, and 3) ideas and plans for chaining enhancements.
 
 We encourage the open source community to be involved with all phases of planning and implementation.
 
@@ -12,7 +12,7 @@ eBPF program chaining is the procedure of calling multiple eBPF programs in a se
 
 ## Why do we chain eBPF programs?
 
-This is maybe the most common question we get about L3AFD. To understand the answer, it's important to understand one of the core philosophes of L3AF: L3AF is a platform to orchestrate and compose multiple, independent eBPF programs. We believe that eBPF users can benefit from the development and open distribution of modular eBPF programs. In this respect, we embrace the Unix philosophy of “write programs that do one thing and do it well.” Our vision is that the L3AF team, open-source community, and other businesses will develop independent eBPF programs that will be shared in a “kernel function marketplace.” Users can then download a selection of signed eBPF programs and orchestrate them to solve their unique business needs.
+This is maybe the most common question we get about L3AFD. To understand the answer, it's important to understand one of the core philosophies of L3AF: L3AF is a platform to orchestrate and compose multiple, independent eBPF programs. We believe that eBPF users can benefit from the development and open distribution of modular eBPF programs. In this respect, we embrace the Unix philosophy of “write programs that do one thing and do it well.” Our vision is that the L3AF team, open-source community, and other businesses will develop independent eBPF programs that will be shared in a “kernel function marketplace.” Users can then download a selection of signed eBPF programs and orchestrate them to solve their unique business needs.
 
 As an example, in one datacenter you may want to run this chain of programs:
 
@@ -83,13 +83,13 @@ In addition to these snippets, there is other chain-related code and state that 
 
 ### XDP
 
-As of Linux kernel 5.10, the kernel and libxdp have the ability to chain eBPF programs using a multi-program "dispatcher." A formal specificaiton for doing so is found [here](https://github.com/xdp-project/xdp-tools/blob/master/lib/libxdp/protocol.org). This would allow for L3AF to completely manage the chaining of eBPF programs that do not require any chain-specific logic themselves. However, in order for this to happen, a Go libxdp implementation is needed.
+As of Linux kernel 5.10, the kernel and libxdp have the ability to chain eBPF programs using a multi-program "dispatcher." A formal specification for doing so is found [here](https://github.com/xdp-project/xdp-tools/blob/master/lib/libxdp/protocol.org). This would allow for L3AF to completely manage the chaining of eBPF programs that do not require any chain-specific logic themselves. However, in order for this to happen, a Go libxdp implementation is needed.
 
 Visually, this proposed solution would look like this:
 
 ![L3AF XDP dispatcher chaining](../images/L3AF_xdp_dispatcher_chaining.png)
 
-L3AFD would interface directly with libxdp to determine the execution order of the eBPF kernel programs.
+L3AFD would interface directly with libxdp to set the execution order of the eBPF kernel programs.
 
 Userspace eBPF programs could still be run to interface with their respective kernel programs.  We would like to migrate these userspace programs from C to Go (now that there are good Go eBPF libraries available), but that migration is beyond the scope of this document.
 
