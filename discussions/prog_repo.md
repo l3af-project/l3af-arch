@@ -23,9 +23,16 @@ Committee.
 
 This topic is open for discussion.
 
-# Is the Kernel Function Marketplace part of the L3AF project
+# Is the Kernel Function Marketplace part of the L3AF Project
 
-Yes, we consider L3AF to be an entire ecosystem of Kernel Functions as a
+Firstly, we define the "L3AF Project" as entire L3AF open source project that
+exists within The Linux Foundation. When we say "L3AF" we are referring to the
+entire L3AF Project. This is not to be configured with:
+
+- The `l3af-project` Github organization
+- The L3AFD daemon, which is just one piece of the L3AF Project.
+
+We consider L3AF to be an entire ecosystem of Kernel Functions as a
 service. We've otherwise phrased this as "complete lifecycle management of eBPF
 programs." This definition includes:
 
