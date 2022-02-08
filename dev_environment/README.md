@@ -31,12 +31,13 @@ Here is a visual overview:
 
 # Trying out L3AF
 
-* Edit `config.yaml` to point to the source code on your host machine. This
+* Edit `config.yaml` to point to the [source code](https://github.com/l3af-project/l3afd) on your host machine. This
   code will be mounted by the virtual machine. Additionally, you may modify the
   default ports used on the host to access services on the virtual machine.
   (Note, however, that this document will refer to the default ports.)
 * If you don't already have the vagant reload plugin, you'll need to install it,
     `vagrant plugin install vagrant-reload`.
+* Run `ssh -T git@github.com` to verify if ssh-agent can access matching private key, run `ssh-add` to add identity to the authentication agent.
 * Run `vagrant up`. This should take just a few minutes to bring up the
   virtual machine from scratch.
 * Verify that the host can send traffic to a web server running on the VM:
