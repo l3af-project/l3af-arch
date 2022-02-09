@@ -2,43 +2,40 @@
 
 This section describes the release processes for tracking, preparing, and creating new L3AF releases. This includes information around the release cycles and guides for developers responsible for preparing upcoming stable releases.
 
-## Active development
+## Active Development
 
-Active development is happening on the `main` branch, and a new version can be released from it in every 10-12 weeks.
+Active development is happening on the `main` branch, and a new version can be released from it every 10-12 weeks.
 
 ## Release Tracking
 
-Feature work for upcoming releases is tracked through GitHub Projects.
+Feature work for upcoming releases is tracked through [GitHub Projects](https://github.com/l3af-project/l3af-arch/projects?type=beta).
 
 ## Release Versions
 
-We would be having a release version for every release. Minor releases are typically designated by incrementing 
-the Y in the version format X.Y.Z. New patch releases for an existing stable version X.Y.Z are published by incrementing
-the Z in the version format.
-
-## Stable releases
-
-Stable releases of L3AF include:
-
-* Extended maintenance window (any version released in the last 6/12 months).
-* Stability fixes backported from the `main` branch (anything that can result in a crash).
-* Bugfixes, deemed worthwhile by the maintainers of stable releases.
+We will follow [Semantic Versioning 2.0](https://semver.org/).
 
 ### Post Release Activities
 
-After each release, a tag with name ‘vX.Y.Z’, and a branch with name ‘release/vX.Y.Z’ can be created from the main branch. 
-Merge permission to this branch would be given to the release manager and CI can be configured to execute tests on it.
+After each release, a tag with name ‘X.Y.Z’, and a branch with name ‘X.Y.Z’ is created from the main branch.
+Merge permission to this branch will be given to the release manager and CI will be configured to execute tests on it.
+
+## Stable Releases
+
+Stable releases of L3AF include:
+
+* Maintenance window (any version released in the last 6 to 12 months).
+* Stability fixes backported from the `main` branch (anything that can result in a crash).
+* Bugfixes, deemed worthwhile by the maintainers of stable releases.
 
 ### Backports
 
-All other reliability fixes can be nominated for backporting to stable releases by L3AF code owners. 
 The process of backporting can consist of the following steps:
 
 - Changes nominated by the change author and/or members of the L3AF community are evaluated for backporting on a case-by-case basis
-- These changes require approval from either the release manager of stable release or code owners.
+- These changes require approval from the release manager of stable release and the code owners.
 - Once approved, these fixes can be backported from the `main` branch to an existing or previous stable branch by the code owners.
 
-### Release management
+### Release Management
 
 Release managers of stable releases are responsible for approving and merging backports, tagging stable releases 
-and sending announcements about them. 
+and sending announcements about them.
