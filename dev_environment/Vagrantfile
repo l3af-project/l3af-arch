@@ -11,7 +11,7 @@ Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/focal64"
 
   # Set boot timeout value
-  # config.vm.boot_timeout = 600
+  config.vm.boot_timeout = 600
 
   config.vm.network "forwarded_port", guest: 8080, host: cfg['host_http_port1']
   config.vm.network "forwarded_port", guest: 8081, host: cfg['host_http_port2']

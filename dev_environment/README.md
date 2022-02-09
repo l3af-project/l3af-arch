@@ -24,6 +24,7 @@ Here is a visual overview:
 
 * [Vagrant](https://www.vagrantup.com/)
 * [VirtualBox](https://www.virtualbox.org/)
+* [ssh-agent](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
 * [L3AFD source code](https://github.com/l3af-project/l3afd)
 * [curl](https://curl.se/)
 * [hey](https://github.com/rakyll/hey) or any HTTP load generator
