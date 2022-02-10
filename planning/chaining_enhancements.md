@@ -1,6 +1,10 @@
 # Ideas for Simplifying eBPF program chaining
 
-The purpose of this document is to discuss 1) why we do eBPF program chaining, 2) how chaining is implemented currently in L3AF, and 3) ideas and plans for chaining enhancements.
+The purpose of this document is to discuss: 
+
+1) why we do eBPF program chaining
+2) how chaining is implemented currently in L3AF, and 
+3) ideas and plans for chaining enhancements.
 
 We encourage the open source community to be involved with all phases of planning and implementation.
 
