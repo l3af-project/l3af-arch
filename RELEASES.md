@@ -10,7 +10,7 @@ Active development is happening on the `main` branch, and a new version can be r
 
 Feature work for upcoming releases is tracked through [GitHub Projects](https://github.com/l3af-project/l3af-arch/projects?type=beta).
 
-## Release Versions
+## Release Versioning
 
 We will follow [Semantic Versioning 2.0](https://semver.org/).
 
@@ -25,15 +25,15 @@ Stable releases of L3AF include:
 
 * Maintenance window (any version released in the last 6 to 12 months).
 * Stability fixes backported from the `main` branch (anything that can result in a crash).
-* Bugfixes, deemed worthwhile by the maintainers of stable releases.
+* Bugfixes, deemed worthwhile by the maintainers.
 
 ### Backports
 
 The process of backporting can consist of the following steps:
 
 - Changes nominated by the change author and/or members of the L3AF community are evaluated for backporting on a case-by-case basis
-- These changes require approval from the release manager of stable release and the code owners.
-- Once approved, these fixes can be backported from the `main` branch to an existing or previous stable branch by the code owners.
+- These changes require approval from both the release manager of the stable release and from the relevant code owners.
+- Once approved, these fixes can be backported from the `main` branch to an existing or previous stable branch by the branch's release manager.
 
 ### Release Management
 
