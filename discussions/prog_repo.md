@@ -31,10 +31,10 @@ Note, however, that we have no intention of limiting the creation of other publi
 eBPF Package repositories.
 
 We recognize that it may make sense to migrate the eBPF Package Repository
-(eBPF Programs within the repository) out of the L3AF Project and into its own
-Linux Foundation project in the future. Doing this initially may not make sense (due to L3AF-specific
-eBPF program chaining implementation for networking programs), but as L3AF and other projects mature,
-a platform-agnostic repository could be useful for multiple projects.
+out of the L3AF Project and into its own Linux Foundation project in the future.
+Doing this initially may not make sense (due to L3AF-specific eBPF program chaining implementation
+for networking programs), but as L3AF and other projects mature, a platform-agnostic repository
+could be useful for multiple projects.
 
 # What should an initial version look like
 
@@ -66,14 +66,14 @@ Future versions could build on top of the foundation laid by the initial version
 
 # What should a future version look like
 
-This section examines simple ways to create a location where eBPF Programs from trusted parties
+This section examines simple ways to create a location where eBPF Packages from trusted parties
 can be uploaded and made available for others to download. This can also enable users to provide
 rating, reviews, and tags to the packages.
 
 ### Build Process
 
-Contributed eBPF programs can be built on common images for Linux and other platforms.
-Contributors are expected to build their code using the most recent image used by our build system.
+Contributed eBPF Packages can be built on common images for Linux and other platforms.
+Contributors are expected to build their code using the most recent images used by our build system.
 Contributors could have a choice to build on Linux only or other platforms.
 
 Build artifacts (i.e., eBPF program bytecode and user space binaries) could be stored
@@ -141,7 +141,7 @@ L3AF can use the best practices that are established for signing and verifying e
 
 ### Signing and verifying the eBPF Program package
 
-At a higher level, we also plan to sign and verify eBPF Package.
+At a higher level, we also plan to sign and verify eBPF Packages.
 The package can be signed by its creator using eBPF Package Repository generated/provided
 trusted keys. L3AF can, by default, verify the package comes from a trusted source before executing
 any programs in the package
@@ -152,8 +152,8 @@ This approach needs to be explored based on hypervisor operating systems securit
 
 ### Define trust
 
-In this context, trusted user and contributor is defined as authorised registered user to the
-system, who has credentials to login with RBAC restrictions. Contributor can be given access
+In this context, a trusted user and contributor is defined as an authorised user registered to the
+system, who has credentials to log in with RBAC restrictions. A contributor can be given access
 to a set of trusted keys.
 
 ### Running L3AFD in trusted mode
