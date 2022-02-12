@@ -56,9 +56,9 @@ to conform to L3AF's eBPF program chaining mechanics.
 
 Because of the overhead and support requirements of a full build system, it may not be
 feasible to build the eBPF program source code in the initial version. However, we believe
-this would greatly hinder adoption from both contributors and users. Our proposal, therefore,
-is to have the repository’s initial version include scripts (e.g. Dockerfile for build system images),
-and steps to build eBPF Programs locally.
+not being able to build from source would greatly hinder adoption from both contributors and users.
+Our proposal, therefore, is to have the repository’s initial version include scripts (e.g. Dockerfile
+for build system images), and steps to build eBPF Programs locally (e.g. for x86_64 platforms).
 
 ## eBPF Package Repository of the future
 
@@ -95,9 +95,9 @@ best practices for compatibility, such as using eBPF CO-RE for Linux. Similar be
 can be followed on non-Linux platforms as they mature and become available.
 The user space components of eBPF programs pose a separate, complicated portability obstacle,
 which is compounded by the desire of the L3AF project to support user space programs in multiple
-languages. For the initial version of the repository, it should be sufficient to build
-(of a compiled language) and unit test for the x86_64 platform. The user space component
-should document any installation dependencies it has (e.g., MySQL, Grafana, Python libraries, etc.).
+languages. For the future version of the repository, initially it should be sufficient to build
+(of a compiled language) and unit test for the x86_64 platform. The user space component should document
+any installation dependencies it has (e.g., MySQL, Grafana, Python libraries, etc.).
 Contributors to the repository would be responsible to provide the necessary build scripts
 and configuration.
 
