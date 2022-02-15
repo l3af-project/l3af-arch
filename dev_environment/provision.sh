@@ -32,7 +32,7 @@ LINUX_SRC_DIR=/usr/src/linux
 cd $LINUX_SRC_DIR
 make defconfig
 
-mkdir -p /var/log/tb/l3af
+mkdir -p /var/log/l3af
 
 BUILD_DIR=$LINUX_SRC_DIR/samples/bpf/
 
