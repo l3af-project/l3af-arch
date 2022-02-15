@@ -41,7 +41,7 @@ BUILD_ARTIFACT_DIR=/srv/l3afd
 mkdir -p $BUILD_ARTIFACT_DIR
 
 # declare an array variable
-declare -a progs=("xdp-root" "ratelimiting" "connection-limit")
+declare -a progs=("xdp-root" "ratelimiting" "connection-limit", "tc-root", "ipfix-flow-exporter")
 
 # now loop through the above array
 for prog in "${progs[@]}"
