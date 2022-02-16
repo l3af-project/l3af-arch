@@ -30,7 +30,7 @@ This definition includes:
 Note, however, that we have no intention of limiting the creation of other public or private
 eBPF Package repositories.
 
-We recognize that it may make sense to migrate the eBPF Package Repository
+L3AF Technical Steering Committee recognizes that it may make sense to migrate the eBPF Package Repository
 out of the L3AF Project and into its own Linux Foundation project in the future.
 Doing this initially may not make sense (due to L3AF-specific eBPF program chaining implementation
 for networking programs), but as L3AF and other projects mature, a platform-agnostic repository
