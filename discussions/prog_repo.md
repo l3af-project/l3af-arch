@@ -89,7 +89,7 @@ Previous issues with portability and the eBPF CO-RE solution are explained here:
 
 https://nakryiko.com/posts/bpf-portability-and-co-re/
 
-Because an eBPF Package Repository is a place from where contributed eBPF programs (byte code)
+Because an eBPF Package Repository is a place from where contributed eBPF programs (byte code or native code)
 can be downloaded to run on a variety of kernel versions, we propose that the repository follows
 best practices for compatibility, such as using eBPF CO-RE for Linux. Similar best practices
 can be followed on non-Linux platforms as they mature and become available.
@@ -141,10 +141,9 @@ L3AF can use the best practices that are established for signing and verifying e
 
 ### Signing and verifying the eBPF Program package
 
-At a higher level, we also plan to sign and verify eBPF Packages.
-The package can be signed by its creator using eBPF Package Repository generated/provided
-trusted keys. L3AF can, by default, verify the package comes from a trusted source before executing
-any programs in the package
+The eBPF package should be signed by using the creators trusted keys. The user should
+then configure L3AF to explicitly trust signed packages with the key creator used. L3AF by default
+will not trust signed packages by any parties.
 
 ### Signing for Hypervisors
 
