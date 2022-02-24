@@ -40,18 +40,22 @@ BUILD_DIR=$LINUX_SRC_DIR/samples/bpf/
 BUILD_ARTIFACT_DIR=/srv/l3afd
 mkdir -p $BUILD_ARTIFACT_DIR
 
-# declare an array variable
-declare -a progs=("xdp-root" "ratelimiting" "connection-limit")
+cd $BUILD_DIR
 
-# now loop through the above array
+# Get the eBPF-Package-Repository repo containing the eBPF programs
+git clone git@github.com:l3af-project/eBPF-Package-Repository.git
+cd eBPF-Package-Repository
+
+# declare an array variable
+declare -a progs=("xdp-root" "ratelimiting" "connection-limit" "tc-root" "ipfix-flow-exporter")
+
+# now loop through the above array and build the L3AF eBPF programs
 for prog in "${progs[@]}"
 do
-	# Get and build the L3AF root program
-	cd $BUILD_DIR
-	git clone git@github.com:l3af-project/$prog.git
 	cd $prog
 	make
 	PROG_ARTIFACT_DIR=$BUILD_ARTIFACT_DIR/$prog/latest/focal
 	mkdir -p $PROG_ARTIFACT_DIR
 	mv *.tar.gz $PROG_ARTIFACT_DIR
+	cd ../
 done
