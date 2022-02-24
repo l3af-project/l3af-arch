@@ -24,7 +24,6 @@ Here is a visual overview:
 
 * [Vagrant](https://www.vagrantup.com/)
 * [VirtualBox](https://www.virtualbox.org/)
-* [ssh-agent](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
 * [L3AFD source code](https://github.com/l3af-project/l3afd)
 * [curl](https://curl.se/)
 * [hey](https://github.com/rakyll/hey) or any HTTP load generator
@@ -38,7 +37,6 @@ Here is a visual overview:
   (Note, however, that this document will refer to the default ports.)
 * If you don't already have the vagant reload plugin, you'll need to install it,
     `vagrant plugin install vagrant-reload`.
-* Run `ssh -T git@github.com` to verify if ssh-agent can access matching private key, run `ssh-add` to add identity to the authentication agent.
 * Run `vagrant up`. This should take just a few minutes to bring up the
   virtual machine from scratch.
 * Verify that the host can send traffic to a web server running on the VM:
