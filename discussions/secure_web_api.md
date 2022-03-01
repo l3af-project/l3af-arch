@@ -1,0 +1,138 @@
+# L3AFD Secure web API
+
+## Overview
+
+Walmart developed L3AF to simplify the management and orchestration of multiple eBPF programs in an enterprise
+environment.
+
+L3AF’s control plane consists of multiple components that work together to orchestrate eBPF programs:
+
+- L3AF Daemon (L3AFD), which runs on each node where eBPF program runs. L3AFD reads configuration data and manages 
+  the execution and monitoring of eBPF programs running on the node.
+- Deployment APIs, which a user calls to generate configuration data. This configuration data includes which eBPF 
+  programs will run, their execution order, and the configuration arguments for each eBPF program.
+- A database and KV store that stores the configuration data. 
+- A datastore that stores the eBPF program artifact (I.e., byte code and native code).
+
+When users want to deploy an eBPF program, they can call the L3AFD API with appropriate parameters. This request would
+generate a new config (KV pair). Once L3AFD reads this new config, it orchestrates eBPF programs on the Linux host
+as per the defined parameters. If the user gives a set of eBPF programs, then L3AFD can orchestrate all of them in the
+sequence that the user wanted (aka chaining).
+
+## Need for secure web APIs
+
+L3AFD implements a Go HTTP client to download the configured eBPF programs from a datastore (package repository).
+However, this client does not support TLS. In the open-source world, users will presumably expect to be able
+to use TLS in this situation. This is also an early step toward using a secure eBPF Package Repository
+(https://github.com/l3af-project/l3afd/issues/2).
+
+L3AFD has a gRPC and HTTP API that can be used to configure the eBPF programs. However, this API only supports HTTP.
+This works for a use case where the L3AFD API is called only from the localhost, but this is probably unintuitive.
+In the future, we would like to come up with service that can call the L3AFD APIs remotely. For this, we could leverage
+mTLS for a mutually secure connection between the client and server. Also, new open-source adopters of L3AF will presumably
+want to avoid calling the L3AFD API locally on each node (https://github.com/l3af-project/l3afd/issues/4).
+
+## Types of certificates are supported
+
+The TLS protocol aims primarily to provide cryptography, including privacy (confidentiality), integrity, and
+authenticity through certificates, between L3AFD and client's communication. These certificates can be issued by a
+third-party trusted authority (i.e., IdenTrust, DigiCert, Sectigo, etc), and we can create self-signed certificates
+using tools like ```openssl```.
+
+This completely depends on the users, whether to use Trusted CA certificates or Self signed certificates. L3AF will not 
+provide any certificates.
+
+## L3AF deployment scenarios
+
+L3AF could be running in two scenarios, users can use L3AF in secure enterprise private networks and in public network.
+In case of private network, L3AFD and clients will be communicating with each other over a network that is normally
+protected by vpn or PCI (Payment Card Information), and hence it may not be essential to enable mTLS in this case.
+
+However, in case of public network, clients will be communicating with L3AFD over insecure networks. L3AF wants to
+secure its endpoints using industry's best standard available solutions. This can be configured from l3afd’s config file,
+and by default, mTLS will be disabled.
+
+## Enabling mTLS for L3AFD
+
+L3AFD (L3AF Daemon) will require a set of root certificates (root.crt and root.key) and a pair of server certificates
+(server.crt and server.key) to run in mTLS enabled mode. L3AFD will check for these certificates, and in case these are
+not found, L3AFD will stop with error ```certificates are not found```.
+
+The client will require a pair of client certificates (client.crt and client.key), generated from the same root
+certificates from which the server certificates have been generated, and the public root certificate (root.crt) to
+communicate with L3AFD.
+
+Process to enable mTLS 
+- Provision of Certificates 
+- Location of Certificates 
+- Enabling mTLS
+
+### Provision of Certificates
+
+As mentioned before, users can use already pre-existing certificates. However, L3AF can also provide mechanisms
+(manual or auto) to generate certificates.
+
+L3AF can have a library for self-signed certificate generation, that can implement APIs with different parameters, and
+these APIs can be integrated with L3AFD for auto-generation of the certificates. In this case, L3AFD can generate
+self-signed certificates, i.e., a set of self-signed root certificates, a pair of server certificates and client
+certificates at start-up if the certificates are not found (These certificates are not recommended for production use).
+
+Also, a certificate generation tool can be implemented using this library to generate the certificates manually.
+If the user has a set of root certificates (can be from a trusted CA provider or provided by its organisation or
+self-signed) and does not have the server and client certificates, then it can use the tool provided by L3AF to generate
+the server and client certificates. The tool can also have an option to generate the root certificates and the user can
+use this option to generate self-signed root certificates manually.
+
+#### Certificate creation options
+
+To create certificates L3AFD needs following options, these options are stored in L3AFD configuration file and for
+the tool, these can be passed as parameters.
+
+- Domain (by default, localhost or FQDN)
+- Password provided by user 
+- Message Digest (sha256 or sha512 or …)
+- Encryption algorithms (Camellia, Aria and AES is the popular one)
+- Subject (Country, State, Locality, Organisation, Organisation Unit and Common Name)
+  (e.g., “/C=IN/ST=KA/L=BGL/O=WM/OU=TBT/CN=$cn”)
+- Expiration days (365, 730 or 3652 days)
+- Alternate DNS, and IP (by default localhost, and 127.0.0.1)
+
+### Location of Certificates
+
+The default location for the certificates can be ‘/etc/ssl/l3af/certs/’ and this path can also be changed through a
+l3afd configuration option in cases where the user would like to use a custom location.
+
+In case of auto-generation of the certificates, L3AFD will place the root certificates, the server certificates in the
+configured path, and the client certificates will be placed in a subdirectory ‘client’ under the configured path.
+
+In case of manually generated certificates or existing certificates, the user will have to place the root certificates
+and the server certificates in the configured directory path before starting L3AFD.
+
+### Enabling mTLS
+
+L3AFD will provide a flag to enable mTLS and this can be configured in l3afd.cfg, by default mTLS will be disabled.
+
+## Minimum TLS version
+
+TLS version popularly supported in the market v1.2 and v1.3. L3AF can support v1.3 and above.
+
+## L3AFD web Api FQDNs (Fully Qualified Domain Name)
+
+L3AFD can be configured to listen on FQDN by providing option in configuration file (i.e., l3afd.cfg) or by default,
+l3afd will listen on localhost.
+
+## Monitoring of certificates
+
+L3AFD will be monitoring for expiration of the certificates on regular basis (e.g., every 24 hours) and it will start
+logging warnings before a certain period (30 days) of expiration date. If the certificates are not renewed before
+expiration, L3AFD will stop with error ```certificates are expired, replace new pair of certificates```.
+It is users' responsibility to replace old certificates with new pair certificates. L3AFD loads the new
+certificates automatically, and it does not require a restart.
+
+L3AFD can also expose metrics for the certificate expiration status and certificate errors.
+
+## Token-based authentication
+
+In this approach OAuth2 token used for authenticating the client. Here, client should acquire token from the Identity
+Management service. Every request will have metadata component which carries token. L3AFD will verify the token with
+configured Identity Management service, if the token is valid, it will serve the request. 
