@@ -31,7 +31,7 @@ Here is a visual overview:
 
 # Trying out L3AF
 
-* Edit `config.yaml` to point to the source code on your host machine. This
+* Edit `config.yaml` to point to the [source code](https://github.com/l3af-project/l3afd) on your host machine. This
   code will be mounted by the virtual machine. Additionally, you may modify the
   default ports used on the host to access services on the virtual machine.
   (Note, however, that this document will refer to the default ports.)

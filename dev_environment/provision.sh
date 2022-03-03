@@ -2,8 +2,6 @@
 
 set -eux
 
-ssh-keyscan -H github.com >> ~/.ssh/known_hosts
-
 # Copy grafana configs and dashboards into place
 mkdir -p /var/lib/grafana/dashboards
 chown grafana:grafana /var/lib/grafana/dashboards
@@ -43,7 +41,7 @@ mkdir -p $BUILD_ARTIFACT_DIR
 cd $BUILD_DIR
 
 # Get the eBPF-Package-Repository repo containing the eBPF programs
-git clone git@github.com:l3af-project/eBPF-Package-Repository.git
+git clone https://github.com/l3af-project/eBPF-Package-Repository.git
 cd eBPF-Package-Repository
 
 # declare an array variable
