@@ -136,3 +136,10 @@ L3AFD can also expose metrics for the certificate expiration status and certific
 In this approach OAuth2 token used for authenticating the client. Here, client should acquire token from the Identity
 Management service. Every request will have metadata component which carries token. L3AFD will verify the token with
 configured Identity Management service, if the token is valid, it will serve the request. 
+
+## Authorization
+
+Authorization is a security mechanism that verifies the clients have sufficient permissions to perform any CRUD actions
+on config resources. RBAC determines client privileges to update the configs on the node and enables access controls
+based on granted roles. Initially there will admin and user roles. Users with role admin can have privileges to update the
+configs and other users will have view only access.
