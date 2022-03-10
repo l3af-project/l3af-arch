@@ -11,7 +11,7 @@ L3AF’s control plane consists of multiple components that work together to orc
   the execution and monitoring of eBPF programs running on the node.
 - Deployment APIs, which a user calls to generate configuration data. This configuration data includes which eBPF 
   programs will run, their execution order, and the configuration arguments for each eBPF program.
-- A database and KV store that stores the configuration data. 
+- A database and local KV store that stores the configuration data. 
 - A datastore that stores the eBPF program artifact (I.e., byte code and native code).
 
 When users want to deploy an eBPF program, they can call the L3AFD API with appropriate parameters. This request would
@@ -21,7 +21,7 @@ sequence that the user wanted (aka chaining).
 
 ## Need for secure web APIs
 
-L3AFD implements a Go HTTP client to download the configured eBPF programs from a datastore (package repository).
+L3AFD implements a Go HTTPS client to download the configured eBPF programs from a datastore (package repository).
 However, this client does not support TLS. In the open-source world, users will presumably expect to be able
 to use TLS in this situation. This is also an early step toward using a secure eBPF Package Repository
 (https://github.com/l3af-project/l3afd/issues/2).
@@ -70,23 +70,17 @@ Process to enable mTLS
 ### Provision of Certificates
 
 As mentioned before, users can use already pre-existing certificates. However, L3AF can also provide mechanisms
-(manual or auto) to generate certificates.
+manually to generate certificates.
 
-L3AF can have a library for self-signed certificate generation, that can implement APIs with different parameters, and
-these APIs can be integrated with L3AFD for auto-generation of the certificates. In this case, L3AFD can generate
-self-signed certificates, i.e., a set of self-signed root certificates, a pair of server certificates and client
-certificates at start-up if the certificates are not found (These certificates are not recommended for production use).
-
-Also, a certificate generation tool can be implemented using this library to generate the certificates manually.
+L3AF can provide a certificate generation tool can be implemented to generate the certificates manually.
 If the user has a set of root certificates (can be from a trusted CA provider or provided by its organisation or
 self-signed) and does not have the server and client certificates, then it can use the tool provided by L3AF to generate
 the server and client certificates. The tool can also have an option to generate the root certificates and the user can
 use this option to generate self-signed root certificates manually.
 
-#### Certificate creation options
+#### Certificate creation tool options
 
-To create certificates L3AFD needs following options, these options are stored in L3AFD configuration file and for
-the tool, these can be passed as parameters.
+To create self-signed certificates, the tool needs following options and these can be passed as parameters.
 
 - Domain (by default, localhost or FQDN)
 - Password provided by user 
@@ -102,11 +96,8 @@ the tool, these can be passed as parameters.
 The default location for the certificates can be ‘/etc/ssl/l3af/certs/’ and this path can also be changed through a
 l3afd configuration option in cases where the user would like to use a custom location.
 
-In case of auto-generation of the certificates, L3AFD will place the root certificates, the server certificates in the
-configured path, and the client certificates will be placed in a subdirectory ‘client’ under the configured path.
-
-In case of manually generated certificates or existing certificates, the user will have to place the root certificates
-and the server certificates in the configured directory path before starting L3AFD.
+The user will have to place the root certificates and the server certificates in the configured directory path before
+starting L3AFD.
 
 ### Enabling mTLS
 
@@ -116,10 +107,10 @@ L3AFD will provide a flag to enable mTLS and this can be configured in l3afd.cfg
 
 TLS version popularly supported in the market v1.2 and v1.3. L3AF can support v1.3 and above.
 
-## L3AFD web Api FQDNs (Fully Qualified Domain Name)
+## L3AFD Web API Listening Interface
 
-L3AFD can be configured to listen on FQDN by providing option in configuration file (i.e., l3afd.cfg) or by default,
-l3afd will listen on localhost.
+L3AFD can be configured to listen on a different IP address / interface than localhost (127.0.0.1).
+There could be an additional check to only accept traffic from the specified FQDN (Host header) or SNI if TLS.
 
 ## Monitoring of certificates
 
@@ -133,13 +124,14 @@ L3AFD can also expose metrics for the certificate expiration status and certific
 
 ## Token-based authentication
 
-In this approach OAuth2 token used for authenticating the client. Here, client should acquire token from the Identity
-Management service. Every request will have metadata component which carries token. L3AFD will verify the token with
-configured Identity Management service, if the token is valid, it will serve the request. 
+In this approach OAuth2 token used for authenticating the client. Here, client should acquire token from the identity
+management service. Every request will have a metadata component which carries the token. L3AFD will verify the token with
+the configured identity management service and if the token is valid it will then accept the request.
 
 ## Authorization
 
 Authorization is a security mechanism that verifies the clients have sufficient permissions to perform any CRUD actions
 on config resources. RBAC determines client privileges to update the configs on the node and enables access controls
-based on granted roles. Initially there will admin and user roles. Users with role admin can have privileges to update the
-configs and other users will have view only access.
+based on granted roles. Initially there will admin and user roles.
+- Admin - Full permission to create, update, read, and delete any configuration element through the API
+- Read-Only - Permission to read configuration elements through the API
