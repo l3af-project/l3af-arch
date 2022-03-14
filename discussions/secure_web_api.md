@@ -21,7 +21,7 @@ sequence that the user wanted (aka chaining).
 
 ## Need for secure web APIs
 
-L3AFD implements a Go HTTPS client to download the configured eBPF programs from a datastore (package repository).
+L3AFD implements a Go HTTPS client to download the configured eBPF packages from a datastore (package repository).
 However, this client does not support TLS. In the open-source world, users will presumably expect to be able
 to use TLS in this situation. This is also an early step toward using a secure eBPF Package Repository
 (https://github.com/l3af-project/l3afd/issues/2).
