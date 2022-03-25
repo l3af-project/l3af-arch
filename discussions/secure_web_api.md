@@ -11,22 +11,22 @@ L3AF’s control plane consists of multiple components that work together to orc
   the execution and monitoring of eBPF programs running on the node.
 - Deployment APIs, which a user calls to generate configuration data. This configuration data includes which eBPF 
   programs will run, their execution order, and the configuration arguments for each eBPF program.
-- A database and local KV store that stores the configuration data. 
-- A datastore that stores the eBPF program artifact (I.e., byte code and native code).
+- A database and local key/value (KV) store that stores the configuration data.
+- A datastore that stores eBPF program artifacts (e.g., byte code and/or native code).
 
 When users want to deploy an eBPF program, they can call the L3AFD API with appropriate parameters. This request would
-generate a new config (KV pair). Once L3AFD reads this new config, it orchestrates eBPF programs on the Linux host
-as per the defined parameters. If the user gives a set of eBPF programs, then L3AFD can orchestrate all of them in the
-sequence that the user wanted (aka chaining).
+generate a new config (KV pair). Once L3AFD reads this new config, it orchestrates eBPF programs on the host as per the
+defined parameters. If the user gives a set of eBPF programs, then L3AFD can orchestrate all of them in the sequence
+that the user wanted (aka chaining).
 
 ## Need for secure web APIs
 
 L3AFD uses Go HTTPS client to download the configured eBPF packages from a datastore (package repository).
-However, this client does not support TLS. In the open-source world, users will presumably expect to be able
-to use TLS in this situation. This is also an early step toward using a secure eBPF Package Repository
-(https://github.com/l3af-project/l3afd/issues/2).
+However, this client does not support yet TLS, but we are investigating how best to support TLS. In the open-source
+world, users will presumably expect to be able to use TLS in this situation. This is also an early step toward using
+a secure eBPF Package Repository (https://github.com/l3af-project/l3afd/issues/2).
 
-L3AFD has a gRPC and HTTP API that can be used to configure the eBPF programs. However, this API only supports HTTP.
+L3AFD has an HTTP API that can be used to configure the eBPF programs. However, this API only supports HTTP.
 This works for a use case where the L3AFD API is called only from the localhost, but this is probably unintuitive.
 In the future, we would like to come up with service that can call the L3AFD APIs remotely. For this, we could leverage
 mTLS for a mutually secure connection between the client and server. Also, new open-source adopters of L3AF will presumably
@@ -65,31 +65,11 @@ communicate with L3AFD.
 Process to enable mTLS 
 - Provision of Certificates 
 - Location of Certificates 
-- Enabling mTLS
+- Enable mTLS
 
 ### Provision of Certificates
 
-As mentioned before, users can use already pre-existing certificates. However, L3AF can also provide mechanisms
-manually to generate certificates.
-
-L3AF can provide a certificate generation tool can be implemented to generate the certificates manually.
-If the user has a set of root certificates (can be from a trusted CA provider or provided by its organisation or
-self-signed) and does not have the server and client certificates, then it can use the tool provided by L3AF to generate
-the server and client certificates. The tool can also have an option to generate the root certificates and the user can
-use this option to generate self-signed root certificates manually.
-
-#### Certificate creation tool options
-
-To create self-signed certificates, the tool needs following options and these can be passed as parameters.
-
-- Domain (by default, localhost or FQDN)
-- Password provided by user 
-- Message Digest (sha256 or sha512 or …)
-- Encryption algorithms (Camellia, Aria and AES is the popular one)
-- Subject (Country, State, Locality, Organisation, Organisation Unit and Common Name)
-  (e.g., “/C=IN/ST=KA/L=BGL/O=WM/OU=TBT/CN=$cn”)
-- Expiration days (365, 730 or 3652 days)
-- Alternate DNS, and IP (by default localhost, and 127.0.0.1)
+As mentioned before, users can use already pre-existing certificates. L3AF will not provide any certificates.
 
 ### Location of Certificates
 
@@ -105,11 +85,12 @@ L3AFD will provide a flag to enable mTLS and this can be configured in l3afd.cfg
 
 ## Minimum TLS version
 
-TLS version popularly supported in the market v1.2 and v1.3. L3AF can support v1.3 and above.
+TLS version popularly supported in the market v1.2 and v1.3. L3AF can support v1.3 by default and require configuration
+to allow downgrading security.
 
 ## L3AFD Web API Listening Interface
 
-L3AFD can be configured to listen on a different IP address / interface than localhost (127.0.0.1).
+L3AFD can be configured to listen on a different IP address / interface than localhost.
 There could be an additional check to only accept traffic from the specified FQDN (Host header) or SNI if TLS.
 
 ## Monitoring of certificates
