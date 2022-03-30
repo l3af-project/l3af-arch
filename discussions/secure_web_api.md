@@ -81,7 +81,8 @@ starting L3AFD.
 
 ### Enabling mTLS
 
-L3AFD will provide a flag to enable mTLS and this can be configured in l3afd.cfg, by default mTLS will be disabled.
+L3AFD will provide a flag to enable mTLS and this can be configured in l3afd.cfg, by default mTLS will be disabled
+in case l3afd is listening on localhost.
 
 ## Minimum TLS version
 
