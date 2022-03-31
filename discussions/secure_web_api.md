@@ -9,19 +9,19 @@ L3AF’s control plane consists of multiple components that work together to orc
 
 - L3AF Daemon (L3AFD), which runs on each node where eBPF program runs. L3AFD reads configuration data and manages 
   the execution and monitoring of eBPF programs running on the node.
-- Deployment APIs, which a user calls to generate configuration data. This configuration data includes which eBPF 
-  programs will run, their execution order, and the configuration arguments for each eBPF program.
+- Deployment HTTP APIs exposed by L3AFD, which a user calls to generate configuration data. This configuration data
+  includes which eBPF programs will run, their execution order, and the configuration arguments for each eBPF program.
 - A database and local key/value (KV) store that stores the configuration data.
 - A datastore that stores eBPF program artifacts (e.g., byte code and/or native code).
 
-When users want to deploy an eBPF program, they can call the L3AFD API with appropriate parameters. This request would
-generate a new config (KV pair). Once L3AFD reads this new config, it orchestrates eBPF programs on the host as per the
-defined parameters. If the user gives a set of eBPF programs, then L3AFD can orchestrate all of them in the sequence
-that the user wanted (aka chaining).
+When users want to deploy an eBPF program, they can use an app to call the L3AFD API with appropriate parameters.
+This request would generate a new config (KV pair). Once L3AFD reads this new config, it orchestrates eBPF programs on
+the host as per the defined parameters. If the user gives a set of eBPF programs, then L3AFD can orchestrate all of
+them in the sequence that the user wanted (aka chaining).
 
 ## Need for secure web APIs
 
-L3AFD uses Go HTTPS client to download the configured eBPF packages from a datastore (package repository).
+L3AFD uses the Go HTTP client to download the configured eBPF packages from a datastore (package repository).
 However, this client does not support yet TLS, but we are investigating how best to support TLS. In the open-source
 world, users will presumably expect to be able to use TLS in this situation. This is also an early step toward using
 a secure eBPF Package Repository (https://github.com/l3af-project/l3afd/issues/2).
@@ -39,7 +39,7 @@ authenticity through certificates, between L3AFD and client's communication. The
 third-party trusted authority (i.e., IdenTrust, DigiCert, Sectigo, etc), and we can create self-signed certificates
 using tools like ```openssl```.
 
-This completely depends on the users, whether to use Trusted CA certificates or Self signed certificates. L3AF will not 
+This completely depends on the users, whether to use Trusted CA certificates or self-signed certificates. L3AF will not 
 provide any certificates.
 
 ## L3AF deployment scenarios
@@ -63,9 +63,9 @@ certificates from which the server certificates have been generated, and the pub
 communicate with L3AFD.
 
 Process to enable mTLS 
-- Provision of Certificates 
-- Location of Certificates 
-- Enable mTLS
+- [Provision of Certificates](#Provision of Certificates)
+- [Location of Certificates](#Location of Certificates)
+- [Enable mTLS](#Enabling mTLS)
 
 ### Provision of Certificates
 
@@ -73,16 +73,16 @@ As mentioned before, users can use already pre-existing certificates. L3AF will 
 
 ### Location of Certificates
 
-The default location for the certificates can be ‘/etc/ssl/l3af/certs/’ and this path can also be changed through a
-l3afd configuration option in cases where the user would like to use a custom location.
+The default location for the certificates and the path can also be changed through a l3afd configuration option
+in cases where the user would like to use a custom location.
 
 The user will have to place the root certificates and the server certificates in the configured directory path before
 starting L3AFD.
 
 ### Enabling mTLS
 
-L3AFD will provide a flag to enable mTLS and this can be configured in l3afd.cfg, by default mTLS will be disabled
-in case l3afd is listening on localhost.
+A flag will be provided in l3afd.cfg which enables mTLS by default. L3AFD will not accept remote connections
+without TLS by default.
 
 ## Minimum TLS version
 
@@ -91,7 +91,7 @@ to allow downgrading security.
 
 ## L3AFD Web API Listening Interface
 
-L3AFD can be configured to listen on a different IP address / interface than localhost.
+L3AFD can be configured to listen on IP address / interfaces other than localhost.
 There could be an additional check to only accept traffic from the specified FQDN (Host header) or SNI if TLS.
 
 ## Monitoring of certificates
@@ -106,7 +106,7 @@ L3AFD can also expose metrics for the certificate expiration status and certific
 
 ## Token-based authentication
 
-In this approach OAuth2 token used for authenticating the client. Here, client should acquire token from the identity
+In this approach OAuth2 token used for authenticating the client. Here, clients should acquire tokens from the identity
 management service. Every request will have a metadata component which carries the token. L3AFD will verify the token with
 the configured identity management service and if the token is valid it will then accept the request.
 
