@@ -44,18 +44,17 @@ provide any certificates.
 
 ## L3AF deployment scenarios
 
-L3AF could be running in two scenarios, users can use L3AF in secure enterprise private networks and in public network.
-In case of private network, L3AFD and clients will be communicating with each other over a network that is normally
+L3AF could be running in two scenarios, users can use L3AF in secure enterprise private networks and in public networks.
+In the case of a private network, L3AFD and clients will be communicating with each other over a network that is normally
 protected by vpn or PCI (Payment Card Information), and hence it may not be essential to enable mTLS in this case.
 
-However, in case of public network, clients will be communicating with L3AFD over insecure networks. L3AF wants to
-secure its endpoints using industry's best standard available solutions. This can be configured from l3afd’s config file,
-and by default, mTLS will be disabled.
+However, in the case of a public network, clients will be communicating with L3AFD over insecure networks. L3AF wants to
+secure its endpoints using industry's best standard available solutions. This can be configured from l3afd’s config file.
 
 ## Enabling mTLS for L3AFD
 
 L3AFD (L3AF Daemon) will require a set of root certificates (root.crt and root.key) and a pair of server certificates
-(server.crt and server.key) to run in mTLS enabled mode. L3AFD will check for these certificates, and in case these are
+(server.crt and server.key) to accept remote connections. L3AFD will check for these certificates, and in case these are
 not found, L3AFD will stop with error ```certificates are not found```.
 
 The client will require a pair of client certificates (client.crt and client.key), generated from the same root
