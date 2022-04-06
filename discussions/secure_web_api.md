@@ -21,7 +21,7 @@ them in the sequence that the user wanted (aka chaining).
 
 ## Need for secure web APIs
 
-L3AFD uses the Go HTTP client to download the configured eBPF packages from a datastore (package repository).
+L3AFD currently uses the Go HTTP client to download the configured eBPF packages from a datastore (package repository).
 However, this client does not support yet TLS, but we are investigating how best to support TLS. In the open-source
 world, users will presumably expect to be able to use TLS in this situation. This is also an early step toward using
 a secure eBPF Package Repository (https://github.com/l3af-project/l3afd/issues/2).
@@ -46,7 +46,9 @@ provide any certificates.
 
 L3AF could be running in two scenarios, users can use L3AF in secure enterprise private networks and in public networks.
 In the case of a private network, L3AFD and clients will be communicating with each other over a network that is normally
-protected by vpn or PCI (Payment Card Information), and hence it may not be essential to enable mTLS in this case.
+protected by vpn or PCI (Payment Card Information), and hence some may not consider it essential to enable mTLS in this
+case, although the current industry trend and best practice is to consider it essential even on private networks, which
+trend uses the [Zero trust security model](https://en.wikipedia.org/wiki/Zero_trust_security_model).
 
 However, in the case of a public network, clients will be communicating with L3AFD over insecure networks. L3AF wants to
 secure its endpoints using industry's best standard available solutions. This can be configured from l3afd’s config file.
@@ -85,12 +87,12 @@ without TLS by default.
 
 ## Minimum TLS version
 
-TLS version popularly supported in the market v1.2 and v1.3. L3AF can support v1.3 by default and require configuration
+The TLS versions popularly supported in the market are v1.2 and v1.3. L3AF can support v1.3 by default and require configuration
 to allow downgrading security.
 
 ## L3AFD Web API Listening Interface
 
-L3AFD can be configured to listen on IP address / interfaces other than localhost.
+L3AFD can be configured to listen on IP addresses / interfaces other than localhost.
 There could be an additional check to only accept traffic from the specified FQDN (Host header) or SNI if TLS.
 
 ## Monitoring of certificates
