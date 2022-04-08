@@ -64,9 +64,9 @@ certificates from which the server certificates have been generated, and the pub
 communicate with L3AFD.
 
 Process to enable mTLS 
-- [Provision of Certificates](#Provision of Certificates)
-- [Location of Certificates](#Location of Certificates)
-- [Enable mTLS](#Enabling mTLS)
+- [Provision of Certificates](#provision-of-certificates)
+- [Location of Certificates](#location-of-certificates)
+- [Enable mTLS](#enabling-mtls)
 
 ### Provision of Certificates
 
