@@ -42,7 +42,7 @@ Here is a visual overview:
   `hey -n 200 -c 20 http://localhost:18080`. This command should return quickly
   and result in successful HTTP responses (200 OK).
 * Run `vagrant ssh`, this will log you into the virtual machine
-* On the VM, go to `~/code/l3afd` and run `go install .`
+* On the VM, go to `~/code/l3afd` and run `make install`
 * On the VM, go to `~/go/bin` and run `l3afd` as root:
   `sudo ./l3afd --config /vagrant/cfg/l3afd.cfg`
 * On the host, configure L3AFD to execute sample eBPF programs by running
@@ -50,6 +50,10 @@ Here is a visual overview:
   "@cfg/payload.json"`.  The `payload.json` file can be inspected and modified
   as desired. For more information on the L3AFD API see the [L3AFD API
   documentation](https://github.com/l3af-project/l3afd/tree/main/docs/api).
+* L3AFD can also be configured to execute sample eBPF programs from
+  Swagger UI `http://localhost:37080/swagger/index.html` on the host machine.
+  The content of the `payload.json` file can be used as request body of the
+  POST API request for this purpose.
 * Verify the eBPF programs from `payload.json` are running by querying the
   L3AFD debug API from the host: `curl http://localhost:38899/kfs/enp0s3`. This
   command assumes `enp0s3` is a valid network interface on the VM.
