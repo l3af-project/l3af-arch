@@ -8,7 +8,6 @@
           "name": "ratelimiting",
           "seq_id": 1,
           "artifact": "l3af_ratelimiting.tar.gz",
-         "ebpf_package_repo_url":"http://192.168.150.100:9000/",
           "map_name": "/sys/fs/bpf/xdp_rl_ingress_next_prog",
           "cmd_start": "ratelimiting",
           "version": "latest",
@@ -25,8 +24,7 @@
         {
           "name": "connection-limit",
           "seq_id": 2,
-          "artifact": "l3af_connection_limit.zip",
-          "ebpf_package_repo_url":"http://192.168.150.100:9001/",
+          "artifact": "l3af_connection_limit.tar.gz",
           "map_name": "/sys/fs/bpf/xdp_cl_ingress_next_prog",
           "cmd_start": "connection_limit",
           "version": "latest",
