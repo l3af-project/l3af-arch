@@ -1,0 +1,45 @@
+[
+  {
+    "host_name" : "l3af-local-test",
+    "iface" : "enp0s3",
+    "bpf_programs" : {
+      "xdp_ingress" : [
+        {
+          "name": "ratelimiting",
+          "seq_id": 1,
+          "artifact": "l3af_ratelimiting.tar.gz",
+          "map_name": "/sys/fs/bpf/xdp_rl_ingress_next_prog",
+          "cmd_start": "ratelimiting",
+          "version": "latest",
+          "user_program_daemon": true,
+          "admin_status": "enabled",
+          "prog_type": "xdp",
+          "cfg_version": 1,
+          "start_args": { "ports": "8080,8081", "rate": "2" },
+          "monitor_maps": [
+            { "name": "rl_drop_count_map", "key": 0, "aggregator": "scalar"},
+            { "name": "rl_recv_count_map", "key": 0, "aggregator": "max-rate"}
+          ]
+        },
+        {
+          "name": "connection-limit",
+          "seq_id": 2,
+          "artifact": "l3af_connection_limit.tar.gz",
+          "map_name": "/sys/fs/bpf/xdp_cl_ingress_next_prog",
+          "cmd_start": "connection_limit",
+          "version": "latest",
+          "user_program_daemon": true,
+          "admin_status": "enabled",
+          "prog_type": "xdp",
+          "cfg_version": 1,
+          "start_args": { "ports": "8080,8081", "max-conn": "2" },
+          "monitor_maps": [
+            { "name": "cl_recv_count_map", "key": 0, "aggregator": "scalar"},
+            { "name": "cl_drop_count_map", "key": 0, "aggregator": "scalar" },
+            { "name": "cl_conn_count", "key": 0, "aggregator": "scalar" }
+          ]
+        }
+      ]
+    }
+  }
+]
