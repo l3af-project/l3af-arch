@@ -7,11 +7,10 @@ machine environment that allows users to develop, test, or just try out L3AF.
 
 The L3AF dev environment automation sets up a virtual machine that contains:
 
-* Dependencies required to build L3AFD and Kernel Functions (i.e., eBPF
-  programs)
+* Dependencies required to build L3AFD and eBPF programs
 * Simple web servers (written in Go) to which test traffic can be sent
 * Prometheus and Grafana for metrics
-* A local Kernel Function repository (simple Python file server)
+* A local eBPF Package Repository (simple Python file server)
 
 The host machine can access various services on the virtual machine via
 user-configured ports.
@@ -46,7 +45,7 @@ Here is a visual overview:
 * On the VM, go to `~/code/l3afd` and run `go install .`
 * On the VM, go to `~/go/bin` and run `l3afd` as root:
   `sudo ./l3afd --config /vagrant/cfg/l3afd.cfg`
-* On the host, configure L3AFD to execute sample Kernel Functions by running
+* On the host, configure L3AFD to execute sample eBPF programs by running
   `curl -X POST http://localhost:37080/l3af/configs/v1/update -d
   "@cfg/payload.json"`.  The `payload.json` file can be inspected and modified
   as desired. For more information on the L3AFD API see the [L3AFD API
@@ -56,8 +55,8 @@ Here is a visual overview:
   command assumes `enp0s3` is a valid network interface on the VM.
 * Once again send traffic to the VM web server:
   `hey -n 200 -c 20 http://localhost:18080`. The traffic will now be running
-  through the Kernel Functions (which may affect results dramatically depending
-  on which Kernel Functions are running and how they are configured).
-* To see the Kernel Function metrics, browse to `http://localhost:33000` on the
+  through the eBPF programs (which may affect results dramatically depending
+  on which eBPF programs are running and how they are configured).
+* To see the eBPF program metrics, browse to `http://localhost:33000` on the
   host and login to Grafana with the default username and password of `admin`.
   After logging in you will be able to view the preconfigured dashboards.
