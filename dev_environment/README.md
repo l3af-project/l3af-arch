@@ -92,8 +92,8 @@ L3AFD server from your laptop: `curl http://<ip-address-of-your-azure-vm>:8899/k
 command assumes `eth0` is a valid network interface on the VM and should return with an empty set.
 3. Verify that you can send traffic to one of the test web servers running on the Azure VM with this command:
 `hey -n 200 -c 20 http://<ip-address-of-your-azure-vm>:8080`. This command should return a latency distribution histogram that shows
- most traffic clustered near the top of the graph at very low latency.
+ most traffic clustered near the top of the graph at very low latency.<p align="center"><img src="https://user-images.githubusercontent.com/106849610/179866166-597bef0d-2f5f-4ae7-89ee-1acdda5fd060.png" width="400" height="200"/></p>
 4. Load and run the ratelimiter eBPF program in the kernel with the following command: `curl -X POST http://<ip-address-of-your-azure-vm>:7080/l3af/configs/v1/update -d "@payload.json"`.
 5. Query the L3AFD server again to ensure that the ratelimiter eBPF program was loaded into the kernel and is running: `curl http://<ip-address-of-your-vm>:8899/kfs/eth0`. This query should output a .json file similar to this: https://github.com/l3af-project/l3afd/tree/main/docs/api.
 6. Generate traffic again: `hey -n 200 -c 20 http://<ip-address-of-your-vm>:8080`. This command should now output a latency distribution histogram that
-is more distributed because the ratelimiter eBPF program is in operation.
+is more distributed because the ratelimiter eBPF program is in operation.<p align="center"><img src="https://user-images.githubusercontent.com/106849610/179867246-406a2841-5a49-4102-b42c-e9cbf07ce2c3.png" width="400" height="200"/></p>
