@@ -62,3 +62,27 @@ The following host prerequisites and installation instructions are for trying ou
 11. To see the eBPF program metrics, browse to `http://localhost:33000` on the
   host and login to Grafana with the default username and password of `admin`.
   After logging in you will be able to view the preconfigured dashboards.
+
+# Trying out L3AF on Ubuntu 20.04.4 LTS (Focal Fossa)
+The following host prerequisites and installation instructions are for trying out L3AF on an Azure VM running an Ubuntu 20.04.4 LTS server.
+
+## Host Prerequisites
+
+* [L3AFD source code](https://github.com/l3af-project/l3afd)
+* [curl](https://curl.se/)
+* [hey](https://github.com/rakyll/hey) or any HTTP load generator
+* A web browser
+
+## Installation Instructions
+1. Clone the [l3afd](https://github.com/l3af-project/l3afd.git) and [l3af-arch](https://github.com/l3af-project/l3af-arch.git)
+Github repositories to your Azure VM.
+2. Download and install Go for Linux version go1.18.4 at https://go.dev/doc/install. Make sure that you do not use `sudo apt install`
+because this command will install version go1.13 which will cause issues since the installation requires version go1.17 at the minimum.
+3. Edit `config.yaml` to point to the [L3AFD repository](https://github.com/l3af-project/l3afd) on your host machine. This
+code will be mounted by the virtual machine. Additionally, you may modify the
+default ports used on the host to access services on the virtual machine.
+4. Run install.sh to install package dependencies, Grafana, Prometheus, the eBPF source code you need to build eBPF programs against,
+and the eBPF package repository.
+6. On the VM, go to `~/code/l3afd` and run `go install .`
+7. On the VM, go to `~/go/bin` and run `l3afd` as root:
+  `sudo ./l3afd --config /vagrant/cfg/l3afd.cfg`.
