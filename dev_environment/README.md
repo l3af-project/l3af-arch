@@ -72,17 +72,28 @@ The following host prerequisites and installation instructions are for trying ou
 * [curl](https://curl.se/)
 * [hey](https://github.com/rakyll/hey) or any HTTP load generator
 * A web browser
+* Download and install Go for Linux version go1.18.4 or greater at https://go.dev/doc/install. Make sure that you do **not** use `sudo apt install`,
+because this command will install version go1.13 but the installation requires version go1.17 at the minimum.
 
 ## Installation Instructions
 1. Clone the [l3afd](https://github.com/l3af-project/l3afd.git) and [l3af-arch](https://github.com/l3af-project/l3af-arch.git)
 Github repositories to your Azure VM.
-2. Download and install Go for Linux version go1.18.4 at https://go.dev/doc/install. Make sure that you do not use `sudo apt install`
-because this command will install version go1.13 which will cause issues since the installation requires version go1.17 at the minimum.
-3. Edit `config.yaml` to point to the [L3AFD repository](https://github.com/l3af-project/l3afd) on your host machine. This
-code will be mounted by the virtual machine. Additionally, you may modify the
-default ports used on the host to access services on the virtual machine.
-4. Run install.sh to install package dependencies, Grafana, Prometheus, the eBPF source code you need to build eBPF programs against,
+2. Edit `config.yaml` to point to the [L3AFD repository](https://github.com/l3af-project/l3afd) on your host machine.
+3. Run `install.sh` to install package dependencies, Grafana, Prometheus, the eBPF source code you need to build eBPF programs against,
 and the eBPF package repository.
-6. On the VM, go to `~/code/l3afd` and run `go install .`
-7. On the VM, go to `~/go/bin` and run `l3afd` as root:
+4. On the Azure VM, go to your L3AFD directory and run `go install .`
+5. On the Azure VM, go to `~/go/bin` and run `l3afd` as root:
   `sudo ./l3afd --config /vagrant/cfg/l3afd.cfg`.
+
+## Trying out your L3AFD Server
+1. Start test web servers by running the following commands on your Azure VM: `go run l3af-arch/dev_environment/code/web-server.go -port 8080 > /var/log/web-server1.log 2>&1 &` and `go run l3af-arch/dev_environment/code/web-server.go -port 8081 > /var/log/web-server1.log 2>&1 &`.
+2. Verify that no eBPF programs are running by querying the
+L3AFD server from your laptop: `curl http://<ip-address-of-your-azure-vm>:8899/kfs/eth0`. This
+command assumes `eth0` is a valid network interface on the VM and should return with an empty set.
+3. Verify that you can send traffic to one of the test web servers running on the Azure VM with this command:
+`hey -n 200 -c 20 http://<ip-address-of-your-azure-vm>:8080`. This command should return a latency distribution histogram that shows
+ most traffic clustered near the top of the graph at very low latency.
+4. Load and run the ratelimiter eBPF program in the kernel with the following command: `curl -X POST http://<ip-address-of-your-azure-vm>:7080/l3af/configs/v1/update -d "@payload.json"`.
+5. Query the L3AFD server again to ensure that the ratelimiter eBPF program was loaded into the kernel and is running: `curl http://<ip-address-of-your-vm>:8899/kfs/eth0`. This query should output a .json file similar to this: https://github.com/l3af-project/l3afd/tree/main/docs/api.
+6. Generate traffic again: `hey -n 200 -c 20 http://<ip-address-of-your-vm>:8080`. This command should now output a latency distribution histogram that
+is more distributed because the ratelimiter eBPF program is in operation.
