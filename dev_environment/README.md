@@ -63,7 +63,7 @@ The following host prerequisites and installation instructions are for trying ou
   host and login to Grafana with the default username and password of `admin`.
   After logging in you will be able to view the preconfigured dashboards.
 
-# Trying out L3AF on Ubuntu 20.04.4 LTS (Focal Fossa)
+# Trying out L3AF on an Azure VM (Ubuntu 20.04.4 LTS)
 The following host prerequisites and installation instructions are for trying out L3AF on an Azure VM running an Ubuntu 20.04.4 LTS server.
 
 ## Host Prerequisites
