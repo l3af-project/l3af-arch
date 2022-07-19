@@ -69,20 +69,20 @@ The following host prerequisites and installation instructions are for trying ou
 ## Host Prerequisites
 
 * [L3AFD source code](https://github.com/l3af-project/l3afd)
-* [curl](https://curl.se/)
 * [hey](https://github.com/rakyll/hey) or any HTTP load generator
 * A web browser
-* Download and install Go for Linux version go1.18.4 or greater at https://go.dev/doc/install. Make sure that you do **not** use `sudo apt install`,
-because this command will install version go1.13 but the installation requires version go1.17 at the minimum.
+* [Go for Linux](https://go.dev/doc/install) version 1.18.4 or greater
 
 ## Installation Instructions
 1. Clone the [l3afd](https://github.com/l3af-project/l3afd.git) and [l3af-arch](https://github.com/l3af-project/l3af-arch.git)
 Github repositories to your Azure VM.
-2. Edit `config.yaml` to point to the [L3AFD repository](https://github.com/l3af-project/l3afd) on your host machine.
-3. Run `install.sh` to install package dependencies, Grafana, Prometheus, the eBPF source code you need to build eBPF programs against,
+2. Download and install Go for Linux version 1.18.4 or greater at https://go.dev/doc/install. Make sure that you do **not** use `sudo apt install`,
+because this command will install version 1.13 but the installation requires version 1.17 at the minimum.
+3. Edit `config.yaml` to point to the [L3AFD repository](https://github.com/l3af-project/l3afd) on your host machine.
+4. Run `install.sh` to install package dependencies, Grafana, Prometheus, the eBPF source code you need to build your eBPF programs against,
 and the eBPF package repository.
-4. On the Azure VM, go to your L3AFD directory and run `go install .`
-5. On the Azure VM, go to `~/go/bin` and run `l3afd` as root:
+5. On the Azure VM, go to your L3AFD directory and run `go install .`
+6. On the Azure VM, go to `~/go/bin` and run `l3afd` as root:
   `sudo ./l3afd --config /vagrant/cfg/l3afd.cfg`.
 
 ## Trying out your L3AFD Server
