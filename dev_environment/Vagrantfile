@@ -35,7 +35,6 @@ Vagrant.configure("2") do |config|
     sudo apt-get install -y software-properties-common wget
     wget -q -O - https://packages.grafana.com/gpg.key | sudo apt-key add -
     echo "deb https://packages.grafana.com/oss/deb stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
-    add-apt-repository ppa:longsleep/golang-backports
     sudo apt-get update
   SHELL
 
@@ -50,9 +49,9 @@ Vagrant.configure("2") do |config|
       flex \
       gcc-8 \
       gcc-multilib \
-      golang \
       gnutls-bin \
       grafana \
+      jq \
       libc6-dev \
       libcurl4-openssl-dev \
       libelf-dev \
@@ -66,6 +65,18 @@ Vagrant.configure("2") do |config|
       llvm \
       prometheus \
       rsync
+  SHELL
+
+  # Install latest golang version
+  config.vm.provision "shell", inline: <<-SHELL
+    arch=`uname -p | cut -d '_' -f 2`
+    os=`uname|tr '[:upper:]' '[:lower:]'`
+    go_filename=`curl -s https://go.dev/dl/?mode=json|jq '.[0].files[].filename'|grep $os|grep $arch|egrep -v "arm|ppc"|tr -d '"'`
+    wget https://go.dev/dl/$go_filename
+    rm -rf /usr/local/go && tar -C /usr/local -xzf $go_filename && rm -f $go_filename
+    echo export PATH=$PATH:/usr/local/go/bin >> /home/vagrant/.bashrc
+    echo export PATH=$PATH:/usr/local/go/bin >> /home/vagrant/.profile
+    echo export PATH=$PATH:/usr/local/go/bin >> /root/.bashrc
   SHELL
 
   # Reboot for updated kernel to load
