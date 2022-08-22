@@ -6,6 +6,12 @@
             "xdp_ingress": [
                 "ratelimiting",
                 "connection-limit"
+            ],
+            "tc_ingress": [
+                "ipfix-flow-exporter"
+            ],
+            "tc_egress": [
+                "ipfix-flow-exporter"
             ]
         }
     }
