@@ -12,10 +12,12 @@ fi
 ARCH=$(uname -p)
 if [[ "$ARCH" = "arm" ||  "$ARCH" = "aarch64" ]];
 then
-echo "Setting l3af dev environment for arm"
+  echo "Setting l3af dev environment for arm"
+  arch=arm64
 elif [ "$ARCH" = "x86_64" ];
 then
-echo "Setting l3af dev environment for amd64"
+  echo "Setting l3af dev environment for amd64"
+  arch=amd64
 fi
 
 cd /root
@@ -45,6 +47,7 @@ apt-get install -y bc \
       gcc-8 \
       gnutls-bin \
       grafana \
+      jq \
       libc6-dev \
       libcurl4-openssl-dev \
       libelf-dev \
@@ -59,22 +62,12 @@ apt-get install -y bc \
       prometheus \
       rsync
 
-#install go lang version 1.17.12
-if [ -d "/usr/local/go/bin" ];
-then
-  echo "golang already installed"
-else
-        if [[ "$ARCH" = "arm" ||  "$ARCH" = "aarch64" ]];
-        then
-                wget https://go.dev/dl/go1.17.12.linux-arm64.tar.gz
-                tar -C /usr/local -xzf go1.17.12.linux-arm64.tar.gz
-        elif [ "$ARCH" = "x86_64" ];
-        then
-                wget https://go.dev/dl/go1.17.12.linux-amd64.tar.gz
-                tar -C /usr/local -xzf go1.17.12.linux-amd64.tar.gz
-        fi
-fi
-export PATH=$PATH:/usr/local/go/bin
+#install the latest go lang version
+  os=`uname|tr '[:upper:]' '[:lower:]'`
+  go_filename=`curl -s https://go.dev/dl/?mode=json|jq '.[0].files[].filename'|grep $os|grep $arch|egrep -v "ppc"|tr -d '"'`
+  wget https://go.dev/dl/$go_filename
+  tar -C /usr/local -xzf $go_filename && rm -f $go_filename
+  echo export PATH=$PATH:/usr/local/go/bin >> /root/.bashrc
 
 # clone the l3afd repo in to root directly
 # can use mapped directory i.e. at /home/ubuntu/Home
@@ -87,7 +80,7 @@ else
 fi
 
 # Copy grafana configs and dashboards into place
-if [ -d "/var/lib/grafana/dashboards"];
+if [ -d "/var/lib/grafana/dashboards" ];
 then
   echo "grafana directory already existed"
 else
@@ -103,19 +96,20 @@ chown root:grafana /etc/grafana/provisioning/datasources/*.yaml
 
 # Copy prometheus config and restart prometheus
 cp /root/l3af-arch/dev_environment/cfg/prometheus.yml /etc/prometheus/prometheus.yml
-if uname -a | grep -q 'WSL'; then
-        echo "WSL DETECTED"
-        apt-get install daemon
-        #start/restart prometheus-node-exporter
-        /etc/init.d/prometheus-node-exporter start
-        /etc/init.d/prometheus-node-exporter stop
-        /etc/init.d/prometheus-node-exporter start
+if uname -a | grep -q 'WSL';
+then
+  echo "WSL DETECTED"
+  apt-get install daemon
+  #start/restart prometheus-node-exporter
+  /etc/init.d/prometheus-node-exporter start
+  /etc/init.d/prometheus-node-exporter stop
+  /etc/init.d/prometheus-node-exporter start
 
-        # Start and enable Grafana
-        sleep 1
-        /etc/init.d/grafana-server stop || true
-        /etc/init.d/grafana-server stop || true
-        /etc/init.d/grafana-server start || true
+  # Start and enable Grafana
+  sleep 1
+  /etc/init.d/grafana-server stop || true
+  /etc/init.d/grafana-server stop || true
+  /etc/init.d/grafana-server start || true
 else
   systemctl daemon-reload
   systemctl restart prometheus prometheus-node-exporter
@@ -148,7 +142,7 @@ BUILD_DIR=$LINUX_SRC_DIR/samples/bpf/
 
 # Where to store the tar.gz build artifacts
 BUILD_ARTIFACT_DIR=/srv/l3afd
-if [ ! -d "$BUILD_ARTIFACT_DIR"];
+if [ ! -d "$BUILD_ARTIFACT_DIR" ];
 then
   mkdir -p $BUILD_ARTIFACT_DIR
 fi
