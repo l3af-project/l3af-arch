@@ -14,17 +14,19 @@ if [[ "$ARCH" = "arm" ||  "$ARCH" = "aarch64" ]];
 then
   echo "Setting l3af dev environment for arm"
   arch=arm64
-elif [ "$ARCH" = "x86_64" ];
+elif [[ "$ARCH" = "x86_64" || "$ARCH" = "i386" ]];
 then
   echo "Setting l3af dev environment for amd64"
   arch=amd64
+else
+  echo "The CPU architecture $ARCH is not supported by the script"
+  exit 1
 fi
 
 cd /root
 
 # install packages
 apt-get update
-apt-get install -y apt-transport-https
 apt-get install -y software-properties-common wget
 
 # get grafana package
