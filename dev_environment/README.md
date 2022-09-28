@@ -3,7 +3,7 @@
 The L3AF dev environment is a [Vagrant](https://www.vagrantup.com/) virtual
 machine environment that allows users to develop, test, or just try out L3AF.
 
-The Vagrant virtual machine environment only works for non Apple M1/M2 CPU based MAC computers.  A separate shell script can set up the Linux virtual machine development environment for most common MAC/PC with ARM or x86 CPUs. 
+The Vagrant virtual machine environment only works for non Apple M1/M2 CPU based MAC computers.  A separate [shell script](https://github.com/charleskbliu0/l3af-arch/blob/main/dev_environment/Setup_Dev_Env.md) can set up the Linux virtual machine development environment for most common MAC/PC with ARM or x86 CPUs, Windows WSL and cloud based Linux VM. 
 
 # Overview
 
