@@ -16,5 +16,5 @@ cd $BUILD_ARTIFACT_DIR
 python3 -m http.server 8000 &
 
 # Start the test web servers
-go run /vagrant/code/web-server.go -port 8080 > /var/log/web-server1.log 2>&1 &
-go run /vagrant/code/web-server.go -port 8081 > /var/log/web-server2.log 2>&1 &
+/usr/local/go/bin/go run /vagrant/code/web-server.go -port 8080 &
+/usr/local/go/bin/go run /vagrant/code/web-server.go -port 8081 &
