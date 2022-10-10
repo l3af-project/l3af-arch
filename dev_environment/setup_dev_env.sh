@@ -117,7 +117,6 @@ else
   systemctl restart prometheus prometheus-node-exporter
 
   # Start and enable Grafana
-  systemctl daemon-reload
   systemctl start grafana-server
   systemctl enable grafana-server.service
 fi
