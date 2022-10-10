@@ -19,25 +19,8 @@ There are different ways to create Linux VM (i.e. Ubuntu 20.04).  At local compu
 
 2. log in the Linux virtual machine, run "sudo -i" to change to the root user.
 
-3. Run the script setup_dev_env.sh
+3. Run the script setup_dev_env_linux_vm.sh
 
 4. Run the sccript start_test_servers.sh
 
-5. On the host, configure L3AFD to execute sample eBPF programs by running
-   `curl -X POST http://localhost:37080/l3af/configs/v1/update -d
-   "@cfg/payload.json"`.  The `payload.json` file can be inspected and modified
-   as desired. For more information on the L3AFD API see the [L3AFD API
-   documentation](https://github.com/l3af-project/l3afd/tree/main/docs/api).
-
-6. Verify the eBPF programs from `payload.json` are running by querying the
-   L3AFD debug API from the host: `curl http://localhost:38899/kfs/enp0s3`. This
-   command assumes `enp0s3` is a valid network interface on the VM.  Change the interface name of the VM if needed.
-
-7. Once again send traffic to the VM web server:
-   `hey -n 200 -c 20 http://localhost:18080`. The traffic will now be running
-   through the eBPF programs (which may affect results dramatically depending
-   on which eBPF programs are running and how they are configured).
-
-8. To see the eBPF program metrics, browse to `http://localhost:33000` on the
-   host and login to Grafana with the default username and password of `admin`.
-   After logging in you will be able to view the preconfigured dashboards.
+Now go back the [README.md](https://github.com/l3af-project/l3af-arch/blob/main/dev_environment/README.md) for the host to configure L3AFD to execute sample eBPF programs. 
