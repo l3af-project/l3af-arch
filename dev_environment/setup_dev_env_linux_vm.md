@@ -1,6 +1,6 @@
 # Set up L3AF Development Environment for Linux VMs
 
-There are different ways to create Linux VM (i.e. Ubuntu 20.04).  At local computer host, various VM software, i.e. VirtualBox, Parallels, Multipass, Windows WSL etc. can create Linux VM (i.e. ubuntu).  And Linux VM can be created in cloud environment, i.e. Azure VM.  The following procedures illustrated how to set up L3AF devlopment environment for those VMs if Vagrant doesn't support them.
+There are different ways to create Linux VM (i.e. Ubuntu 20.04).  At local computer host, various VM software, i.e. VirtualBox, Parallels, Multipass, Windows WSL etc. can create Linux VM (i.e. ubuntu).  And Linux VM can be created in cloud environment, i.e. Azure VM.  The following procedures illustrated how to set up L3AF development environment for those VMs if Vagrant doesn't support them.
 
 # Host Prerequisites
 
@@ -8,7 +8,7 @@ There are different ways to create Linux VM (i.e. Ubuntu 20.04).  At local compu
 * [curl](https://curl.se/)
 * [hey](https://github.com/rakyll/hey) or any HTTP load generator
 * A web browser
-* A Linux VM running on the host or in the Cloud (record the login information while creating the Linux VM, and root access is requried.)
+* A Linux VM running on the host or in the Cloud (record the login information while creating the Linux VM, and root access is required.)
 
 # Trying out L3AF
 
