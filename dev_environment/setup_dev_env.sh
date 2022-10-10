@@ -2,7 +2,7 @@
 
 set -eux
 
-# this script need to run as root account, check it
+# this script needs to run as root account, check it
 if [[ $EUID -ne 0 ]]; then
     echo "This script must be run as root"
     exit 1
@@ -172,8 +172,8 @@ do
 	cd ../
 done
 
-# Compile L3AFD damon and start the control plan
+# Compile L3AFD daemon and start the control plan
 cd /root/l3afd
-go install
+make install
 cd ../go/bin/
 ./l3afd --config /root/l3af-arch/dev_environment/cfg/l3afd.cfg &
