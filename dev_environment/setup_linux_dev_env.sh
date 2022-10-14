@@ -113,6 +113,7 @@ then
   /etc/init.d/grafana-server stop || true
   /etc/init.d/grafana-server start || true
 else
+  # the configuration got copied, restart the prometheus service
   systemctl daemon-reload
   systemctl restart prometheus prometheus-node-exporter
 
@@ -171,7 +172,7 @@ do
 	cd ../
 done
 
-# Compile L3AFD daemon and start the control plan
+# Compile L3AFD daemon and start the control planeß
 cd /root/l3afd
 make install
 cd ../go/bin/
