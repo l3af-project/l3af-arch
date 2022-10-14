@@ -172,7 +172,7 @@ do
 	cd ../
 done
 
-# Compile L3AFD daemon and start the control planeß
+# Compile L3AFD daemon and start the control plane
 cd /root/l3afd
 make install
 cd ../go/bin/

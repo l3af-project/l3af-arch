@@ -3,7 +3,7 @@
 The L3AF dev environment is a [Vagrant](https://www.vagrantup.com/) virtual
 machine environment that allows users to develop, test, or just try out L3AF.
 
-The Vagrant virtual machine environment only works for non Apple M1/M2 CPU based MAC computers.  A separate [shell script](https://github.com/l3af-project/l3af-arch/blob/main/dev_environment/setup_dev_env_linux_vm.md) can set up the Linux virtual machine L3AF development environment for MAC/PC with Arm or x86 CPUs, Windows WSL and cloud based Linux VM (i.e. Azure Linux VM). 
+The Vagrant virtual machine environment only works for non Apple M1/M2 CPU based MAC computers.  A separate [shell script](https://github.com/l3af-project/l3af-arch/blob/main/dev_environment/setup_dev_env_linux_vm.md) can set up the Linux virtual machine L3AF development environment for MAC/PC with Arm or x86 CPUs, Windows WSL and Azure Linux VMs. 
 
 # Overview
 
@@ -69,7 +69,7 @@ Here is a visual overview:
   After logging in you will be able to view the preconfigured dashboards.
 
 # Trying out L3AF on an Azure VM (Ubuntu 20.04.4 LTS)
-The [setup_dev_env_linux_vm.md](https://github.com/l3af-project/l3af-arch/blob/main/dev_environment/setup_dev_env_linux_vm.md) illustrates host prerequisites and installation instructions for trying out L3AF on an Azure VM running an Ubuntu 20.04.4 LTS server.
+[setup_dev_env_linux_vm.md](setup_dev_env_linux_vm.md) illustrates host prerequisites and installation instructions for trying out L3AF on an Azure VM running an Ubuntu 20.04.4 LTS server.
 
 ## Trying out your L3AFD Server
 
