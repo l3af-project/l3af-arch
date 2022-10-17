@@ -8,6 +8,14 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
+# Make sure it is focal version 20.04
+VER=$(uname -v | cut -d. -f1 | cut -d~ -f2)
+if [ "$VER" != "20" ];
+then
+  echo "The Ubuntu version $VER is not supported by the script"
+  exit 1
+fi
+
 # Get cpu architecture, arm or amd
 ARCH=$(uname -p)
 if [[ "$ARCH" = "arm" ||  "$ARCH" = "aarch64" ]];
