@@ -23,4 +23,4 @@ There are different ways to create a Linux (i.e., Ubuntu 20.04) VM.  On a local 
 
 4. Run the script start_test_servers.sh
 
-Now go back to the [README.md](https://github.com/l3af-project/l3af-arch/blob/main/dev_environment/README.md) for the host to configure L3AFD to execute sample eBPF programs. 
+Now go back to the [README.md](README.md) for the host to configure L3AFD to execute sample eBPF programs. 

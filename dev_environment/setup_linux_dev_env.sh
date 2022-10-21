@@ -18,18 +18,44 @@ fi
 
 # Get cpu architecture, arm or amd
 ARCH=$(uname -p)
-if [[ "$ARCH" = "arm" ||  "$ARCH" = "aarch64" ]];
-then
-  echo "Setting l3af dev environment for arm"
-  arch=arm64
-elif [[ "$ARCH" = "x86_64" || "$ARCH" = "i386" ]];
-then
-  echo "Setting l3af dev environment for amd64"
-  arch=amd64
-else
-  echo "The CPU architecture $ARCH is not supported by the script"
-  exit 1
-fi
+
+case $ARCH in
+  arm)
+    echo "Setting l3af dev environment for arm"
+    arch=arm64
+    ;;
+
+  aarch64)
+    echo "Setting l3af dev environment for arm"
+    arch=arm64
+    ;;
+
+  x86_64)
+    echo "Setting l3af dev environment for amd64"
+    arch=amd64
+    ;;
+
+  i386)
+    KERNEL=$(uname -i)
+    if [ "$KERNEL" = "x86_64" ];
+    then
+      echo "Setting l3af dev environment for amd64"
+      arch=amd64
+    elif [ "$KERNEL" = "i386" ];
+    then
+      echo "Setting l3af dev environment for i386"
+      arch=386
+    else
+      echo "The CPU kernel $KERNEL is not supported by the script"
+      exit 1
+    fi
+  ;;
+
+  *)
+    echo "The CPU architecture $ARCH is not supported by the script"
+    exit 1
+  ;;
+esac
 
 cd /root
 
@@ -110,28 +136,28 @@ if uname -a | grep -q 'WSL';
 then
   echo "WSL DETECTED"
   apt-get install daemon
-  #start/restart prometheus-node-exporter
-  /etc/init.d/prometheus-node-exporter start
   /etc/init.d/prometheus-node-exporter stop
   /etc/init.d/prometheus-node-exporter start
 
   # Start and enable Grafana
   sleep 1
   /etc/init.d/grafana-server stop || true
-  /etc/init.d/grafana-server stop || true
   /etc/init.d/grafana-server start || true
 else
   # the configuration got copied, restart the prometheus service
   systemctl daemon-reload
   systemctl restart prometheus prometheus-node-exporter
+  systemctl enable prometheus.service
+  systemctl enable prometheus-node-exporter.service
 
   # Start and enable Grafana
-  systemctl start grafana-server
+  systemctl restart grafana-server
   systemctl enable grafana-server.service
 fi
 
 # Get Linux source code to build our eBPF programs against
 if [ ! -d "/usr/src/linux" ];
+  echo "Linux source code already existed, skip the source download"
 then
   git clone --branch v5.1 --depth 1 https://github.com/torvalds/linux.git /usr/src/linux
 fi

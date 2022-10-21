@@ -3,7 +3,7 @@
 The L3AF dev environment is a [Vagrant](https://www.vagrantup.com/) virtual
 machine environment that allows users to develop, test, or just try out L3AF.
 
-The Vagrant virtual machine environment only works for non Apple M1/M2 CPU based MAC computers.  A separate [shell script](https://github.com/l3af-project/l3af-arch/blob/main/dev_environment/setup_dev_env_linux_vm.md) can set up the Linux virtual machine L3AF development environment for MAC/PC with Arm or x86 CPUs, Windows WSL and Azure Linux VMs. 
+The Vagrant virtual machine environment only works for non Apple M1/M2 CPU based MAC computers.  A separate [shell script](setup_dev_env_linux_vm.md) can set up the Linux virtual machine L3AF development environment for MAC/PC with Arm or x86 CPUs, Windows WSL and Azure Linux VMs. 
 
 # Overview
 
@@ -43,7 +43,8 @@ Here is a visual overview:
   virtual machine from scratch.
 * Verify that the host can send traffic to a web server running on the VM:
   `hey -n 200 -c 20 http://localhost:18080`. This command should return quickly
-  and result in successful HTTP responses (200 OK).
+  and result in successful HTTP responses (200 OK).  This command should also return a latency distribution histogram that shows
+  most traffic clustered near the top of the graph at very low latency.<p align="center"><img src="https://user-images.githubusercontent.com/106849610/179866166-597bef0d-2f5f-4ae7-89ee-1acdda5fd060.png" width="400" height="200"/></p>
 * Run `vagrant ssh`, this will log you into the virtual machine
 * On the VM, go to `~/code/l3afd` and run `make install`
 * On the VM, go to `~/go/bin` and run `l3afd` as root:
@@ -63,23 +64,8 @@ Here is a visual overview:
 * Once again send traffic to the VM web server:
   `hey -n 200 -c 20 http://localhost:18080`. The traffic will now be running
   through the eBPF programs (which may affect results dramatically depending
-  on which eBPF programs are running and how they are configured).
+  on which eBPF programs are running and how they are configured).  If the rate limiter eBPF program is loaded, this command should output a latency distribution histogram that
+  is more distributed.<p align="center"><img src="https://user-images.githubusercontent.com/106849610/179867246-406a2841-5a49-4102-b42c-e9cbf07ce2c3.png" width="400" height="200"/></p>
 * To see the eBPF program metrics, browse to `http://localhost:33000` on the
   host and login to Grafana with the default username and password of `admin`.
   After logging in you will be able to view the preconfigured dashboards.
-
-# Trying out L3AF on an Azure VM (Ubuntu 20.04.4 LTS)
-[setup_dev_env_linux_vm.md](setup_dev_env_linux_vm.md) illustrates host prerequisites and installation instructions for trying out L3AF on an Azure VM running an Ubuntu 20.04.4 LTS server.
-
-## Trying out your L3AFD Server
-
-1. Verify that no eBPF programs are running by querying the
-L3AFD server from your laptop: `curl http://<ip-address-of-your-azure-vm>:8899/kfs/eth0`. This
-command assumes `eth0` is a valid network interface on the VM and should return with an empty set.
-2. Verify that you can send traffic to one of the test web servers running on the Azure VM with this command:
-`hey -n 200 -c 20 http://<ip-address-of-your-azure-vm>:8080`. This command should return a latency distribution histogram that shows
- most traffic clustered near the top of the graph at very low latency.<p align="center"><img src="https://user-images.githubusercontent.com/106849610/179866166-597bef0d-2f5f-4ae7-89ee-1acdda5fd060.png" width="400" height="200"/></p>
-3. Load and run the rate limiter eBPF program in the kernel with the following command: `curl -X POST http://<ip-address-of-your-azure-vm>:7080/l3af/configs/v1/update -d "@payload.json"`.
-4. Query the L3AFD server again to ensure that the rate limiter eBPF program was loaded into the kernel and is running: `curl http://<ip-address-of-your-vm>:8899/kfs/eth0`. This query should output a .json file similar to this: https://github.com/l3af-project/l3afd/tree/main/docs/api.
-5. Generate traffic again: `hey -n 200 -c 20 http://<ip-address-of-your-vm>:8080`. This command should now output a latency distribution histogram that
-is more distributed because the rate limiter eBPF program is in operation.<p align="center"><img src="https://user-images.githubusercontent.com/106849610/179867246-406a2841-5a49-4102-b42c-e9cbf07ce2c3.png" width="400" height="200"/></p>
