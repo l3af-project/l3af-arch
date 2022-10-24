@@ -211,3 +211,7 @@ cd /root/l3afd
 make install
 cd ../go/bin/
 ./l3afd --config /root/l3af-arch/dev_environment/cfg/l3afd.cfg &
+
+# start all test servers
+chmod a+x /root/l3af-arch/start_test_servers.sh
+/root/l3af-arch/start_test_servers.sh

@@ -12,15 +12,8 @@ There are different ways to create a Linux (i.e., Ubuntu 20.04) VM.  On a local 
 
 # Trying out L3AF
 
-1. Edit `config.yaml` to point to the [source code](https://github.com/l3af-project/l3afd) on your host machine. This
-   code will be mounted by the virtual machine. Additionally, you may modify the
-   default ports used on the host to access services on the virtual machine.
-   (Note, however, that this document will refer to the default ports.)
+1. log into the Linux virtual machine, and run "sudo -i" to change to the root user.
 
-2. log into the Linux virtual machine, and run "sudo -i" to change to the root user.
-
-3. Run the script setup_dev_env_linux_vm.sh
-
-4. Run the script start_test_servers.sh
+2. Run the script setup_dev_env_linux_vm.sh
 
 Now go back to the [README.md](README.md) for the host to configure L3AFD to execute sample eBPF programs. 
