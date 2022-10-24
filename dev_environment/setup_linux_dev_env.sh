@@ -36,7 +36,7 @@ case $ARCH in
     ;;
 
   i386)
-    KERNEL=$(uname -i)
+    KERNEL=$(uname -m)
     if [ "$KERNEL" = "x86_64" ];
     then
       echo "Setting l3af dev environment for amd64"
