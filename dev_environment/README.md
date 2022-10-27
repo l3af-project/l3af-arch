@@ -3,6 +3,8 @@
 The L3AF dev environment is a [Vagrant](https://www.vagrantup.com/) virtual
 machine environment that allows users to develop, test, or just try out L3AF.
 
+As an alternative to Vagrant, the l3af development environment can be set up on a standalone Linux virtual machine. Please see [setup_dev_env_linux_vm.md](setup_dev_env_linux_vm.md) for the instructions. Use this method for MAC/PC with Arm CPUs, Windows WSL, or cloud provider Linux VMs.
+
 # Overview
 
 The L3AF dev environment automation sets up a virtual machine that contains:
@@ -41,7 +43,8 @@ Here is a visual overview:
   virtual machine from scratch.
 * Verify that the host can send traffic to a web server running on the VM:
   `hey -n 200 -c 20 http://localhost:18080`. This command should return quickly
-  and result in successful HTTP responses (200 OK).
+  and result in successful HTTP responses (200 OK).  This command should also return a latency distribution histogram that shows
+  most traffic clustered near the top of the graph at very low latency.<p align="center"><img src="https://user-images.githubusercontent.com/106849610/179866166-597bef0d-2f5f-4ae7-89ee-1acdda5fd060.png" width="400" height="200"/></p>
 * Run `vagrant ssh`, this will log you into the virtual machine
 * On the VM, go to `~/code/l3afd` and run `make install`
 * On the VM, go to `~/go/bin` and run `l3afd` as root:
@@ -61,7 +64,8 @@ Here is a visual overview:
 * Once again send traffic to the VM web server:
   `hey -n 200 -c 20 http://localhost:18080`. The traffic will now be running
   through the eBPF programs (which may affect results dramatically depending
-  on which eBPF programs are running and how they are configured).
+  on which eBPF programs are running and how they are configured).  If the rate limiter eBPF program is loaded, this command should output a latency distribution histogram that
+  is more distributed.<p align="center"><img src="https://user-images.githubusercontent.com/106849610/179867246-406a2841-5a49-4102-b42c-e9cbf07ce2c3.png" width="400" height="200"/></p>
 * To see the eBPF program metrics, browse to `http://localhost:33000` on the
   host and login to Grafana with the default username and password of `admin`.
   After logging in you will be able to view the preconfigured dashboards.
