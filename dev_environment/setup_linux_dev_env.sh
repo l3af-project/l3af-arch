@@ -103,16 +103,23 @@ apt-get install -y bc \
   go_filename=`curl -s https://go.dev/dl/?mode=json|jq '.[0].files[].filename'|grep $os|grep $arch|egrep -v "ppc"|tr -d '"'`
   wget https://go.dev/dl/$go_filename
   tar -C /usr/local -xzf $go_filename && rm -f $go_filename
+  export PATH=$PATH:/usr/local/go/bin
   echo export PATH=$PATH:/usr/local/go/bin >> /root/.bashrc
 
 # clone the l3afd repo in to root directly
 # can use mapped directory i.e. at /home/ubuntu/Home
-if [ -d "/root/l3afd" ];
+if [ ! -d "/root/l3afd" ];
 then
-  echo "repo already exited"
-else
   git clone https://github.com/l3af-project/l3afd.git
+else
+  echo "/root/l3afd directory already exists"
+fi
+
+if [ ! -d "/root/l3af-arch" ];
+then
   git clone https://github.com/l3af-project/l3af-arch.git
+else
+  echo "/root/l3af-arch directory already exists"
 fi
 
 # Copy grafana configs and dashboards into place
@@ -156,11 +163,13 @@ else
 fi
 
 # Get Linux source code to build our eBPF programs against
-if [ ! -d "/usr/src/linux" ];
-  echo "Linux source code already existed, skip the source download"
+if [ -d "/usr/src/linux" ];
 then
+  echo "Linux source code already exists, skipping download"
+else
   git clone --branch v5.1 --depth 1 https://github.com/torvalds/linux.git /usr/src/linux
 fi
+
 LINUX_SRC_DIR=/usr/src/linux
 cd $LINUX_SRC_DIR
 make defconfig
@@ -210,8 +219,10 @@ done
 cd /root/l3afd
 make install
 cd ../go/bin/
-./l3afd --config /root/l3af-arch/dev_environment/cfg/l3afd.cfg &
 
 # start all test servers
-chmod a+x /root/l3af-arch/start_test_servers.sh
-/root/l3af-arch/start_test_servers.sh
+chmod +rx /root/l3af-arch/dev_environment/start_test_servers.sh
+/root/l3af-arch/dev_environment/start_test_servers.sh
+
+# start l3afd
+./l3afd --config /root/l3af-arch/dev_environment/cfg/l3afd.cfg &
