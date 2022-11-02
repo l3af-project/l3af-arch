@@ -72,7 +72,6 @@ apt-get update
 
 # install all necessary packages
 # gcc-multilib      not existed for arm64 repos
-# golang            default version 1.13 not working, install 1.17 below
 apt-get install -y bc \
       bison \
       build-essential \
