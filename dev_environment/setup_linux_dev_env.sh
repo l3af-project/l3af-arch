@@ -10,7 +10,7 @@ fi
 
 # Make sure it is focal version 20.04
 VER=$(uname -v | cut -d. -f1 | cut -d~ -f2)
-VER2=$(lsb_release -r | awk '{print $2}' | cut -d '.' -f1)
+VER2=$(lsb_release -sr | cut -d '.' -f1)
 
 if [ "$VER" != "20" ]; then
   if [ "$VER2" != "20" ]; then
