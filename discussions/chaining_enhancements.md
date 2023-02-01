@@ -115,3 +115,11 @@ For kernels that do not support the libxdp dispatcher, we plan to continue to us
 
 1. Automate the injection of the necessary boilerplate code for chaining via `bpf_tail_call`.
 2. Consolidate our usage of multiple chaining maps into a single map (per eBPF program type) that can be replaced atomically. We believe this is the approach Cilium uses, for example.
+
+## Phase 1 Solution -
+
+Decouple the chaining logic from eBPF programs.
+
+![L3AF_decouple_chaining](http://github.com/l3af-project/l3af-arch-chaining/images/L3AF_decouple_chaining.png)
+
+This approach will work for program type XDP and TC with cross-platform support.
