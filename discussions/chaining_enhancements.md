@@ -120,6 +120,6 @@ For kernels that do not support the libxdp dispatcher, we plan to continue to us
 
 Decouple the chaining logic from eBPF programs.
 
-![L3AF_decouple_chaining](http://github.com/l3af-project/l3af-arch-chaining/images/L3AF_decouple_chaining.png)
+![L3AF_decouple_chaining](https://user-images.githubusercontent.com/7508744/216295926-e05d55ec-33d8-48b6-8783-b5b02a28f3da.png)
 
-This approach will work for program type XDP and TC with cross-platform support.
+This approach will work for program type XDP and TC with cross-platform support. This will not support atomic updates.
