@@ -13,5 +13,5 @@ L3AF Architecture Documentation and Discussion
 
 ## Join the L3AF Community
 - Start by joining the community on Slack: [l3afworkspace.slack.com](https://join.slack.com/t/l3afworkspace/shared_invite/zt-1pkpgk0sy-HW8rQuzLZrQkNO7G3pTT6A)
--  Ask your targeted questions directly on the [GitHub Discussions page](https://github.com/l3af-project/l3af-arch/discussions)
+- Ask your targeted questions directly on the [GitHub Discussions page](https://github.com/l3af-project/l3af-arch/discussions)
 
