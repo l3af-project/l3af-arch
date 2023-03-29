@@ -12,6 +12,6 @@ L3AF Architecture Documentation and Discussion
 - [Mail](main@lists.l3af.io): Connect here by mail
 
 ## Join the L3AF Community
-- Start by joining the community on Slack: [l3afworkspace.slack.com](https://join.slack.com/t/l3afworkspace/shared_invite/zt-1pkpgk0sy-HW8rQuzLZrQkNO7G3pTT6A)
+- Start by joining the community on Slack: [l3afworkspace.slack.com](https://join.slack.com/t/l3afworkspace/shared_invite/zt-1s59fv9tx-Gu4ON9K2_i15srGfmOZigg)
 - Ask your targeted questions directly on the [GitHub Discussions page](https://github.com/l3af-project/l3af-arch/discussions)
 
