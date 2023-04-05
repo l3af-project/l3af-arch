@@ -1,0 +1,36 @@
+[
+    {
+        "host_name": "<hostname>",
+        "iface": "<datapath interface name>",
+        "bpf_programs": {
+            "tc_ingress": [
+                {
+                    "name": "traffic_mirroring",
+                    "seq_id": 2,
+                    "artifact": "traffic_mirroring.tar.gz",
+                    "cmd_start": "mirroring",
+                    "version": "latest",
+                    "user_program_daemon": true,
+                    "admin_status": "enabled",
+                    "prog_type": "tc",
+                    "cfg_version": 1,
+                    "start_args": {
+                        "direction": "ingress",
+                        "map-name": "/sys/fs/bpf/tc/globals/tc_ingress_root_array",
+                        "src-address": "<SRC IP filter>",
+                        "tunnel-type": "gue",
+                        "tunnel-local-port": "<local tunnel port>",  
+                        "tunnel-remote-port": "<remote tunnel port>",
+                        "tunnel-remote-address": "<IP of collector>",
+                        "redirect-to": "<mirror interface name>",
+                        "src-port": "<SRC port filter>",
+                        "dst-port": "8080",
+                        "protocol": "tcp",
+                        "gtw-address": "<GTW IP>"
+                    },
+                    "monitor_maps": null
+                }
+            ]
+        }
+    }
+]
