@@ -78,7 +78,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": " l3afd_NFMonitorMap{map_name=\"cl_conn_count_0_scalar\",ebpf_program=\"connection-limit\"}",
+          "expr": "l3afd_NFMonitorMap{map_name=\"cl_conn_count_0_scalar\",ebpf_program=\"connection-limit\"}",
           "hide": false,
           "interval": "30s",
           "legendFormat": "{{host}}",
