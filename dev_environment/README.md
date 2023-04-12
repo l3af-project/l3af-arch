@@ -45,7 +45,7 @@ Here is a visual overview:
   `hey -n 200 -c 20 http://localhost:18080`. This command should return quickly
   and result in successful HTTP responses (200 OK).  This command should also return a latency distribution histogram that shows
   most traffic clustered near the top of the graph at very low latency.<p align="center"><img src="https://user-images.githubusercontent.com/106849610/179866166-597bef0d-2f5f-4ae7-89ee-1acdda5fd060.png" width="400" height="200"/></p>
-* Run `vagrant ssh`, this will log you into the virtual machine
+* Run `vagrant ssh l3af`, this will log you into the virtual machine
 * On the VM, go to `~/code/l3afd` and run `make install`
 * On the VM, go to `~/go/bin` and run `l3afd` as root:
   `sudo ./l3afd --config /vagrant/cfg/l3afd.cfg`
@@ -69,3 +69,12 @@ Here is a visual overview:
 * To see the eBPF program metrics, browse to `http://localhost:33000` on the
   host and login to Grafana with the default username and password of `admin`.
   After logging in you will be able to view the preconfigured dashboards.
+* To see the eBPF program metrics, browse to `http://localhost:33000` on the
+  host and login to Grafana with the default username and password of `admin`.
+  After logging in you will be able to view the preconfigured dashboards.
+* Traffic-mirroring:
+  1. Set `traffic_mirroring: 'true'` in [config.yaml](config.yaml)
+  2. Redeploy the Vagrant script (`vagrant reload --provision`) to reflect new changes, such as creation of a GUE tunnel and an additional VM (Collector)
+  3. Start traffic mirrroing via `curl -X POST http://localhost:37080/l3af/configs/v1/update -d "@cfg/traffic_mirroring_payload.json"` from the host
+  4. Delete the default route by executing this command (`sudo route del -net 192.168.10.50 gw 192.168.10.1 netmask 255.255.255.255 dev enp0s8`) on l3af-VM as it is not required in the current vagrant environment
+  5. SSH into Collector VM via `vagrant ssh collector` command and execute `sudo tcpdump -i enp0s8` to see the mirrored-GUE packets and `sudo tcpdump -i gue1` to see the mirrored-original packets when we send traffic to the l3af-VM's web server (`hey -n 200 -c 20 http://localhost:18080`) from the host
