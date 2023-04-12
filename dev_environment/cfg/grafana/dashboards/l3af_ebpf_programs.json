@@ -74,7 +74,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "l3afd_NFRunning{network_function=~\".*$KF.*\"}",
+          "expr": "l3afd_NFRunning{ebpf_program=~\".*$KF.*\"}",
           "hide": false,
           "interval": "",
           "legendFormat": "{{host}}:{{direction}}",
@@ -171,7 +171,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(l3afd_NFRunning{network_function=~\".*$KF.*\"})by(direction)",
+          "expr": "sum(l3afd_NFRunning{ebpf_program=~\".*$KF.*\"})by(direction)",
           "hide": false,
           "interval": "",
           "legendFormat": "{{direction}}",
@@ -269,7 +269,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "l3afd_NFStartCount{network_function=~\".*$KF.*\"}",
+          "expr": "l3afd_NFStartCount{ebpf_program=~\".*$KF.*\"}",
           "hide": false,
           "interval": "",
           "legendFormat": "{{host}}:{{direction}}",
@@ -366,7 +366,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "l3afd_NFStopCount{network_function=~\".*$KF.*\"}",
+          "expr": "l3afd_NFStopCount{ebpf_program=~\".*$KF.*\"}",
           "hide": false,
           "interval": "",
           "legendFormat": "{{host}}:{{direction}}",
