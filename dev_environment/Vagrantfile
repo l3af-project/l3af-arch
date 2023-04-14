@@ -7,12 +7,6 @@ cfg = YAML.load_file(File.join(
   File.dirname(File.expand_path(__FILE__)),
   "config.yaml"))['configs']
 
-def nat(config)
-  config.vm.provider "virtualbox" do |v|
-    v.customize ["modifyvm", :id, "--nic2", "natnetwork", "--nat-network2", "NATNetwork101"]
-  end
-end
-
 Vagrant.configure("2") do |config|
   config.vm.define "l3af" do |l3af|
 
@@ -33,7 +27,6 @@ Vagrant.configure("2") do |config|
     l3af.vm.box = "ubuntu/focal64"
     if cfg['traffic_mirroring'] == "true"
       l3af.vm.network :private_network, ip: "192.168.10.40", :netmask => "255.255.255.0"
-      nat(config)
     end
     l3af.vm.hostname = "l3af-local-test.local"
     l3af.ssh.forward_agent = true
@@ -111,6 +104,9 @@ Vagrant.configure("2") do |config|
 
   if cfg['traffic_mirroring'] == "true"
     config.vm.define "collector" do |collector|
+      collector.vm.provider "virtualbox" do |vb|
+        vb.memory = "512"
+      end
       collector.vm.network "private_network", ip: "192.168.10.50", :netmask => "255.255.255.0"
       collector.vm.box = "ubuntu/focal64"
       collector.vm.provision "shell", inline: <<-SHELL

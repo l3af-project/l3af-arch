@@ -50,7 +50,7 @@ Here is a visual overview:
 * On the VM, go to `~/go/bin` and run `l3afd` as root:
   `sudo ./l3afd --config /vagrant/cfg/l3afd.cfg`
 * On the host, configure L3AFD to execute sample eBPF programs by running
-  `curl -X POST http://localhost:37080/l3af/configs/v1/update -d
+  `curl -X POST http://localhost:37080/l3af/configs/v1/add -d
   "@cfg/payload.json"`. The [payload.json](cfg/payload.json) file can be
   inspected and modified as desired. For more information on the L3AFD API see
   the [L3AFD API documentation](https://github.com/l3af-project/l3afd/tree/main/docs/api).
@@ -67,14 +67,11 @@ Here is a visual overview:
   on which eBPF programs are running and how they are configured).  If the rate limiter eBPF program is loaded, this command should output a latency distribution histogram that
   is more distributed.<p align="center"><img src="https://user-images.githubusercontent.com/106849610/179867246-406a2841-5a49-4102-b42c-e9cbf07ce2c3.png" width="400" height="200"/></p>
 * To see the eBPF program metrics, browse to `http://localhost:33000` on the
-  host and login to Grafana with the default username and password of `admin`.
-  After logging in you will be able to view the preconfigured dashboards.
-* To see the eBPF program metrics, browse to `http://localhost:33000` on the
-  host and login to Grafana with the default username and password of `admin`.
+  host and log in to Grafana with the default username and password of `admin`.
   After logging in you will be able to view the preconfigured dashboards.
 * Traffic-mirroring:
   1. Set `traffic_mirroring: 'true'` in [config.yaml](config.yaml)
   2. Redeploy the Vagrant script (`vagrant reload --provision`) to reflect new changes, such as creation of a GUE tunnel and an additional VM (Collector)
-  3. Start traffic mirrroing via `curl -X POST http://localhost:37080/l3af/configs/v1/update -d "@cfg/traffic_mirroring_payload.json"` from the host
-  4. Delete the default route by executing this command (`sudo route del -net 192.168.10.50 gw 192.168.10.1 netmask 255.255.255.255 dev enp0s8`) on l3af-VM as it is not required in the current vagrant environment
+  3. Start traffic mirrroing via `curl -X POST http://localhost:37080/l3af/configs/v1/add -d "@cfg/traffic_mirroring_payload.json"` from the host
+  4. Delete the default route by executing this command (`sudo ip r del 192.168.10.50 via 192.168.10.1 dev enp0s8`) on l3af-VM as it is not required in the current vagrant environment
   5. SSH into Collector VM via `vagrant ssh collector` command and execute `sudo tcpdump -i enp0s8` to see the mirrored-GUE packets and `sudo tcpdump -i gue1` to see the mirrored-original packets when we send traffic to the l3af-VM's web server (`hey -n 200 -c 20 http://localhost:18080`) from the host

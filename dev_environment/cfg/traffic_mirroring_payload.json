@@ -6,7 +6,7 @@
             "tc_ingress": [
                 {
                     "name": "traffic-mirroring",
-                    "seq_id": 1,
+                    "seq_id": 2,
                     "artifact": "l3af_traffic_mirroring.tar.gz",
                     "cmd_start": "mirroring",
                     "version": "latest",
@@ -32,7 +32,7 @@
             "tc_egress": [
                 {
                     "name": "traffic-mirroring",
-                    "seq_id": 1,
+                    "seq_id": 2,
                     "artifact": "l3af_traffic_mirroring.tar.gz",
                     "cmd_start": "mirroring",
                     "version": "latest",
