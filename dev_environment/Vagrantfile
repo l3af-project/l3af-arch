@@ -86,11 +86,12 @@ Vagrant.configure("2") do |config|
 
     # Reboot for updated kernel to load
     l3af.vm.provision :reload
-
     l3af.vm.provision :shell, path: "provision.sh"
 
     # Always start test servers because they aren't managed services
     l3af.vm.provision :shell, path: "start_test_servers.sh", run: 'always'
+    
+   # Provision the GUE interface for traffic mirroring inside the l3af VM
     if cfg['traffic_mirroring'] == "true"
       l3af.vm.provision "shell", inline: <<-SHELL
         modprobe fou
@@ -99,14 +100,15 @@ Vagrant.configure("2") do |config|
         ip link set dev gue1 up
       SHELL
     end
-
   end
 
+  # Provision traffic mirroring collector VM
   if cfg['traffic_mirroring'] == "true"
     config.vm.define "collector" do |collector|
       collector.vm.provider "virtualbox" do |vb|
         vb.memory = "512"
       end
+      
       collector.vm.network "private_network", ip: "192.168.10.50", :netmask => "255.255.255.0"
       collector.vm.box = "ubuntu/focal64"
       collector.vm.provision "shell", inline: <<-SHELL
