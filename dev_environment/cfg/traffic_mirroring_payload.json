@@ -1,0 +1,60 @@
+[
+    {
+        "host_name": "l3af-local-test",
+        "iface": "enp0s3",
+        "bpf_programs": {
+            "tc_ingress": [
+                {
+                    "name": "traffic-mirroring",
+                    "seq_id": 2,
+                    "artifact": "l3af_traffic_mirroring.tar.gz",
+                    "cmd_start": "mirroring",
+                    "version": "latest",
+                    "map_name": "tc/globals/mirroring_ingress_jmp_table",
+                    "user_program_daemon": true,
+                    "admin_status": "enabled",
+                    "prog_type": "tc",
+                    "cfg_version": 1,
+                    "start_args": {
+                        "src-address": "0.0.0.0",
+                        "tunnel-type": "gue",
+                        "tunnel-local-port": "6080",
+                        "tunnel-remote-port": "6080",
+                        "tunnel-remote-address": "192.168.10.50",
+                        "redirect-to": "enp0s8",
+                        "src-port": "0",
+                        "dst-port": "8080",
+                        "protocol": "tcp,icmp"
+                    },
+                    "monitor_maps": []
+                }
+            ],
+            "tc_egress": [
+                {
+                    "name": "traffic-mirroring",
+                    "seq_id": 2,
+                    "artifact": "l3af_traffic_mirroring.tar.gz",
+                    "cmd_start": "mirroring",
+                    "version": "latest",
+                    "map_name": "tc/globals/mirroring_ingress_jmp_table",
+                    "user_program_daemon": true,
+                    "admin_status": "enabled",
+                    "prog_type": "tc",
+                    "cfg_version": 1,
+                    "start_args": {
+                        "dst-address": "0.0.0.0",
+                        "tunnel-type": "gue",
+                        "tunnel-local-port": "6080",
+                        "tunnel-remote-port": "6080",
+                        "tunnel-remote-address": "192.168.10.50",
+                        "redirect-to": "enp0s8",
+                        "src-port": "8080",
+                        "dst-port": "0",
+                        "protocol": "tcp,icmp"
+                    },
+                    "monitor_maps": []
+                }
+            ]
+        }
+    }
+]

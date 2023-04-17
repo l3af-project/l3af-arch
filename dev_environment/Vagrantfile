@@ -8,83 +8,115 @@ cfg = YAML.load_file(File.join(
   "config.yaml"))['configs']
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "ubuntu/focal64"
+  config.vm.define "l3af" do |l3af|
 
-  # Set boot timeout value
-  config.vm.boot_timeout = 600
+    # Set boot timeout value
+    l3af.vm.boot_timeout = 600
 
-  config.vm.network "forwarded_port", guest: 8080, host: cfg['host_http_port1']
-  config.vm.network "forwarded_port", guest: 8081, host: cfg['host_http_port2']
-  config.vm.network "forwarded_port", guest: 3000, host: cfg['host_grafana_port']
-  config.vm.network "forwarded_port", guest: 9090, host: cfg['host_prometheus_port']
-  config.vm.network "forwarded_port", guest: 7080, host: cfg['host_l3af_config_port']
-  config.vm.network "forwarded_port", guest: 8899, host: cfg['host_l3af_debug_port']
+    l3af.vm.network "forwarded_port", guest: 8080, host: cfg['host_http_port1']
+    l3af.vm.network "forwarded_port", guest: 8081, host: cfg['host_http_port2']
+    l3af.vm.network "forwarded_port", guest: 3000, host: cfg['host_grafana_port']
+    l3af.vm.network "forwarded_port", guest: 9090, host: cfg['host_prometheus_port']
+    l3af.vm.network "forwarded_port", guest: 7080, host: cfg['host_l3af_config_port']
+    l3af.vm.network "forwarded_port", guest: 8899, host: cfg['host_l3af_debug_port']
 
-  config.vm.provider "virtualbox" do |vb|
-    vb.memory = "2048"
+    l3af.vm.provider "virtualbox" do |vb|
+      vb.memory = "2048"
+    end
+
+    l3af.vm.box = "ubuntu/focal64"
+    if cfg['traffic_mirroring'] == "true"
+      l3af.vm.network :private_network, ip: "192.168.10.40", :netmask => "255.255.255.0"
+    end
+    l3af.vm.hostname = "l3af-local-test.local"
+    l3af.ssh.forward_agent = true
+
+    l3af.vm.synced_folder cfg['host_l3afd_code_dir'], "/home/vagrant/code/l3afd"
+
+    # Add Grafana apt repo
+    l3af.vm.provision "shell", inline: <<-SHELL
+      sudo apt-get install -y apt-transport-https
+      sudo apt-get install -y software-properties-common wget
+      wget -q -O - https://packages.grafana.com/gpg.key | sudo apt-key add -
+      echo "deb https://packages.grafana.com/oss/deb stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
+      sudo apt-get update
+    SHELL
+
+    # Install package dependencies
+    l3af.vm.provision "shell", inline: <<-SHELL
+      apt-get install -y bc \
+        bison \
+        build-essential \
+        clang \
+        curl \
+        exuberant-ctags \
+        flex \
+        gcc-8 \
+        gcc-multilib \
+        gnutls-bin \
+        grafana \
+        jq \
+        libc6-dev \
+        libcurl4-openssl-dev \
+        libelf-dev \
+        libjson-c-dev \
+        libncurses5-dev \
+        libpcap-dev \
+        libssl-dev \
+        linux-headers-generic \
+        linux-tools-common \
+        linux-tools-generic \
+        llvm \
+        net-tools \
+        prometheus \
+        rsync
+    SHELL
+
+    # # Install latest golang version
+    l3af.vm.provision "shell", inline: <<-SHELL
+      arch=`uname -p | cut -d '_' -f 2`
+      os=`uname|tr '[:upper:]' '[:lower:]'`
+      go_filename=`curl -s https://go.dev/dl/?mode=json|jq '.[0].files[].filename'|grep $os|grep $arch|egrep -v "arm|ppc"|tr -d '"'`
+      wget https://go.dev/dl/$go_filename
+      rm -rf /usr/local/go && tar -C /usr/local -xzf $go_filename && rm -f $go_filename
+      echo export PATH=$PATH:/usr/local/go/bin >> /home/vagrant/.bashrc
+      echo export PATH=$PATH:/usr/local/go/bin >> /home/vagrant/.profile
+      echo export PATH=$PATH:/usr/local/go/bin >> /root/.bashrc
+    SHELL
+
+    # Reboot for updated kernel to load
+    l3af.vm.provision :reload
+    l3af.vm.provision :shell, path: "provision.sh"
+
+    # Always start test servers because they aren't managed services
+    l3af.vm.provision :shell, path: "start_test_servers.sh", run: 'always'
+    
+   # Provision the GUE interface for traffic mirroring inside the l3af VM
+    if cfg['traffic_mirroring'] == "true"
+      l3af.vm.provision "shell", inline: <<-SHELL
+        modprobe fou
+        ip fou add port 6080 gue
+        ip link add name gue1 type ipip remote 192.168.10.50 local 192.168.10.40 ttl 255 encap gue encap-sport 6080 encap-dport 6080 encap-csum encap-remcsum
+        ip link set dev gue1 up
+      SHELL
+    end
   end
 
-  config.vm.hostname = "l3af-local-test.local"
-  config.ssh.forward_agent = true
-
-  config.vm.synced_folder cfg['host_l3afd_code_dir'], "/home/vagrant/code/l3afd"
-
-  # Add Grafana apt repo
-  config.vm.provision "shell", inline: <<-SHELL
-    sudo apt-get install -y apt-transport-https
-    sudo apt-get install -y software-properties-common wget
-    wget -q -O - https://packages.grafana.com/gpg.key | sudo apt-key add -
-    echo "deb https://packages.grafana.com/oss/deb stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
-    sudo apt-get update
-  SHELL
-
-  # Install package dependencies
-  config.vm.provision "shell", inline: <<-SHELL
-    apt-get install -y bc \
-      bison \
-      build-essential \
-      clang \
-      curl \
-      exuberant-ctags \
-      flex \
-      gcc-8 \
-      gcc-multilib \
-      gnutls-bin \
-      grafana \
-      jq \
-      libc6-dev \
-      libcurl4-openssl-dev \
-      libelf-dev \
-      libjson-c-dev \
-      libncurses5-dev \
-      libpcap-dev \
-      libssl-dev \
-      linux-headers-generic \
-      linux-tools-common \
-      linux-tools-generic \
-      llvm \
-      prometheus \
-      rsync
-  SHELL
-
-  # Install latest golang version
-  config.vm.provision "shell", inline: <<-SHELL
-    arch=`uname -p | cut -d '_' -f 2`
-    os=`uname|tr '[:upper:]' '[:lower:]'`
-    go_filename=`curl -s https://go.dev/dl/?mode=json|jq '.[0].files[].filename'|grep $os|grep $arch|egrep -v "arm|ppc"|tr -d '"'`
-    wget https://go.dev/dl/$go_filename
-    rm -rf /usr/local/go && tar -C /usr/local -xzf $go_filename && rm -f $go_filename
-    echo export PATH=$PATH:/usr/local/go/bin >> /home/vagrant/.bashrc
-    echo export PATH=$PATH:/usr/local/go/bin >> /home/vagrant/.profile
-    echo export PATH=$PATH:/usr/local/go/bin >> /root/.bashrc
-  SHELL
-
-  # Reboot for updated kernel to load
-  config.vm.provision :reload
-
-  config.vm.provision :shell, path: "provision.sh"
-
-  # Always start test servers because they aren't managed services
-  config.vm.provision :shell, path: "start_test_servers.sh", run: 'always'
-
+  # Provision traffic mirroring collector VM
+  if cfg['traffic_mirroring'] == "true"
+    config.vm.define "collector" do |collector|
+      collector.vm.provider "virtualbox" do |vb|
+        vb.memory = "512"
+      end
+      
+      collector.vm.network "private_network", ip: "192.168.10.50", :netmask => "255.255.255.0"
+      collector.vm.box = "ubuntu/focal64"
+      collector.vm.provision "shell", inline: <<-SHELL
+        modprobe fou
+        ip fou add port 6080 gue
+        ip link add name gue1 type ipip remote 192.168.10.40 local 192.168.10.50 ttl 225 encap gue encap-sport 6080 encap-dport 6080 encap-csum encap-remcsum
+        ip link set dev gue1 up
+      SHELL
+    end
+  end
 end

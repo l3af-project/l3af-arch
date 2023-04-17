@@ -204,7 +204,7 @@ fi
 cd eBPF-Package-Repository
 
 # declare an array variable
-declare -a progs=("xdp-root" "ratelimiting" "connection-limit" "tc-root" "ipfix-flow-exporter")
+declare -a progs=("xdp-root" "ratelimiting" "connection-limit" "tc-root" "ipfix-flow-exporter" "traffic-mirroring")
 
 # now loop through the above array and build the L3AF eBPF programs
 for prog in "${progs[@]}"

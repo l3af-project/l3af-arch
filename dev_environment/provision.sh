@@ -25,7 +25,12 @@ systemctl enable grafana-server.service
 # Get Linux source code to build our eBPF programs against
 # TODO: Support building against the Linux source from the distro's source
 # package.
-git clone --branch v5.1 --depth 1 https://github.com/torvalds/linux.git /usr/src/linux
+if [ -d "/usr/src/linux" ]
+then
+    echo "Directory /usr/src/linux exists."
+else
+    git clone --branch v5.1 --depth 1 https://github.com/torvalds/linux.git /usr/src/linux
+fi
 LINUX_SRC_DIR=/usr/src/linux
 cd $LINUX_SRC_DIR
 make defconfig
@@ -42,11 +47,16 @@ mkdir -p $BUILD_ARTIFACT_DIR
 cd $BUILD_DIR
 
 # Get the eBPF-Package-Repository repo containing the eBPF programs
-git clone https://github.com/l3af-project/eBPF-Package-Repository.git
+if [ -d "eBPF-Package-Repository" ]
+then
+    echo "Directory eBPF-Package-Repository exists."
+else
+    git clone https://github.com/l3af-project/eBPF-Package-Repository.git
+fi
 cd eBPF-Package-Repository
 
 # declare an array variable
-declare -a progs=("xdp-root" "ratelimiting" "connection-limit" "tc-root" "ipfix-flow-exporter")
+declare -a progs=("xdp-root" "ratelimiting" "connection-limit" "tc-root" "ipfix-flow-exporter" "traffic-mirroring")
 
 # now loop through the above array and build the L3AF eBPF programs
 for prog in "${progs[@]}"
