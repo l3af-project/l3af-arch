@@ -70,7 +70,7 @@ Here is a visual overview:
   host and log in to Grafana with the default username and password of `admin`.
   After logging in you will be able to view the preconfigured dashboards.
 
-* Additional Steps for testing out traffic mirroring:
+* Additional steps for testing out traffic mirroring:
   1. Set `traffic_mirroring: 'true'` in [config.yaml](config.yaml)
   2. Redeploy the Vagrant script (`vagrant reload --provision`) to reflect new changes, such as creation of a GUE tunnel and an additional VM (Collector)
   3. Start traffic mirrroing via `curl -X POST http://localhost:37080/l3af/configs/v1/add -d "@cfg/traffic_mirroring_payload.json"` from the host
