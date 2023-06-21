@@ -19,6 +19,27 @@ if [ "$VER" != "20" ]; then
   fi
 fi
 
+# Check for kernel version 5.15
+CURRENT_KERNEL_VERSION=$(uname -r | cut -d"." -f1-2)
+CURRENT_KERNEL_MAJOR_VERSION=$(echo "${CURRENT_KERNEL_VERSION}" | cut -d"." -f1)
+CURRENT_KERNEL_MINOR_VERSION=$(echo "${CURRENT_KERNEL_VERSION}" | cut -d"." -f2)
+ALLOWED_KERNEL_VERSION="5.15"
+ALLOWED_KERNEL_MAJOR_VERSION=$(echo ${ALLOWED_KERNEL_VERSION} | cut -d"." -f1)
+ALLOWED_KERNEL_MINOR_VERSION=$(echo ${ALLOWED_KERNEL_VERSION} | cut -d"." -f2)
+if [ "${CURRENT_KERNEL_MAJOR_VERSION}" -lt "${ALLOWED_KERNEL_MAJOR_VERSION}" ]; then
+  # If the current major version is less than the allowed major version, show an error message and exit.
+  echo "Error: Kernel ${CURRENT_KERNEL_VERSION} not supported, please update to ${ALLOWED_KERNEL_VERSION}."
+  exit
+fi
+if [ "${CURRENT_KERNEL_MAJOR_VERSION}" == "${ALLOWED_KERNEL_MAJOR_VERSION}" ]; then
+  # If the current major version is equal to the allowed major version, check the minor version.
+  if [ "${CURRENT_KERNEL_MINOR_VERSION}" -lt "${ALLOWED_KERNEL_MINOR_VERSION}" ]; then
+    # If the current minor version is less than the allowed minor version, show an error message and exit.
+    echo "Error: Kernel ${CURRENT_KERNEL_VERSION} not supported, please update to ${ALLOWED_KERNEL_VERSION}."
+    exit
+  fi
+fi
+
 # Get cpu architecture, arm or amd
 ARCH=$(uname -p)
 
