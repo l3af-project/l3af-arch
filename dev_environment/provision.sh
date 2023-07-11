@@ -29,7 +29,7 @@ if [ -d "/usr/src/linux" ]
 then
     echo "Directory /usr/src/linux exists."
 else
-    git clone --branch v5.1 --depth 1 https://github.com/torvalds/linux.git /usr/src/linux
+    git clone --branch v5.15 --depth 1 https://github.com/torvalds/linux.git /usr/src/linux
 fi
 LINUX_SRC_DIR=/usr/src/linux
 cd $LINUX_SRC_DIR
@@ -58,12 +58,15 @@ cd eBPF-Package-Repository
 # declare an array variable
 declare -a progs=("xdp-root" "ratelimiting" "connection-limit" "tc-root" "ipfix-flow-exporter" "traffic-mirroring")
 
+# Distribution code name
+distro=`cat /etc/os-release | grep UBUNTU_CODENAME | awk -F= '{print $2}'`
+
 # now loop through the above array and build the L3AF eBPF programs
 for prog in "${progs[@]}"
 do
 	cd $prog
 	make
-	PROG_ARTIFACT_DIR=$BUILD_ARTIFACT_DIR/$prog/latest/focal
+	PROG_ARTIFACT_DIR=$BUILD_ARTIFACT_DIR/$prog/latest/$distro
 	mkdir -p $PROG_ARTIFACT_DIR
 	mv *.tar.gz $PROG_ARTIFACT_DIR
 	cd ../

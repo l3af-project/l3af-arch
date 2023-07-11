@@ -8,17 +8,6 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
-# Make sure it is focal version 20.04
-VER=$(uname -v | cut -d. -f1 | cut -d~ -f2)
-VER2=$(lsb_release -sr | cut -d '.' -f1)
-
-if [ "$VER" != "20" ]; then
-  if [ "$VER2" != "20" ]; then
-    echo "The Ubuntu version $VER i.e $VER2 is not supported by the script"
-    exit 1
-  fi
-fi
-
 # Check for kernel version 5.15
 CURRENT_KERNEL_VERSION=$(uname -r | cut -d"." -f1-2)
 CURRENT_KERNEL_MAJOR_VERSION=$(echo "${CURRENT_KERNEL_VERSION}" | cut -d"." -f1)
@@ -103,7 +92,7 @@ apt-get install -y bc \
       curl \
       exuberant-ctags \
       flex \
-      gcc-8 \
+      gcc-9 \
       gnutls-bin \
       grafana \
       jq \
@@ -190,7 +179,7 @@ if [ -d "/usr/src/linux" ];
 then
   echo "Linux source code already exists, skipping download"
 else
-  git clone --branch v5.1 --depth 1 https://github.com/torvalds/linux.git /usr/src/linux
+  git clone --branch v5.15 --depth 1 https://github.com/torvalds/linux.git /usr/src/linux
 fi
 
 LINUX_SRC_DIR=/usr/src/linux
