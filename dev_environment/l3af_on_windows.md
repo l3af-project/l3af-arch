@@ -54,7 +54,7 @@ Manually set the following paths in [l3afd_win.cfg](../config/l3afd_win.cfg):
 - bpf-log-dir:
 - BpfMapDefaultPath:
 - [ebpf-repo] url:
-- set bpf-chaining-enabeled to false
+- set bpf-chaining-enabled to false
 
 #### Using [payload.json](./cfg/port_quota_add_payload.json) to load programs:
 
