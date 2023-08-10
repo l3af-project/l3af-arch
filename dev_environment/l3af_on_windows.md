@@ -69,7 +69,7 @@ curl -X POST http://localhost:53000/l3af/configs/v1/add -d "@cfg/payload.json"
 
 ### Confirm eBPF program loading on Windows:
 
-- Use this cmd to list out all the eBPF programs running on the system:
+- Use this command to list all the eBPF programs running on the system:
 ```bash
 netsh ebpf show programs
 ```
