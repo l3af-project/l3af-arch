@@ -8,7 +8,7 @@
 - C++ using: [MSYS2](https://www.msys2.org/)
 - [Visual Studio Build Tools 2022](https://aka.ms/vs/17/release/vs_buildtools.exe)
 
-### Steps to build l3afd on windows:
+### Steps to Build l3afd on Windows:
 
 1. Clone l3afd repo:
 ```bash
@@ -23,7 +23,7 @@ cmake --build build
 
 >l3afd.exe file will be created after this.
 
-### Steps to run l3afd on widnows:
+### Steps to run l3afd on Windows:
 
 3. Update [l3afd_win.cfg](./cfg/l3afd_win.cfg) file:
 
