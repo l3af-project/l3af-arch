@@ -49,7 +49,7 @@ Go to this webpage: http://localhost:53000/swagger/index.html
 
 #### Changes need to be done before proceeding:
 
-Manually set path of following in [l3afd_win.cfg](../config/l3afd_win.cfg):
+Manually set the following paths in [l3afd_win.cfg](../config/l3afd_win.cfg):
 - bpf-dir:
 - bpf-log-dir:
 - BpfMapDefaultPath:
