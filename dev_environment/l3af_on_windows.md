@@ -21,11 +21,11 @@ cmake -B build
 cmake --build build
 ```
 
->l3afd.exe file will be created afte this.
+>l3afd.exe file will be created after this.
 
 ### Steps to run l3afd on widnows:
 
-3. Update [l3afd_win.cfg](../config/l3afd_win.cfg) file:
+3. Update [l3afd_win.cfg](./cfg/l3afd_win.cfg) file:
 
 - Rename the file as `l3afd.cfg`
 - Manually create a directory and set the custom path for pid-file: `mkdir C:\var\l3afd`
@@ -38,7 +38,7 @@ l3afd.exe
 
 ![l3afd.exe](../images/l3af-on-windows/l3afd.exe_output.png)
 
-### Access Swagger API on dashboard:
+### Access Swagger API on the dashboard:
 Go to this webpage: http://localhost:53000/swagger/index.html
 
 ![SwaggerAPI](../images/l3af-on-windows/SwaggerAPI.png)
@@ -56,7 +56,7 @@ Manually set path of following in [l3afd_win.cfg](../config/l3afd_win.cfg):
 - [ebpf-repo] url:
 - set bpf-chaining-enabeled to false
 
-#### Using [payload.json](../config/payload.json) to load programs:
+#### Using [payload.json](./cfg/port_quota_add_payload.json) to load programs:
 
 - Use this curl command to add an ebpf program using `payload.json` file:
 ```bash
