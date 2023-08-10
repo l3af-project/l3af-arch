@@ -73,6 +73,10 @@ curl -X POST http://localhost:53000/l3af/configs/v1/add -d "@cfg/payload.json"
 ```bash
 netsh ebpf show programs
 ```
+or
+```bash
+bpftool prog show
+```
 
 
 
