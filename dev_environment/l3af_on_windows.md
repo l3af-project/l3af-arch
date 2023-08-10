@@ -58,7 +58,7 @@ Manually set the following paths in [l3afd_win.cfg](../config/l3afd_win.cfg):
 
 #### Using [payload.json](./cfg/port_quota_add_payload.json) to load programs:
 
-- Use this curl command to add an ebpf program using `payload.json` file:
+- Use this curl command to add an eBPF program using the `payload.json` file:
 ```bash
 curl -X POST http://localhost:53000/l3af/configs/v1/add -d "@cfg/payload.json"
 ```
