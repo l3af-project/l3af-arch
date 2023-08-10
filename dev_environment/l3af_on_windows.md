@@ -45,7 +45,7 @@ Go to this webpage: http://localhost:53000/swagger/index.html
 
 ### Attaching eBPF program with L3AF:
 
-> **NOTE:** Before moving further, setup [eBPF-for-windows](https://github.com/microsoft/ebpf-for-windows/blob/main/docs/GettingStarted.md) environment on the system.
+> **NOTE:** Before moving further, set up [eBPF for Windows](https://github.com/microsoft/ebpf-for-windows/blob/main/docs/GettingStarted.md) on the system.
 
 #### Changes need to be done before proceeding:
 
