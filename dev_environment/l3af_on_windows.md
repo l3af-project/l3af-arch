@@ -29,7 +29,7 @@ cmake --build build
 
 - Rename the file as `l3afd.cfg`
 - Manually create a directory and set the custom path for pid-file: `mkdir C:\var\l3afd`
-- Set `swagger-api-enabeled` to **true**
+- Set `swagger-api-enabled` to **true**
 
 4. Run l3afd.exe
 ```bash
