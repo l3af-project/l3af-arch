@@ -27,7 +27,7 @@ cmake --build build
 
 3. Update [l3afd_win.cfg](./cfg/l3afd_win.cfg) file:
 
-- Rename the file as `l3afd.cfg`
+- Replace the `l3afd.cfg` file in `l3afd` repo with the above `l3afd_win.cfg` file
 - Manually create a directory and set the custom path for pid-file: `mkdir C:\var\l3afd`
 - Set `swagger-api-enabled` to **true**
 
