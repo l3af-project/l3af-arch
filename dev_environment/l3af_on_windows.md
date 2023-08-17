@@ -3,8 +3,8 @@
 - [Git](https://github.com/git-for-windows/git/releases/download/v2.41.0.windows.3/Git-2.41.0.3-64-bit.exe)
 - Cmake
 - Clang
-- nmake
-- [Golang](https://aka.ms/vs/17/release/vs_buildtools.exe)
+- Nmake
+- [Golang](https://go.dev/doc/install)
 - C++ using: [MSYS2](https://www.msys2.org/)
 - [Visual Studio Build Tools 2022](https://aka.ms/vs/17/release/vs_buildtools.exe)
 
