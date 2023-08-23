@@ -93,7 +93,42 @@ Vagrant.configure("2") do |config|
 
     # # Install latest golang version
     l3af.vm.provision "shell", inline: <<-SHELL
-      arch=`uname -p | cut -d '_' -f 2`
+      # Get cpu architecture, arm or amd
+      ARCH=$(uname -p)
+      case $ARCH in
+        arm)
+          echo "Setting l3af dev environment for arm"
+          arch=arm64
+          ;;
+        aarch64)
+          echo "Setting l3af dev environment for arm"
+          arch=arm64
+          ;;
+        x86_64)
+          echo "Setting l3af dev environment for amd64"
+          arch=amd64
+          ;;
+        i386)
+          KERNEL=$(uname -m)
+          if [ "$KERNEL" = "x86_64" ];
+          then
+            echo "Setting l3af dev environment for amd64"
+            arch=amd64
+          elif [ "$KERNEL" = "i386" ];
+          then
+            echo "Setting l3af dev environment for i386"
+            arch=386
+          else
+            echo "The CPU kernel $KERNEL is not supported by the script"
+            exit 1
+          fi
+          ;;
+        *)
+          echo "The CPU architecture $ARCH is not supported by the script"
+          exit 1
+          ;;
+      esac
+
       os=`uname|tr '[:upper:]' '[:lower:]'`
       go_filename=`curl -s https://go.dev/dl/?mode=json|jq '.[0].files[].filename'|grep $os|grep $arch|egrep -v "arm|ppc"|tr -d '"'`
       wget https://go.dev/dl/$go_filename
