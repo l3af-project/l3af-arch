@@ -36,7 +36,7 @@
                     "artifact": "l3af_traffic_mirroring.tar.gz",
                     "cmd_start": "mirroring",
                     "version": "latest",
-                    "map_name": "tc/globals/mirroring_ingress_jmp_table",
+                    "map_name": "tc/globals/mirroring_egress_jmp_table",
                     "user_program_daemon": true,
                     "admin_status": "enabled",
                     "prog_type": "tc",
