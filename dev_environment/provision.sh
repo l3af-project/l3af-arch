@@ -34,6 +34,8 @@ fi
 LINUX_SRC_DIR=/usr/src/linux
 cd $LINUX_SRC_DIR
 make defconfig
+make prepare
+make headers_install
 
 mkdir -p /var/log/tb/l3af
 mkdir -p /var/l3afd
