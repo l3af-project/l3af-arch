@@ -1,7 +1,7 @@
 [
     {
-        "host_name": "l3af-local-test",
-        "iface": "enp0s3",
+        "host_name": "lima-bpfdev",
+        "iface": "ibpfbr",
         "bpf_programs": {
             "tc_ingress": [
                 {
@@ -18,9 +18,9 @@
                         "src-address": "0.0.0.0",
                         "tunnel-type": "gue",
                         "tunnel-local-port": "6080",
-                        "tunnel-remote-port": "6080",
-                        "tunnel-remote-address": "192.168.10.50",
-                        "redirect-to": "enp0s8",
+                        "tunnel-remote-port": "6081",
+                        "tunnel-remote-address": "127.0.0.1",
+                        "redirect-to": "lo",
                         "src-port": "0",
                         "dst-port": "8080",
                         "protocol": "tcp,icmp"
@@ -46,10 +46,10 @@
                         "dst-address": "0.0.0.0",
                         "tunnel-type": "gue",
                         "tunnel-local-port": "6080",
-                        "tunnel-remote-port": "6080",
-                        "tunnel-remote-address": "192.168.10.50",
-                        "redirect-to": "enp0s8",
-                        "src-port": "8080",
+                        "tunnel-remote-port": "6081",
+                        "tunnel-remote-address": "127.0.0.1",
+                        "redirect-to": "lo",
+                        "src-port": "0",
                         "dst-port": "0",
                         "protocol": "tcp,icmp"
                     },

@@ -59,7 +59,7 @@ Here is a visual overview:
   virtual machine.
 * Verify the eBPF programs from [payload.json](cfg/payload.json) are running by
   querying the L3AFD debug API from the host:
-  `curl http://localhost:38899/kfs/enp0s3`. This command assumes `enp0s3` is a
+  `curl http://localhost:38899/bpfs/enp0s3`. This command assumes `enp0s3` is a
   valid network interface on the VM.
 * Once again send traffic to the VM web server:
   `hey -n 200 -c 20 http://localhost:18080`. The traffic will now be running

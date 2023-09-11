@@ -73,7 +73,7 @@ esac
 cd /root
 
 # install packages
-apt-get update
+apt-get update 
 apt-get install -y software-properties-common wget
 
 # get grafana package
@@ -108,8 +108,9 @@ apt-get install -y bc \
       linux-tools-generic \
       llvm \
       prometheus \
-      rsync
-
+      rsync \
+      linux-tools-5.15.0-86-generic \
+      linux-cloud-tools-5.15.0-86-generic
 #install the latest go lang version
   os=`uname|tr '[:upper:]' '[:lower:]'`
   go_filename=`curl -s https://go.dev/dl/?mode=json|jq '.[0].files[].filename'|grep $os|grep $arch|egrep -v "ppc"|tr -d '"'`
@@ -118,18 +119,9 @@ apt-get install -y bc \
   export PATH=$PATH:/usr/local/go/bin
   echo export PATH=$PATH:/usr/local/go/bin >> /root/.bashrc
 
-# clone the l3afd repo in to root directly
-# can use mapped directory i.e. at /home/ubuntu/Home
-if [ ! -d "/root/l3afd" ];
-then
-  git clone https://github.com/l3af-project/l3afd.git
-else
-  echo "/root/l3afd directory already exists"
-fi
-
 if [ ! -d "/root/l3af-arch" ];
 then
-  git clone https://github.com/l3af-project/l3af-arch.git
+  git clone -b vm-test https://github.com/Atul-source/l3af-arch.git
 else
   echo "/root/l3af-arch directory already exists"
 fi
@@ -235,8 +227,9 @@ make install
 cd ../go/bin/
 
 # start all test servers
-chmod +rx /root/l3af-arch/dev_environment/start_test_servers.sh
-/root/l3af-arch/dev_environment/start_test_servers.sh
+chmod +rx /root/l3af-arch/dev_environment/e2e_test/start_test_servers.sh
+/root/l3af-arch/dev_environment/e2e_test/start_test_servers.sh
+ip netns exec bpf bash /root/l3af-arch/dev_environment/e2e_test/start_test_servers.sh
 
 # start l3afd
-./l3afd --config /root/l3af-arch/dev_environment/cfg/l3afd.cfg &
+./l3afd --config /root/l3af-arch/dev_environment/cfg/l3afd.cfg > l3afd.log 2>&1 &

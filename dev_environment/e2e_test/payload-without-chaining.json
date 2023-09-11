@@ -1,7 +1,7 @@
 [
   {
-    "host_name" : "l3af-local-test",
-    "iface" : "enp0s3",
+    "host_name" : "lima-bpfdev",
+    "iface" : "ibpfbr",
     "bpf_programs" : {
       "xdp_ingress" : [
         {
@@ -20,25 +20,6 @@
           ],
           "object_file": "ratelimiting_kern.o",
           "entry_function_name": "_xdp_ratelimiting"
-        },
-        {
-          "name": "connection-limit",
-          "seq_id": 2,
-          "artifact": "l3af_connection_limit.tar.gz",
-          "map_name": "xdp_cl_ingress_next_prog",
-          "cmd_start": "connection_limit",
-          "version": "latest",
-          "admin_status": "enabled",
-          "prog_type": "xdp",
-          "cfg_version": 1,
-          "map_args": { "cl_tcp_conns": "8080,8081", "cl_max_conn": "2" },
-          "monitor_maps": [
-            { "name": "cl_recv_count_map", "key": 0, "aggregator": "scalar"},
-            { "name": "cl_drop_count_map", "key": 0, "aggregator": "scalar" },
-            { "name": "cl_conn_count", "key": 0, "aggregator": "scalar" }
-          ],
-          "object_file": "connection_limit_kern.o",
-          "entry_function_name": "_xdp_limit_conn"
         }
       ],
       "tc_egress": [
