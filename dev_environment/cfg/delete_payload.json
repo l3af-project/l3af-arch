@@ -4,7 +4,6 @@
         "iface": "enp0s3",
         "bpf_programs": {
             "xdp_ingress": [
-                "ratelimiting",
                 "connection-limit"
             ],
             "tc_ingress": [
