@@ -1,0 +1,85 @@
+### Prerequisites:
+
+- [Git](https://github.com/git-for-windows/git/releases/download/v2.41.0.windows.3/Git-2.41.0.3-64-bit.exe)
+- Cmake
+- Clang
+- Nmake
+- [Golang](https://go.dev/doc/install)
+- C++ using: [MSYS2](https://www.msys2.org/)
+- [Visual Studio Build Tools 2022](https://aka.ms/vs/17/release/vs_buildtools.exe)
+
+### Steps to Build l3afd on Windows:
+
+1. Clone l3afd repo:
+```bash
+git clone https://github.com/l3af-project/l3afd.git
+```
+
+2. Build l3afd using:
+```bash
+cmake -B build
+cmake --build build
+```
+
+>l3afd.exe file will be created after this.
+
+### Steps to run l3afd on Windows:
+
+3. Update [l3afd_win.cfg](./cfg/l3afd_win.cfg) file:
+
+- Replace the `l3afd.cfg` file in `l3afd` repo with the above `l3afd_win.cfg` file
+- Manually create a directory and set the custom path for pid-file: `mkdir C:\var\l3afd`
+- Set `swagger-api-enabled` to **true**
+
+4. Run l3afd.exe
+```bash
+l3afd.exe
+```
+
+![l3afd.exe](../images/l3af-on-windows/l3afd.exe_output.png)
+
+### Access Swagger API on the dashboard:
+Go to this webpage: http://localhost:53000/swagger/index.html
+
+![SwaggerAPI](../images/l3af-on-windows/SwaggerAPI.png)
+
+### Attaching eBPF program with L3AF:
+
+> **NOTE:** Before moving further, set up [eBPF for Windows](https://github.com/microsoft/ebpf-for-windows/blob/main/docs/GettingStarted.md) on the system.
+
+#### Changes need to be done before proceeding:
+
+Manually set the following paths in [l3afd_win.cfg](../config/l3afd_win.cfg):
+- bpf-dir:
+- bpf-log-dir:
+- BpfMapDefaultPath:
+- [ebpf-repo] url:
+- set bpf-chaining-enabled to false
+
+#### Using [payload.json](./cfg/port_quota_add_payload.json) to load programs:
+
+- Use this curl command to add an eBPF program using the `payload.json` file:
+```bash
+curl -X POST http://localhost:53000/l3af/configs/v1/add -d "@cfg/payload.json"
+```
+
+- See the `logs` in the window where `l3afd.exe` is running:
+
+![ebppAddProgramLog](../images/l3af-on-windows/ebppAddProgramLog.png)
+
+### Confirm eBPF program loading on Windows:
+
+- Use this command to list all the eBPF programs running on the system:
+```bash
+netsh ebpf show programs
+```
+or
+```bash
+bpftool prog show
+```
+
+
+
+
+
+
