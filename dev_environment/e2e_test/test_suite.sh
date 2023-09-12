@@ -1,9 +1,6 @@
 #!/usr/bin/bash
 
-## l3afd orchetration
-## data path validation
-
-# we are doing l3afd orchetration validation
+# we are doing l3afd orchestration validation
 RED='\033[0;31m'
 NC='\033[0m' # No Color
 GREEN='\033[0;32m'
@@ -17,7 +14,7 @@ logsuc(){
 }
 validate() {
     touch progids.txt tmp out.json
-    curl -sS http://localhost:7080/l3af/configs/v1/lima0 >out.json 2>&1
+    curl -sS http://localhost:7080/l3af/configs/v1/enp0s3 >out.json 2>&1
     if cmp -s out.json $1.json; then
         touch err
         curl -sS localhost:8899/bpfs/lima0 | jq ".[].ProgID" >progids.txt 2>err
