@@ -16,5 +16,5 @@ cd $BUILD_ARTIFACT_DIR
 python3 -m http.server 8000 &
 
 # Start the test web servers
-/usr/local/go/bin/go run /Users/runner.linux/l3af-project/l3af-arch/dev_environment/code/web-server.go -port 8080 &
-/usr/local/go/bin/go run /Users/runner.linux/l3af-project/l3af-arch/dev_environment/code/web-server.go -port 8081 &
+/usr/local/go/bin/go run /root/l3af-arch/dev_environment/code/web-server.go -port 8080 &
+/usr/local/go/bin/go run /root/l3af-arch/dev_environment/code/web-server.go -port 8081 &
