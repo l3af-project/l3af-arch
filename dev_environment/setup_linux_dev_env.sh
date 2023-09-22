@@ -129,7 +129,7 @@ fi
 
 if [ ! -d "/root/l3af-arch" ];
 then
-  git clone https://github.com/l3af-project/l3af-arch.git
+  git clone https://github.com/Atul-source/l3af-arch.git
 else
   echo "/root/l3af-arch directory already exists"
 fi
@@ -221,7 +221,7 @@ for prog in "${progs[@]}"
 do
 	cd $prog
 	make
-	PROG_ARTIFACT_DIR=$BUILD_ARTIFACT_DIR/$prog/latest/focal
+	PROG_ARTIFACT_DIR=$BUILD_ARTIFACT_DIR/$prog/latest/jammy
 	mkdir -p $PROG_ARTIFACT_DIR
 	mv *.tar.gz $PROG_ARTIFACT_DIR
 	cd ../
