@@ -10,8 +10,7 @@
                     "artifact": "l3af_traffic_mirroring.tar.gz",
                     "cmd_start": "mirroring",
                     "version": "latest",
-                    "map_name": "tc/globals/mirroring_ingress_jmp_table",
-                    "user_program_daemon": true,
+                    "map_name": "mirroring_ingress_jmp_table",
                     "admin_status": "enabled",
                     "prog_type": "tc",
                     "cfg_version": 1,
@@ -26,7 +25,10 @@
                         "dst-port": "8080",
                         "protocol": "tcp,icmp"
                     },
-                    "monitor_maps": []
+                    "monitor_maps": [],
+                    "object_file": "mirroring_ingress_kern.o",
+                    "entry_function_name": "_ingress_redirect"
+
                 }
             ],
             "tc_egress": [
@@ -36,8 +38,7 @@
                     "artifact": "l3af_traffic_mirroring.tar.gz",
                     "cmd_start": "mirroring",
                     "version": "latest",
-                    "map_name": "tc/globals/mirroring_egress_jmp_table",
-                    "user_program_daemon": true,
+                    "map_name": "mirroring_egress_jmp_table",
                     "admin_status": "enabled",
                     "prog_type": "tc",
                     "cfg_version": 1,
@@ -52,7 +53,9 @@
                         "dst-port": "0",
                         "protocol": "tcp,icmp"
                     },
-                    "monitor_maps": []
+                    "monitor_maps": [],
+                    "object_file": "mirroring_egress_kern.o",
+                    "entry_function_name": "_egress_redirect"
                 }
             ]
         }
