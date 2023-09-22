@@ -185,6 +185,8 @@ fi
 LINUX_SRC_DIR=/usr/src/linux
 cd $LINUX_SRC_DIR
 make defconfig
+make prepare
+make headers_install
 
 if [ ! -d "/var/log/tb/l3af" ];
 then
