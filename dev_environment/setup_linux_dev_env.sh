@@ -240,3 +240,5 @@ chmod +rx /root/l3af-arch/dev_environment/start_test_servers.sh
 
 # start l3afd
 ./l3afd --config /root/l3af-arch/dev_environment/cfg/l3afd.cfg > l3afd.log 2>&1 &
+
+cd /root/l3af-arch/dev_environment/e2e_test
