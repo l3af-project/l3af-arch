@@ -1,5 +1,11 @@
 #!/usr/bin/bash
 
+set -eux
+
+if [[ $EUID -ne 0 ]]; then
+  echo " This script must be run as root"
+  exit 1
+fi
 # we are doing l3afd orchestration validation
 RED='\033[0;31m'
 NC='\033[0m' # No Color
@@ -46,8 +52,6 @@ validate() {
         exit
     fi
 }
-
-
 
 api_runner() {
     name=$1
