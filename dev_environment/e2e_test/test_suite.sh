@@ -12,9 +12,10 @@ logsuc(){
   str=$1
   printf "${GREEN}${str}${NC}\n"
 }
+
 validate() {
-    touch progids.txt tmp out.json
-    curl -sS http://localhost:7080/l3af/configs/v1/enp0s3 >out.json 2>&1
+    touch progids.txt tmp out.json names.txt
+    curl -sS http://localhost:7080/l3af/configs/v1/lima0 >out.json 2>&1
     if cmp -s out.json $1.json; then
         touch err
         curl -sS localhost:8899/bpfs/lima0 | jq ".[].ProgID" >progids.txt 2>err
@@ -24,6 +25,7 @@ validate() {
             rm err
             exit
         fi
+        rm err
         declare idarray
         readarray -t idarray <progids.txt
         for str in ${idarray[@]}; do
@@ -35,22 +37,24 @@ validate() {
             fi
             cat /dev/null >tmp
         done
-        rm tmp progids.txt out.json
+        rm tmp progids.txt out.json names.txt
         logsuc "$2 API SUCCESS"
     else
         logerr "$2 API FAILED"
-        cat out.json
+        diff -B -color $1.json out.json
         rm tmp progids.txt out.json
         exit
     fi
 }
+
+
 
 api_runner() {
     name=$1
     file=$2
     num=$3
     touch tmpr
-    curl -sS -X POST http://localhost:7080/l3af/configs/v1/${name} -d "@cfg/${file}" >tmpr 2>&1
+    curl -sS -X POST http://localhost:7080/l3af/configs/v1/${name} -d @${file} >tmpr 2>&1
     if [ -s tmpr ]; then
         logerr "curl request to the ${name} API falied"
         cat tmpr
@@ -61,8 +65,12 @@ api_runner() {
     rm tmpr
 }
 
+
+
 api_runner "add" "payload.json" 1
 api_runner "update" "upd_payload.json" 2
 api_runner "add" "traffic_mirroring_payload.json" 3
 api_runner "delete" "delete_payload.json" 4
 logsuc "TEST COMPLETED"
+
+
