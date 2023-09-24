@@ -1,7 +1,7 @@
 [
     {
         "host_name": "lima-bpfdev",
-        "iface": "eth0",
+        "iface": "lima0",
         "bpf_programs": {
             "tc_ingress": [
                 {
