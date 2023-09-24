@@ -122,7 +122,7 @@ apt-get install -y bc \
 # can use mapped directory i.e. at /home/ubuntu/Home
 if [ ! -d "/root/l3afd" ];
 then
-  git clone https://github.com/l3af-project/l3afd.git
+  git clone -b test https://github.com/Atul-source/l3afd.git
 else
   echo "/root/l3afd directory already exists"
 fi
