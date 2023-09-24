@@ -21,17 +21,17 @@ logsuc(){
   str=$1
   printf "${GREEN}${str}${NC}\n"
 }
-IP=`limactl shell bpfdev -- ip -brief address show lima0 | awk '{print $3}' | awk -F/ '{print $1}'`
+IP=`limactl shell bpfdev -- ip -brief address show eth0 | awk '{print $3}' | awk -F/ '{print $1}'`
 validate() {
     touch progids.txt tmp out.json names.txt err
-    curl -sS http://$IP:7080/l3af/configs/v1/lima0 >out.json 2>&1
+    curl -sS http://$IP:7080/l3af/configs/v1/eth0 >out.json 2>&1
     if cmp -s out.json $1.json; then
-        curl -sS $IP:8899/bpfs/lima0 | jq ".[].ProgID" >progids.txt 2>err
+        curl -sS $IP:8899/bpfs/eth0 | jq ".[].ProgID" >progids.txt 2>err
         if [ -s err ]; then
             cat err
             logerr "curl request to debug api failed"
         fi
-        curl -sS http://$IP:8899/bpfs/lima0 | jq ".[].Program.name" >names.txt 2>err
+        curl -sS http://$IP:8899/bpfs/eth0 | jq ".[].Program.name" >names.txt 2>err
         if [ -s err ]; then
             cat err
             logerr "curl request to debug api failed"
@@ -98,8 +98,8 @@ cl_datapath_verification(){
 
 ipfix_datapath_verification(){
     if grep -q "ipfix-flow-exporter" names.txt;then
-            # Start tcpdump on lima0 and lo interfaces capturing traffic on ports 8080 and 49280 inside lima VM
-      limactl shell bpfdev exec -- sudo timeout 100 tcpdump -i lima0 port 8080 > first 2>&1 &
+            # Start tcpdump on eth0 and lo interfaces capturing traffic on ports 8080 and 49280 inside lima VM
+      limactl shell bpfdev exec -- sudo timeout 100 tcpdump -i eth0 port 8080 > first 2>&1 &
       limactl shell bpfdev exec -- sudo timeout 100 tcpdump -i lo port 49280 > second 2>&1 &
 
       sleep 20
