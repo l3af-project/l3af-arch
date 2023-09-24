@@ -24,9 +24,11 @@ logsuc(){
 IP=`limactl shell bpfdev -- ip -brief address show lima0 | awk '{print $3}' | awk -F/ '{print $1}'`
 validate() {
     touch progids.txt tmp out.json names.txt err
-    curl -sS http://$IP:7080/l3af/configs/v1/lima0 >out.json 2>&1
+    fl="curl -sS http://${IP}:7080/l3af/configs/v1/lima0"
+    $fl >out.json 2>&1
     if cmp -s out.json $1.json; then
-        curl -sS $IP:8899/bpfs/lima0 | jq ".[].ProgID" >progids.txt 2>err
+        fl="curl -sS http://${IP}/bpfs/lima0"
+        $fl | jq ".[].ProgID" >progids.txt 2>err
         if [ -s err ]; then
             cat err
             logerr "curl request to debug api failed"
@@ -104,7 +106,8 @@ ipfix_datapath_verification(){
 
       sleep 20
       # Send 10 HTTP requests using hey command from host
-      hey -n 10 -c 10 http://$IP:8080/ > /dev/null
+      fl="http://${IP}:8080"
+      hey -n 10 -c 10 $fl > /dev/null
 
       # Wait for tcpdump to capture all packets
       sleep 80
@@ -125,7 +128,8 @@ api_runner() {
     file=$2
     num=$3
     touch tmpr
-    curl -sS -X POST http://$IP:7080/l3af/configs/v1/${name} -d "@${file}" >tmpr 2>&1
+    url="curl -sS X POST http://${IP}:7080/l3af/configs/v1/${name}"
+    $url -d "@${file}" > tmpr 2>&1 
     if [ -s tmpr ]; then
         cat tmpr
         logerr "curl request to the ${name} API falied"
