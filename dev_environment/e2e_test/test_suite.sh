@@ -126,7 +126,8 @@ api_runner() {
     file=$2
     num=$3
     touch tmpr
-    curl -sS -X POST -H "Content-Type: application/json" -d "@${file}" "http://${IP}:7080/l3af/configs/v1/${name}" > tmpr 2>&1
+    url="http://${IP}:7080/l3af/configs/v1/${name}"
+    curl -sS -X POST $url -d @$file > tmpr 2>&1
     if [ -s tmpr ]; then
         cat tmpr
         logerr "curl request to the ${name} API falied"
