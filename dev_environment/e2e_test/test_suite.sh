@@ -26,8 +26,7 @@ validate() {
     touch progids.txt tmp out.json names.txt err
     curl -sS http://${IP}:7080/l3af/configs/v1/lima0 >out.json 2>&1
     if cmp -s out.json $1.json; then
-        fl="curl -sS http://${IP}/bpfs/lima0"
-        $fl | jq ".[].ProgID" >progids.txt 2>err
+        curl -sS http://${IP}:8899/bpfs/lima0 | jq ".[].ProgID" >progids.txt 2>err
         if [ -s err ]; then
             cat err
             logerr "curl request to debug api failed"
