@@ -15,7 +15,7 @@ logerr(){
   str=$1
   close 
   printf "${RED} error: ${str} ${NC}\n"
-  exit
+  exit 1
 }
 logsuc(){
   str=$1
