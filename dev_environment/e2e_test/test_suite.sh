@@ -21,7 +21,7 @@ logsuc(){
   str=$1
   printf "${GREEN}${str}${NC}\n"
 }
-vmrun="limactl shell bpfdev exec -- /usr/bin/bash -c"
+vmrun="limactl shell bpfdev exec -- bash -c"
 IP=`limactl shell bpfdev -- ip -brief address show lima0 | awk '{print $3}' | awk -F/ '{print $1}'`
 validate() {
     touch progids.txt tmp out.json names.txt err
@@ -97,17 +97,13 @@ ipfix_datapath_verification(){
     if grep -q "ipfix-flow-exporter" names.txt;then
             # Start tcpdump on lima0 and lo interfaces capturing traffic on ports 8080 and 49280 inside lima VM
       $vmrun "sudo timeout 50 tcpdump -i lima0 port 8080 > first 2>&1 &"
-      p1=$($vmrun "echo '$!'")
       $vmrun "sudo timeout 50 tcpdump -i lo port 49280 > second 2>&1 &"
-      p2=$($vmrun "echo '$!'")
       sleep 10
       # Send 10 HTTP requests using hey command from host
       hey -n 200 -c 20 http://${IP}:8080 > /dev/null
 
       # Wait for tcpdump to capture all packets
       sleep 40
-      $vmrun "sudo kill -9 $p1"
-      $vmrun "sudo kill -9 $p2"
       $vmrun "sed '1,2d' first  > /dev/null"
       $vmrun "sed '1,2d' second  > /dev/null"
       # Check if packets were captured on both interfaces inside lima VM
