@@ -64,7 +64,7 @@ rl_datapath_verification(){
         before_rl_drop_count=`curl -sS $IP:8898/metrics | grep rl_drop_count_map_0_scalar | awk '{print $NF}'`
         before_rl_recv_count=`curl -sS $IP:8898/metrics | grep rl_recv_count_map_0_max-rate | awk '{print $NF}'`
         hey -n 10 -c 10 http://$IP:8080 > /dev/null
-        for i in {1..60} do
+        for i in {1..60}; do
           after_rl_drop_count=`curl -sS $IP:8898/metrics | grep rl_drop_count_map_0_scalar | awk '{print $NF}'`
           after_rl_recv_count=`curl -sS $IP:8898/metrics | grep rl_recv_count_map_0_max-rate | awk '{print $NF}'`
           if [[ $(expr $after_rl_drop_count - $before_rl_drop_count) -ne 0 && $(expr $after_rl_recv_count - $before_rl_recv_count) -ne 0 ]];then
@@ -79,7 +79,7 @@ cl_datapath_verification(){
     if grep -q "connection-limit" names.txt;then
         before_cl_recv_count=`curl -sS $IP:8898/metrics | grep cl_recv_count_map_0_scalar | awk '{print $NF}'`
         hey -n 10 -c 10 http://$IP:8080 > /dev/null
-        for i in {1..60} do
+        for i in {1..60}; do
           after_cl_recv_count=`curl -sS $IP:8898/metrics | grep cl_recv_count_map_0_scalar | awk '{print $NF}'`
           if [ $(expr $after_cl_recv_count - $before_cl_recv_count) -eq 2 ];then
             logsuc "connection-limit is updated the metrics maps"
