@@ -96,24 +96,19 @@ cl_datapath_verification(){
 ipfix_datapath_verification(){
     if grep -q "ipfix-flow-exporter" names.txt;then
             # Start tcpdump on lima0 and lo interfaces capturing traffic on ports 8080 and 49280 inside lima VM
+      $vmrun "touch first.pcap second.pcap"
       $vmrun "sudo tcpdump -i lima0 port 8080 -c 5 -w first.pcap &"
       $vmrun "sudo tcpdump -i lo port 49280 -c 5 -w second.pcap &"
-      sleep 10
-      # Send 10 HTTP requests using hey command from host
       hey -n 200 -c 20 http://${IP}:8080 > /dev/null
-
-      # Wait for tcpdump to capture all packets
-      sleep 40
-      #$vmrun "sed '1,2d' first  > /dev/null"
-      #$vmrun "sed '1,2d' second  > /dev/null"
-      # Check if packets were captured on both interfaces inside lima VM
-      if [[ $($vmrun "cat first | wc -l") -gt 0 ]] && [[ $($vmrun "cat second | wc -l") -gt 0 ]]; then
+      for i in {1.200}; do
+      if [[ $($vmrun "sudo tcpdump -r first.pcap | wc -l") -gt 0 ]] && [[ $($vmrun "sudo tcpdump -r second.pcap | wc -l") -gt 0 ]]; then
         logsuc "ipfix-flow-exporter collecter is receiving packets"
-        $vmrun "rm first second"
-      else
-        $vmrun "rm first second"
-        logerr "ipfix-flow-exporter collecter not receiving packets"
+        $vmrun "rm first.pcap second.pcap"
       fi
+      sleep 1
+      done
+        $vmrun "rm first.pcap second.pcap"
+        logerr "ipfix-flow-exporter collecter not receiving packets"
     fi
 }
 api_runner() {
