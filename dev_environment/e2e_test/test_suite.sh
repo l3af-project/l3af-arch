@@ -95,16 +95,16 @@ cl_datapath_verification(){
 ipfix_datapath_verification(){
     if grep -q "ipfix-flow-exporter" names.txt;then
             # Start tcpdump on lima0 and lo interfaces capturing traffic on ports 8080 and 49280 inside lima VM
-      limactl shell bpfdev exec -- /usr/bin/bash -c "sudo timeout 100 tcpdump -i lima0 port 8080 > first 2>&1 &"
+      limactl shell bpfdev exec -- /usr/bin/bash -c "sudo timeout 50 tcpdump -i lima0 port 8080 > first 2>&1 &"
       p1=`limactl shell bpfdev exec -- echo $!`
-      limactl shell bpfdev exec -- /usr/bin/bash -c "sudo timeout 100 tcpdump -i lo port 49280 > second 2>&1 &"
+      limactl shell bpfdev exec -- /usr/bin/bash -c "sudo timeout 50 tcpdump -i lo port 49280 > second 2>&1 &"
       p2=`limactl shell bpfdev exec -- echo $!`
       sleep 10
       # Send 10 HTTP requests using hey command from host
       hey -n 200 -c 20 http://${IP}:8080 > /dev/null
 
       # Wait for tcpdump to capture all packets
-      sleep 30
+      sleep 40
       limactl shell bpfdev exec -- sudo kill -9 $p1
       limactl shell bpfdev exec -- sudo kill -9 $p2
       limactl shell bpfdev exec -- sed '1,2d' first  > /dev/null
