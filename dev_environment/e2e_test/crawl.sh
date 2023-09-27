@@ -1,16 +1,6 @@
 #!/usr/bin/bash
 
-# Set the network interface and port variables
-interface=$1
-port=$2
+touch first.pcap second.pcap
+sudo tcpdump -i lima0 port 8080 -c 5 -w first.pcap &
+sudo tcpdump -i lo port 49280 -c 5 -w second.pcap &
 
-# Run tcpdump and filter for packets on the given interface and port
-tcpdump -i $interface port $port -c 5 > /dev/null
-
-# Check if any packets were captured
-if [ $? -eq 0 ]
-then
-    echo "Packets were captured on $interface port $port."
-else
-    echo "No packets were captured on $interface port $port."
-fi

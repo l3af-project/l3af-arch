@@ -96,9 +96,7 @@ cl_datapath_verification(){
 ipfix_datapath_verification(){
     if grep -q "ipfix-flow-exporter" names.txt;then
             # Start tcpdump on lima0 and lo interfaces capturing traffic on ports 8080 and 49280 inside lima VM
-      $vmrun "touch first.pcap second.pcap"
-      $vmrun "sudo tcpdump -i lima0 port 8080 -c 5 -w first.pcap &"
-      $vmrun "sudo tcpdump -i lo port 49280 -c 5 -w second.pcap &"
+      $vmrun "./crawl.sh"
       hey -n 200 -c 20 http://${IP}:8080 > /dev/null
       for i in {1..200}; do
       if [[ $($vmrun "tcpdump -r first.pcap 2>/dev/null | wc -l") -gt 0 ]] && [[ $($vmrun "tcpdump -r second.pcap 2>/dev/null | wc -l") -gt 0 ]]; then
