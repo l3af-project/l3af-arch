@@ -63,30 +63,32 @@ rl_datapath_verification(){
     if grep -q "ratelimiting" names.txt;then
         before_rl_drop_count=`curl -sS $IP:8898/metrics | grep rl_drop_count_map_0_scalar | awk '{print $NF}'`
         before_rl_recv_count=`curl -sS $IP:8898/metrics | grep rl_recv_count_map_0_max-rate | awk '{print $NF}'`
-        hey -n 10 -c 10 http://$IP:8080 > /dev/null
+        hey -n 200 -c 20 http://$IP:8080 > /dev/null
         for i in {1..60}; do
           after_rl_drop_count=`curl -sS $IP:8898/metrics | grep rl_drop_count_map_0_scalar | awk '{print $NF}'`
           after_rl_recv_count=`curl -sS $IP:8898/metrics | grep rl_recv_count_map_0_max-rate | awk '{print $NF}'`
           if [[ $(expr $after_rl_drop_count - $before_rl_drop_count) -ne 0 && $(expr $after_rl_recv_count - $before_rl_recv_count) -ne 0 ]];then
-            logsuc "ratelimiting is updated the metrics maps"
+            logsuc "ratelimiting updated the metrics maps"
             return
           fi
+          sleep 1
         done
-        logerr "ratelimiting is not updating maps"
+        logerr "ratelimiting not updating maps"
     fi 
 }
 cl_datapath_verification(){
     if grep -q "connection-limit" names.txt;then
         before_cl_recv_count=`curl -sS $IP:8898/metrics | grep cl_recv_count_map_0_scalar | awk '{print $NF}'`
-        hey -n 10 -c 10 http://$IP:8080 > /dev/null
+        hey -n 200 -c 20 http://$IP:8080 > /dev/null
         for i in {1..60}; do
           after_cl_recv_count=`curl -sS $IP:8898/metrics | grep cl_recv_count_map_0_scalar | awk '{print $NF}'`
           if [ $(expr $after_cl_recv_count - $before_cl_recv_count) -eq 2 ];then
-            logsuc "connection-limit is updated the metrics maps"
+            logsuc "connection-limit updated the metrics maps"
             return
           fi
+          sleep 1
         done
-        logerr "connection-limit is not updating the metrics maps"
+        logerr "connection-limit not updating the metrics maps"
     fi
 }
 
@@ -94,14 +96,17 @@ ipfix_datapath_verification(){
     if grep -q "ipfix-flow-exporter" names.txt;then
             # Start tcpdump on lima0 and lo interfaces capturing traffic on ports 8080 and 49280 inside lima VM
       limactl shell bpfdev exec -- sudo timeout 100 tcpdump -i lima0 port 8080 > first 2>&1 &
+      p1=`limactl shell bpfdev exec -- echo $!`
       limactl shell bpfdev exec -- sudo timeout 100 tcpdump -i lo port 49280 > second 2>&1 &
-
-      sleep 20
+      p2=`limactl shell bpfdev exec -- echo $!`
+      sleep 10
       # Send 10 HTTP requests using hey command from host
-      hey -n 10 -c 10 http://${IP}:8080 > /dev/null
+      hey -n 200 -c 20 http://${IP}:8080 > /dev/null
 
       # Wait for tcpdump to capture all packets
-      sleep 80
+      sleep 30
+      limactl shell bpfdev exec -- sudo kill -9 $p1
+      limactl shell bpfdev exec -- sudo kill -9 $p2
       limactl shell bpfdev exec -- sed '1,2d' first  > /dev/null
       limactl shell bpfdev exec -- sed '1,2d' second  > /dev/null
       # Check if packets were captured on both interfaces inside lima VM
