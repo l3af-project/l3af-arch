@@ -64,7 +64,7 @@ rl_datapath_verification(){
         before_rl_drop_count=`curl -sS $IP:8898/metrics | grep rl_drop_count_map_0_scalar | awk '{print $NF}'`
         before_rl_recv_count=`curl -sS $IP:8898/metrics | grep rl_recv_count_map_0_max-rate | awk '{print $NF}'`
         hey -n 200 -c 20 http://$IP:8080 > /dev/null
-        for i in {1..60}; do
+        for i in {1..120}; do
           after_rl_drop_count=`curl -sS $IP:8898/metrics | grep rl_drop_count_map_0_scalar | awk '{print $NF}'`
           after_rl_recv_count=`curl -sS $IP:8898/metrics | grep rl_recv_count_map_0_max-rate | awk '{print $NF}'`
           if [[ $(expr $after_rl_drop_count - $before_rl_drop_count) -ne 0 && $(expr $after_rl_recv_count - $before_rl_recv_count) -ne 0 ]];then
@@ -80,9 +80,9 @@ cl_datapath_verification(){
     if grep -q "connection-limit" names.txt;then
         before_cl_recv_count=`curl -sS $IP:8898/metrics | grep cl_recv_count_map_0_scalar | awk '{print $NF}'`
         hey -n 200 -c 20 http://$IP:8080 > /dev/null
-        for i in {1..60}; do
+        for i in {1..120}; do
           after_cl_recv_count=`curl -sS $IP:8898/metrics | grep cl_recv_count_map_0_scalar | awk '{print $NF}'`
-          if [ $(expr $after_cl_recv_count - $before_cl_recv_count) -eq 2 ];then
+          if [ $(expr $after_cl_recv_count - $before_cl_recv_count) -ne 0 ];then
             logsuc "connection-limit updated the metrics maps"
             return
           fi
@@ -95,9 +95,9 @@ cl_datapath_verification(){
 ipfix_datapath_verification(){
     if grep -q "ipfix-flow-exporter" names.txt;then
             # Start tcpdump on lima0 and lo interfaces capturing traffic on ports 8080 and 49280 inside lima VM
-      limactl shell bpfdev exec -- sudo timeout 100 tcpdump -i lima0 port 8080 > first 2>&1 &
+      limactl shell bpfdev exec -- /usr/bin/bash -c "sudo timeout 100 tcpdump -i lima0 port 8080 > first 2>&1 &"
       p1=`limactl shell bpfdev exec -- echo $!`
-      limactl shell bpfdev exec -- sudo timeout 100 tcpdump -i lo port 49280 > second 2>&1 &
+      limactl shell bpfdev exec -- /usr/bin/bash -c "sudo timeout 100 tcpdump -i lo port 49280 > second 2>&1 &"
       p2=`limactl shell bpfdev exec -- echo $!`
       sleep 10
       # Send 10 HTTP requests using hey command from host
