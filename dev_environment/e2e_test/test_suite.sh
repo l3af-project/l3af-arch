@@ -21,7 +21,6 @@ logsuc(){
   str=$1
   printf "${GREEN}${str}${NC}\n"
 }
-vmrun="limactl shell bpfdev exec -- bash -c"
 IP=`limactl shell bpfdev -- ip -brief address show lima0 | awk '{print $3}' | awk -F/ '{print $1}'`
 validate() {
     touch progids.txt tmp out.json names.txt err
@@ -43,7 +42,7 @@ validate() {
 	done < "progids.txt"
 
         for str in ${idarray[@]}; do
-            $vmrun "sudo bpftool prog show id $str >tmp" 
+            limactl shell bpfdev exec -- sudo bpftool prog show id $str >tmp 
 
             if [ ! -s tmp ]; then
                 logerr "Program with ProgID ${str} is not running"
@@ -96,20 +95,20 @@ cl_datapath_verification(){
 ipfix_datapath_verification(){
     if grep -q "ipfix-flow-exporter" names.txt;then
             # Start tcpdump on lima0 and lo interfaces capturing traffic on ports 8080 and 49280 inside lima VM
-      $vmrun "touch first first_err second second_err"
-      $vmrun "sudo tcpdump -i lima0 port 8080 -c 2 > first 2> first_err &"
-      $vmrun "sudo tcpdump -i lo port 49280 -c 2 > second 2> second_err &"
+      limactl shell bpfdev exec -- touch first first_err second second_err
+      limactl shell bpfdev exec -- sudo tcpdump -i lima0 port 8080 -c 2 > first 2> first_err &
+      limactl shell bpfdev exec -- sudo tcpdump -i lo port 49280 -c 2 > second 2> second_err &
 
       hey -n 200 -c 20 http://${IP}:8080 > /dev/null
       for i in {1..200}; do
-      if [[ $($vmrun "cat first | wc -l") -gt 0 ]] && [[ $($vmrun "cat second | wc -l") -gt 0 ]]; then
+      if [[ $(limactl shell bpfdev exec -- cat first | wc -l) -gt 0 ]] && [[ $(limactl shell bpfdev exec -- cat second | wc -l) -gt 0 ]]; then
         logsuc "ipfix-flow-exporter collecter is receiving packets"
-        $vmrun "rm first second"
+        limactl shell bpfdev exec -- rm first second first_err second_err
         return
       fi
       sleep 1
       done
-        $vmrun "rm first second"
+        limactl shell bpfdev exec -- rm first second first_err second_err
         logerr "ipfix-flow-exporter collecter not receiving packets"
     fi
 }
