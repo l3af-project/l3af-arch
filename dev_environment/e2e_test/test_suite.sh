@@ -96,17 +96,20 @@ cl_datapath_verification(){
 ipfix_datapath_verification(){
     if grep -q "ipfix-flow-exporter" names.txt;then
             # Start tcpdump on lima0 and lo interfaces capturing traffic on ports 8080 and 49280 inside lima VM
-      $vmrun "./crawl.sh"
+      $vmrun "touch first first_err second second_err"
+      $vmrun "sudo tcpdump -i lima0 port 8080 -c 5 > first 2> first_err &"
+      $vmrun "sudo tcpdump -i lo port 49280 -c 5 > second 2> second_err &"
+
       hey -n 200 -c 20 http://${IP}:8080 > /dev/null
       for i in {1..200}; do
-      if [[ $($vmrun "tcpdump -r first.pcap 2>/dev/null | wc -l") -gt 0 ]] && [[ $($vmrun "tcpdump -r second.pcap 2>/dev/null | wc -l") -gt 0 ]]; then
+      if [[ $($vmrun "cat first | wc -l") -gt 0 ]] && [[ $($vmrun "cat second | wc -l") -gt 0 ]]; then
         logsuc "ipfix-flow-exporter collecter is receiving packets"
-        $vmrun "rm first.pcap second.pcap"
+        $vmrun "rm first second"
         return
       fi
       sleep 1
       done
-        $vmrun "rm first.pcap second.pcap"
+        $vmrun "rm first second"
         logerr "ipfix-flow-exporter collecter not receiving packets"
     fi
 }
