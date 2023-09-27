@@ -101,7 +101,7 @@ ipfix_datapath_verification(){
       $vmrun "sudo tcpdump -i lo port 49280 -c 5 -w second.pcap &"
       hey -n 200 -c 20 http://${IP}:8080 > /dev/null
       for i in {1..200}; do
-      if [[ $($vmrun "sudo tcpdump -r first.pcap | wc -l") -gt 0 ]] && [[ $($vmrun "sudo tcpdump -r second.pcap | wc -l") -gt 0 ]]; then
+      if [[ $($vmrun "sudo tcpdump -r first.pcap 2>/dev/null | wc -l") -gt 0 ]] && [[ $($vmrun "sudo tcpdump -r second.pcap 2>/dev/null | wc -l") -gt 0 ]]; then
         logsuc "ipfix-flow-exporter collecter is receiving packets"
         $vmrun "rm first.pcap second.pcap"
         return
