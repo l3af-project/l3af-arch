@@ -73,7 +73,7 @@ esac
 cd /root
 
 # install packages
-apt-get update 
+apt-get update
 apt-get install -y software-properties-common wget
 
 # get grafana package
@@ -108,8 +108,7 @@ apt-get install -y bc \
       linux-tools-generic \
       llvm \
       prometheus \
-      rsync \
-      linux-tools-5.15.0-78-generic
+      rsync
 
 #install the latest go lang version
   os=`uname|tr '[:upper:]' '[:lower:]'`
@@ -123,14 +122,14 @@ apt-get install -y bc \
 # can use mapped directory i.e. at /home/ubuntu/Home
 if [ ! -d "/root/l3afd" ];
 then
-  git clone -b test https://github.com/Atul-source/l3afd.git
+  git clone https://github.com/l3af-project/l3afd.git
 else
   echo "/root/l3afd directory already exists"
 fi
 
 if [ ! -d "/root/l3af-arch" ];
 then
-  git clone -b E2E https://github.com/Atul-source/l3af-arch.git
+  git clone https://github.com/l3af-project/l3af-arch.git
 else
   echo "/root/l3af-arch directory already exists"
 fi
@@ -224,7 +223,7 @@ for prog in "${progs[@]}"
 do
 	cd $prog
 	make
-	PROG_ARTIFACT_DIR=$BUILD_ARTIFACT_DIR/$prog/latest/jammy
+	PROG_ARTIFACT_DIR=$BUILD_ARTIFACT_DIR/$prog/latest/focal
 	mkdir -p $PROG_ARTIFACT_DIR
 	mv *.tar.gz $PROG_ARTIFACT_DIR
 	cd ../
@@ -240,6 +239,4 @@ chmod +rx /root/l3af-arch/dev_environment/start_test_servers.sh
 /root/l3af-arch/dev_environment/start_test_servers.sh
 
 # start l3afd
-./l3afd --config /root/l3af-arch/dev_environment/cfg/l3afd.cfg > l3afd.log 2>&1 &
-
-cd /root/l3af-arch/dev_environment/e2e_test
+./l3afd --config /root/l3af-arch/dev_environment/cfg/l3afd.cfg &

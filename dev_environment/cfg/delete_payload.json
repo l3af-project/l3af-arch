@@ -1,9 +1,10 @@
 [
     {
-        "host_name": "lima-bpfdev",
-        "iface": "lima0",
+        "host_name": "l3af-local-test",
+        "iface": "enp0s3",
         "bpf_programs": {
             "xdp_ingress": [
+                "ratelimiting",
                 "connection-limit"
             ],
             "tc_ingress": [

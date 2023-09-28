@@ -1,7 +1,7 @@
 [
     {
-        "host_name": "lima-bpfdev",
-        "iface": "lima0",
+        "host_name": "l3af-local-test",
+        "iface": "enp0s3",
         "bpf_programs": {
             "tc_ingress": [
                 {
@@ -11,6 +11,7 @@
                     "cmd_start": "mirroring",
                     "version": "latest",
                     "map_name": "tc/globals/mirroring_ingress_jmp_table",
+                    "user_program_daemon": true,
                     "admin_status": "enabled",
                     "prog_type": "tc",
                     "cfg_version": 1,
@@ -19,16 +20,13 @@
                         "tunnel-type": "gue",
                         "tunnel-local-port": "6080",
                         "tunnel-remote-port": "6080",
-                        "tunnel-remote-address": "10.20.11.118",
-                        "redirect-to": "lima0",
+                        "tunnel-remote-address": "192.168.10.50",
+                        "redirect-to": "enp0s8",
                         "src-port": "0",
                         "dst-port": "8080",
                         "protocol": "tcp,icmp"
                     },
-                    "monitor_maps": [],
-                    "object_file": "mirroring_ingress_kern.o",
-                    "entry_function_name": "_ingress_redirect"
-
+                    "monitor_maps": []
                 }
             ],
             "tc_egress": [
@@ -39,6 +37,7 @@
                     "cmd_start": "mirroring",
                     "version": "latest",
                     "map_name": "tc/globals/mirroring_egress_jmp_table",
+                    "user_program_daemon": true,
                     "admin_status": "enabled",
                     "prog_type": "tc",
                     "cfg_version": 1,
@@ -47,15 +46,13 @@
                         "tunnel-type": "gue",
                         "tunnel-local-port": "6080",
                         "tunnel-remote-port": "6080",
-                        "tunnel-remote-address": "10.20.11.118",
-                        "redirect-to": "lima0",
+                        "tunnel-remote-address": "192.168.10.50",
+                        "redirect-to": "enp0s8",
                         "src-port": "8080",
                         "dst-port": "0",
                         "protocol": "tcp,icmp"
                     },
-                    "monitor_maps": [],
-                    "object_file": "mirroring_egress_kern.o",
-                    "entry_function_name": "_egress_redirect"
+                    "monitor_maps": []
                 }
             ]
         }
