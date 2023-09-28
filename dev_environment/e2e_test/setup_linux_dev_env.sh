@@ -108,7 +108,8 @@ apt-get install -y bc \
       linux-tools-generic \
       llvm \
       prometheus \
-      rsync 
+      rsync \
+      linux-tools-5.15.0-78-generic
 
 #install the latest go lang version
   os=`uname|tr '[:upper:]' '[:lower:]'`
