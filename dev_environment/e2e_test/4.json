@@ -81,7 +81,7 @@
           "src-address": "0.0.0.0",
           "src-port": "0",
           "tunnel-local-port": "6080",
-          "tunnel-remote-address": "10.93.50.202",
+          "tunnel-remote-address": "192.168.105.3",
           "tunnel-remote-port": "6080",
           "tunnel-type": "gue"
         },
@@ -126,7 +126,7 @@
           "redirect-to": "lima0",
           "src-port": "8080",
           "tunnel-local-port": "6080",
-          "tunnel-remote-address": "10.93.50.202",
+          "tunnel-remote-address": "192.168.105.3",
           "tunnel-remote-port": "6080",
           "tunnel-type": "gue"
         },
