@@ -52,6 +52,7 @@ validate() {
         rl_datapath_verification
         cl_datapath_verification
         ipfix_datapath_verification
+        tm_datapath_verification
         logsuc "$2 API SUCCESS"
     else
         diff $1.json out.json
@@ -111,6 +112,30 @@ ipfix_datapath_verification(){
         limactl shell bpfdev exec -- rm first second first_err second_err
         logerr "ipfix-flow-exporter collecter not receiving packets"
     fi
+}
+tm_datapath_verification(){
+  if grep -q "traffic-mirroring" names.txt;then
+    limactl shell bpfdev exec -- touch tm_first tm_first_err
+    limactl shell collector exec -- touch tm_second tm_second_err
+    limactl shell bpfdev exec -- sudo tcpdump -i gue1 -c 2 > tm_first 2> tm_first_err &
+    limactl shell collector exec -- sudo tcpdump -i lima0 -c 2 > tm_second 2> tm_second_err &
+    sleep 60
+    hey -n 200 -c 20 http://${IP}:8080 > /dev/null
+    for i in {1..200}; do
+    if [[ $(limactl shell bpfdev exec -- cat tm_first | wc -l) -gt 0 ]] && [[ $(limactl shell collector exec -- cat tm_second | wc -l) -gt 0 ]]; then
+      logsuc "traffic-mirroring mirroring the packets"
+      limactl shell bpfdev exec -- rm tm_first tm_first_err
+      limactl shell collector exec -- rm tm_second tm_second_err
+      return
+    fi
+    sleep 1
+    done
+      limactl shell bpfdev exec -- cat tm_first_err
+      limactl shell collector exec -- cat tm_second_err
+      limactl shell bpfdev exec -- rm tm_first tm_first_err
+      limactl shell collector exec -- rm tm_second tm_second_err
+      logerr "traffic-mirroring not mirroring the packets"
+  fi
 }
 api_runner() {
     name=$1
