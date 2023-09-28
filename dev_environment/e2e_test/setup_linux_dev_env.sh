@@ -108,8 +108,7 @@ apt-get install -y bc \
       linux-tools-generic \
       llvm \
       prometheus \
-      rsync \
-      linux-tools-5.15.0-78-generic
+      rsync 
 
 #install the latest go lang version
   os=`uname|tr '[:upper:]' '[:lower:]'`
@@ -118,15 +117,6 @@ apt-get install -y bc \
   tar -C /usr/local -xzf $go_filename && rm -f $go_filename
   export PATH=$PATH:/usr/local/go/bin
   echo export PATH=$PATH:/usr/local/go/bin >> /root/.bashrc
-
-# clone the l3afd repo in to root directly
-# can use mapped directory i.e. at /home/ubuntu/Home
-if [ ! -d "/root/l3afd" ];
-then
-  git clone -b test https://github.com/Atul-source/l3afd.git
-else
-  echo "/root/l3afd directory already exists"
-fi
 
 if [ ! -d "/root/l3af-arch" ];
 then
@@ -236,10 +226,9 @@ make install
 cd ../go/bin/
 
 # start all test servers
-chmod +rx /root/l3af-arch/dev_environment/start_test_servers.sh
-/root/l3af-arch/dev_environment/start_test_servers.sh
+chmod +rx /root/l3af-arch/dev_environment/e2e_test/start_test_servers.sh
+/root/l3af-arch/dev_environment/e2e_test/start_test_servers.sh
 
 # start l3afd
 ./l3afd --config /root/l3af-arch/dev_environment/cfg/l3afd.cfg > l3afd.log 2>&1 &
 
-cd /root/l3af-arch/dev_environment/e2e_test
