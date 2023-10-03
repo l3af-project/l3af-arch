@@ -9,13 +9,13 @@
         "seq_id": 1,
         "artifact": "l3af_ratelimiting.tar.gz",
         "map_name": "xdp_rl_ingress_next_prog",
-        "cmd_start": "ratelimiting",
+        "cmd_start": "",
         "cmd_stop": "",
         "cmd_status": "",
         "cmd_config": "",
         "cmd_update": "",
         "version": "latest",
-        "user_program_daemon": true,
+        "user_program_daemon": false,
         "is_plugin": false,
         "cpu": 0,
         "memory": 0,
@@ -25,14 +25,14 @@
         "rules": "",
         "config_file_path": "",
         "cfg_version": 1,
-        "start_args": {
-          "ports": "8080,8081",
-          "rate": "2"
-        },
+        "start_args": null,
         "stop_args": null,
         "status_args": null,
         "update_args": null,
-        "map_args": null,
+        "map_args": {
+          "rl_config_map": "2",
+          "rl_ports_map": "8080,8081"
+        },
         "config_args": null,
         "monitor_maps": [
           {
@@ -47,8 +47,8 @@
           }
         ],
         "ebpf_package_repo_url": "",
-        "object_file": "",
-        "entry_function_name": ""
+        "object_file": "ratelimiting_kern.o",
+        "entry_function_name": "_xdp_ratelimiting"
       },
       {
         "id": 0,
@@ -62,7 +62,7 @@
         "cmd_config": "",
         "cmd_update": "",
         "version": "latest",
-        "user_program_daemon": true,
+        "user_program_daemon": false,
         "is_plugin": false,
         "cpu": 0,
         "memory": 0,
@@ -72,14 +72,14 @@
         "rules": "",
         "config_file_path": "",
         "cfg_version": 1,
-        "start_args": {
-          "max-conn": "5",
-          "ports": "8080,8081"
-        },
+        "start_args": null,
         "stop_args": null,
         "status_args": null,
         "update_args": null,
-        "map_args": null,
+        "map_args": {
+          "cl_max_conn": "5",
+          "cl_tcp_conns": "8080,8081"
+        },
         "config_args": null,
         "monitor_maps": [
           {
@@ -99,8 +99,8 @@
           }
         ],
         "ebpf_package_repo_url": "",
-        "object_file": "",
-        "entry_function_name": ""
+        "object_file": "connection_limit_kern.o",
+        "entry_function_name": "_xdp_limit_conn"
       }
     ],
     "tc_ingress": [
@@ -138,8 +138,8 @@
         "config_args": null,
         "monitor_maps": null,
         "ebpf_package_repo_url": "",
-        "object_file": "",
-        "entry_function_name": ""
+        "object_file": "bpf_ipfix_ingress_kern.o",
+        "entry_function_name": "_ingress_flow_monitoring"
       }
     ],
     "tc_egress": [
@@ -177,8 +177,8 @@
         "config_args": null,
         "monitor_maps": null,
         "ebpf_package_repo_url": "",
-        "object_file": "",
-        "entry_function_name": ""
+        "object_file": "bpf_ipfix_egress_kern.o",
+        "entry_function_name": "_egress_flow_monitoring"
       }
     ]
   }

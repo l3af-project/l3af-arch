@@ -2,55 +2,7 @@
   "host_name": "lima-bpfdev",
   "iface": "lima0",
   "bpf_programs": {
-    "xdp_ingress": [
-      {
-        "id": 0,
-        "name": "ratelimiting",
-        "seq_id": 1,
-        "artifact": "l3af_ratelimiting.tar.gz",
-        "map_name": "xdp_rl_ingress_next_prog",
-        "cmd_start": "ratelimiting",
-        "cmd_stop": "",
-        "cmd_status": "",
-        "cmd_config": "",
-        "cmd_update": "",
-        "version": "latest",
-        "user_program_daemon": true,
-        "is_plugin": false,
-        "cpu": 0,
-        "memory": 0,
-        "admin_status": "enabled",
-        "prog_type": "xdp",
-        "rules_file": "",
-        "rules": "",
-        "config_file_path": "",
-        "cfg_version": 1,
-        "start_args": {
-          "ports": "8080,8081",
-          "rate": "2"
-        },
-        "stop_args": null,
-        "status_args": null,
-        "update_args": null,
-        "map_args": null,
-        "config_args": null,
-        "monitor_maps": [
-          {
-            "name": "rl_drop_count_map",
-            "key": 0,
-            "aggregator": "scalar"
-          },
-          {
-            "name": "rl_recv_count_map",
-            "key": 0,
-            "aggregator": "max-rate"
-          }
-        ],
-        "ebpf_package_repo_url": "",
-        "object_file": "",
-        "entry_function_name": ""
-      }
-    ],
+    "xdp_ingress": null,
     "tc_ingress": [
       {
         "id": 0,
@@ -64,7 +16,7 @@
         "cmd_config": "",
         "cmd_update": "",
         "version": "latest",
-        "user_program_daemon": true,
+        "user_program_daemon": false,
         "is_plugin": false,
         "cpu": 0,
         "memory": 0,
@@ -92,8 +44,8 @@
         "config_args": null,
         "monitor_maps": [],
         "ebpf_package_repo_url": "",
-        "object_file": "",
-        "entry_function_name": ""
+        "object_file": "mirroring_ingress_kern.o",
+        "entry_function_name": "_ingress_redirect"
       }
     ],
     "tc_egress": [
@@ -109,7 +61,7 @@
         "cmd_config": "",
         "cmd_update": "",
         "version": "latest",
-        "user_program_daemon": true,
+        "user_program_daemon": false,
         "is_plugin": false,
         "cpu": 0,
         "memory": 0,
@@ -137,8 +89,8 @@
         "config_args": null,
         "monitor_maps": [],
         "ebpf_package_repo_url": "",
-        "object_file": "",
-        "entry_function_name": ""
+        "object_file": "mirroring_egress_kern.o",
+        "entry_function_name": "_egress_redirect"
       }
     ]
   }

@@ -4,6 +4,7 @@
         "iface": "lima0",
         "bpf_programs": {
             "xdp_ingress": [
+                "ratelimiting",
                 "connection-limit"
             ],
             "tc_ingress": [

@@ -121,7 +121,7 @@ apt-get install -y bc \
 
 if [ ! -d "/root/l3af-arch" ];
 then
-  git clone -b E2E https://github.com/Atul-source/l3af-arch.git
+  git clone https://github.com/l3af-project/l3af-arch.git
 else
   echo "/root/l3af-arch directory already exists"
 fi
