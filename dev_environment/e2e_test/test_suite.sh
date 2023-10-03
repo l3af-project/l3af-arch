@@ -68,7 +68,7 @@ rl_datapath_verification(){
         for i in {1..120}; do
           after_rl_drop_count=`curl -sS $IP:8898/metrics | grep rl_drop_count_map_0_scalar | awk '{print $NF}'`
           after_rl_recv_count=`curl -sS $IP:8898/metrics | grep rl_recv_count_map_0_max-rate | awk '{print $NF}'`
-          if [[ $(expr $after_rl_drop_count - $before_rl_drop_count) -ne 0 && $(expr $after_rl_recv_count - $before_rl_recv_count) -ne 0 ]];then
+          if [[ $((after_rl_drop_count - before_rl_drop_count)) -ne 0 && $((after_rl_recv_count - before_rl_recv_count)) -ne 0 ]];then
             logsuc "ratelimiting updated the metrics maps"
             return
           fi
@@ -83,7 +83,7 @@ cl_datapath_verification(){
         hey -n 200 -c 20 http://$IP:8080 > /dev/null
         for i in {1..120}; do
           after_cl_recv_count=`curl -sS $IP:8898/metrics | grep cl_recv_count_map_0_scalar | awk '{print $NF}'`
-          if [ $(expr $after_cl_recv_count - $before_cl_recv_count) -ne 0 ];then
+          if [ $((after_cl_recv_count - before_cl_recv_count)) -ne 0 ];then
             logsuc "connection-limit updated the metrics maps"
             return
           fi
@@ -158,4 +158,5 @@ api_runner "update" "upd_payload.json" 2
 api_runner "add" "traffic_mirroring_payload.json" 3
 api_runner "delete" "delete_payload.json" 4
 logsuc "TEST COMPLETED"
+
 
