@@ -25,6 +25,7 @@ IP=`limactl shell bpfdev -- ip -brief address show lima0 | awk '{print $3}' | aw
 validate() {
     touch progids.txt tmp out.json names.txt err
     curl -sS http://${IP}:7080/l3af/configs/v1/lima0 >out.json 2>&1
+    echo >> out.json
     if cmp -s out.json $1.json; then
         curl -sS http://${IP}:8899/bpfs/lima0 | jq ".[].ProgID" >progids.txt 2>err
         if [ -s err ]; then
