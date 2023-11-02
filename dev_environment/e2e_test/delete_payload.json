@@ -8,10 +8,12 @@
                 "connection-limit"
             ],
             "tc_ingress": [
-                "ipfix-flow-exporter"
+                "ipfix-flow-exporter",
+                "traffic-mirroring"
             ],
             "tc_egress": [
-                "ipfix-flow-exporter"
+                "ipfix-flow-exporter",
+                "traffic-mirroring"
             ]
         }
     }
