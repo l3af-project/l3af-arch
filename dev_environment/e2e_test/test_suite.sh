@@ -4,7 +4,7 @@ RED='\033[0;31m'
 NC='\033[0m' # No Color
 GREEN='\033[0;32m'
 close(){
-  files=("err" "progids.txt" "tmp" "out.json" "names.txt" "tmpr")
+  files=("err" "progids.txt" "tmp" "out.json" "names.txt" "tmpr","l3afd.log","l3afd.pid")
   for d in ${files[@]}; do
     if test -f $d;then
       rm $d
@@ -153,7 +153,7 @@ api_runner() {
 }
 
 
-# with chaining
+echo "with chaining\n"
 api_runner "add" "payload.json" 1
 api_runner "update" "upd_payload.json" 2
 api_runner "add" "traffic_mirroring_payload.json" 3
@@ -161,10 +161,11 @@ api_runner "delete" "delete_payload.json" 4
 
 l3afdID=$(limactl shell bpfdev exec -- pgrep l3afd)
 limactl shell bpfdev exec -- sudo kill -9 "$l3afdID"
+limactl shell bpfdev exec -- sudo rm -f /var/l3afd/l3af-config.json
 limactl shell bpfdev exec -- sudo sed -i 's/bpf-chaining-enabled: true/bpf-chaining-enabled: false/' /root/l3af-arch/dev_environment/cfg/l3afd.cfg
 limactl shell bpfdev exec -- bash -c "sudo /root/go/bin/l3afd --config /root/l3af-arch/dev_environment/cfg/l3afd.cfg > l3afd.log 2>&1" &
-
-# without chaining
+sleep 10
+echo "without chaining\n"
 api_runner "add" "payload-without-chaining.json" 5
 api_runner "update" "upd-payload-without-chaining.json" 6
 api_runner "delete" "delete-payload-without-chaining.json" 7
