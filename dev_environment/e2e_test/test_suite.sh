@@ -153,11 +153,25 @@ api_runner() {
 }
 
 
-
+# with chaining
 api_runner "add" "payload.json" 1
 api_runner "update" "upd_payload.json" 2
 api_runner "add" "traffic_mirroring_payload.json" 3
 api_runner "delete" "delete_payload.json" 4
+
+l3afdID=$(limactl shell bpfdev exec -- pgrep l3afd)
+limactl shell bpfdev exec -- sudo kill -9 "$l3afdID"
+limactl shell bpfdev exec -- sudo sed -i 's/bpf-chaining-enabled: true/bpf-chaining-enabled: false/' /root/l3af-arch/dev_environment/cfg/l3afd.cfg
+limactl shell bpfdev exec -- bash -c "sudo /root/go/bin/l3afd --config /root/l3af-arch/dev_environment/cfg/l3afd.cfg > l3afd.log 2>&1" &
+
+# without chaining
+api_runner "add" "payload-without-chaining.json" 5
+api_runner "update" "upd-payload-without-chaining.json" 6
+api_runner "delete" "delete-payload-without-chaining.json" 7
+
+l3afdID=$(limactl shell bpfdev exec -- pgrep l3afd)
+limactl shell bpfdev exec -- sudo kill -9 "$l3afdID"
+
 logsuc "TEST COMPLETED"
 
 

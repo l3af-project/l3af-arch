@@ -1,0 +1,9 @@
+{
+  "host_name": "lima-bpfdev",
+  "iface": "lima0",
+  "bpf_programs": {
+    "xdp_ingress": null,
+    "tc_ingress": null,
+    "tc_egress": null
+  }
+}
