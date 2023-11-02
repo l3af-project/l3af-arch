@@ -188,9 +188,9 @@ make defconfig
 make prepare
 make headers_install
 
-if [ ! -d "/var/log/tb/l3af" ];
+if [ ! -d "/var/log/l3af" ];
 then
-  mkdir -p /var/log/tb/l3af
+  mkdir -p /var/log/l3af
 fi
 if [ ! -d "/var/l3afd" ];
 then
