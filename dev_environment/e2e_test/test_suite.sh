@@ -27,12 +27,12 @@ validate() {
     curl -sS http://${IP}:7080/l3af/configs/v1/lima0 >out.json 2>&1
     echo >> out.json
     if cmp -s out.json $1.json; then
-        curl -sS http://${IP}:8899/bpfs/lima0 | jq ".[].ProgID" >progids.txt 2>err
+        curl -sSL http://${IP}:8899/bpfs/lima0 | jq ".[].ProgID" >progids.txt 2>err
         if [ -s err ]; then
             cat err
             logerr "curl request to debug api failed"
         fi
-        curl -sS http://$IP:8899/bpfs/lima0 | jq ".[].Program.name" >names.txt 2>err
+        curl -sSL http://$IP:8899/bpfs/lima0 | jq ".[].Program.name" >names.txt 2>err
         if [ -s err ]; then
             cat err
             logerr "curl request to debug api failed"
@@ -143,7 +143,7 @@ api_runner() {
     file=$2
     num=$3
     touch tmpr
-    curl -sS -X POST http://${IP}:7080/l3af/configs/v1/${name} -d "@${file}" > tmpr 2>&1
+    curl -sSL -X POST http://${IP}:7080/l3af/configs/v1/${name} -d "@${file}" > tmpr 2>&1
     if [ -s tmpr ]; then
         cat tmpr
         logerr "curl request to the ${name} API falied"
