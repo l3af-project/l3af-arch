@@ -109,8 +109,8 @@ apt-get install -y bc \
       llvm \
       prometheus \
       rsync \
-      linux-tools-5.15.0-78-generic
-
+      linux-tools-5.15.0-86-generic \
+      linux-cloud-tools-5.15.0-86-generic
 #install the latest go lang version
   os=`uname|tr '[:upper:]' '[:lower:]'`
   go_filename=`curl -s https://go.dev/dl/?mode=json|jq '.[0].files[].filename'|grep $os|grep $arch|egrep -v "ppc"|tr -d '"'`
