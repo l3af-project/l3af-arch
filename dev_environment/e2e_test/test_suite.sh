@@ -143,12 +143,12 @@ api_runner() {
     file=$2
     num=$3
     touch tmpr
-    echo $name
-    echo $file
-    echo $num
-    echo $IP
-    curl -v http://${IP}:7080/l3af/configs/v1/lima0
-    curl -v -sS -X POST http://${IP}:7080/l3af/configs/v1/${name} -H "Content-Type: application/json" -d "@${file}" > tmpr 2>&1
+    #echo $name
+    #echo $file
+    #echo $num
+    #echo $IP
+    #curl -v http://${IP}:7080/l3af/configs/v1/lima0
+    curl -sS -X POST http://${IP}:7080/l3af/configs/v1/${name} -H "Content-Type: application/json" -d "@${file}" > tmpr 2>&1
     if [ -s tmpr ]; then
         cat tmpr
         logerr "curl request to the ${name} API falied"
@@ -158,19 +158,19 @@ api_runner() {
 }
 
 
-#echo "with chaining\n"
-#api_runner "add" "payload.json" 1
-#api_runner "update" "upd_payload.json" 2
-#api_runner "add" "traffic_mirroring_payload.json" 3
-#api_runner "delete" "delete_payload.json" 4
+echo "with chaining"
+api_runner "add" "payload.json" 1
+api_runner "update" "upd_payload.json" 2
+api_runner "add" "traffic_mirroring_payload.json" 3
+api_runner "delete" "delete_payload.json" 4
 
-#l3afdID=$(limactl shell bpfdev exec -- pgrep l3afd)
-#limactl shell bpfdev exec -- sudo kill -9 "$l3afdID"
-#limactl shell bpfdev exec -- sudo rm -f /var/l3afd/l3af-config.json
-#limactl shell bpfdev exec -- sudo sed -i 's/bpf-chaining-enabled: true/bpf-chaining-enabled: false/' /root/l3af-arch/dev_environment/cfg/l3afd.cfg
-#limactl shell bpfdev exec -- bash -c "sudo /root/go/bin/l3afd --config /root/l3af-arch/dev_environment/cfg/l3afd.cfg > l3afd.log 2>&1" &
-#sleep 10
-#echo "without chaining\n"
+l3afdID=$(limactl shell bpfdev exec -- pgrep l3afd)
+limactl shell bpfdev exec -- sudo kill -9 "$l3afdID"
+limactl shell bpfdev exec -- sudo rm -f /var/l3afd/l3af-config.json
+limactl shell bpfdev exec -- sudo sed -i 's/bpf-chaining-enabled: true/bpf-chaining-enabled: false/' /root/l3af-arch/dev_environment/cfg/l3afd.cfg
+limactl shell bpfdev exec -- bash -c "sudo /root/go/bin/l3afd --config /root/l3af-arch/dev_environment/cfg/l3afd.cfg > l3afd.log 2>&1" &
+sleep 10
+echo "without chaining"
 api_runner "add" "payload-without-chaining.json" 5
 api_runner "update" "upd-payload-without-chaining.json" 6
 api_runner "delete" "delete-payload-without-chaining.json" 7
