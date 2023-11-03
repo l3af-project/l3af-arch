@@ -24,15 +24,15 @@ logsuc(){
 IP=`limactl shell bpfdev -- ip -brief address show lima0 | awk '{print $3}' | awk -F/ '{print $1}'`
 validate() {
     touch progids.txt tmp out.json names.txt err
-    curl -sS https://${IP}:7080/l3af/configs/v1/lima0 >out.json 2>&1
+    curl -sS http://${IP}:7080/l3af/configs/v1/lima0 >out.json 2>&1
     echo >> out.json
     if cmp -s out.json $1.json; then
-        curl -sS https://${IP}:8899/bpfs/lima0 | jq ".[].ProgID" >progids.txt 2>err
+        curl -sS http://${IP}:8899/bpfs/lima0 | jq ".[].ProgID" >progids.txt 2>err
         if [ -s err ]; then
             cat err
             logerr "curl request to debug api failed"
         fi
-        curl -sS https://$IP:8899/bpfs/lima0 | jq ".[].Program.name" >names.txt 2>err
+        curl -sS http://$IP:8899/bpfs/lima0 | jq ".[].Program.name" >names.txt 2>err
         if [ -s err ]; then
             cat err
             logerr "curl request to debug api failed"
@@ -65,7 +65,7 @@ rl_datapath_verification(){
     if grep -q "ratelimiting" names.txt;then
         before_rl_drop_count=`curl -sS $IP:8898/metrics | grep rl_drop_count_map_0_scalar | awk '{print $NF}'`
         before_rl_recv_count=`curl -sS $IP:8898/metrics | grep rl_recv_count_map_0_max-rate | awk '{print $NF}'`
-        hey -n 200 -c 20 https://$IP:8080 > /dev/null
+        hey -n 200 -c 20 http://$IP:8080 > /dev/null
         for i in {1..120}; do
           after_rl_drop_count=`curl -sS $IP:8898/metrics | grep rl_drop_count_map_0_scalar | awk '{print $NF}'`
           after_rl_recv_count=`curl -sS $IP:8898/metrics | grep rl_recv_count_map_0_max-rate | awk '{print $NF}'`
@@ -81,7 +81,7 @@ rl_datapath_verification(){
 cl_datapath_verification(){
     if grep -q "connection-limit" names.txt;then
         before_cl_recv_count=`curl -sS $IP:8898/metrics | grep cl_recv_count_map_0_scalar | awk '{print $NF}'`
-        hey -n 200 -c 20 https://$IP:8080 > /dev/null
+        hey -n 200 -c 20 http://$IP:8080 > /dev/null
         for i in {1..120}; do
           after_cl_recv_count=`curl -sS $IP:8898/metrics | grep cl_recv_count_map_0_scalar | awk '{print $NF}'`
           if [ $((after_cl_recv_count - before_cl_recv_count)) -ne 0 ];then
@@ -101,7 +101,7 @@ ipfix_datapath_verification(){
       limactl shell bpfdev exec -- sudo tcpdump -i lima0 port 8080 -c 2 > first 2> first_err &
       limactl shell bpfdev exec -- sudo tcpdump -i lo port 49280 -c 2 > second 2> second_err &
       sleep 60
-      hey -n 200 -c 20 https://${IP}:8080 > /dev/null
+      hey -n 200 -c 20 http://${IP}:8080 > /dev/null
       for i in {1..200}; do
       if [[ $(limactl shell bpfdev exec -- cat first | wc -l) -gt 0 ]] && [[ $(limactl shell bpfdev exec -- cat second | wc -l) -gt 0 ]]; then
         logsuc "ipfix-flow-exporter collecter is receiving packets"
@@ -121,7 +121,7 @@ tm_datapath_verification(){
     limactl shell bpfdev exec -- sudo tcpdump -i gue1 -c 2 > tm_first 2> tm_first_err &
     limactl shell collector exec -- sudo tcpdump -i lima0 -c 2 > tm_second 2> tm_second_err &
     sleep 60
-    hey -n 200 -c 20 https://${IP}:8080 > /dev/null
+    hey -n 200 -c 20 http://${IP}:8080 > /dev/null
     for i in {1..200}; do
     if [[ $(limactl shell bpfdev exec -- cat tm_first | wc -l) -gt 0 ]] && [[ $(limactl shell collector exec -- cat tm_second | wc -l) -gt 0 ]]; then
       logsuc "traffic-mirroring mirroring the packets"
@@ -147,7 +147,8 @@ api_runner() {
     echo $file
     echo $num
     echo $IP
-    curl -v -sS -X POST https://${IP}:7080/l3af/configs/v1/${name} -d "@${file}" > tmpr 2>&1
+    curl -v http://${IP}:7080/l3af/configs/v1/lima0
+    curl -v -sS -X POST http://${IP}:7080/l3af/configs/v1/${name} -H "Content-Type: application/json" -d "@${file}" > tmpr 2>&1
     if [ -s tmpr ]; then
         cat tmpr
         logerr "curl request to the ${name} API falied"
