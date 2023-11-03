@@ -24,15 +24,15 @@ logsuc(){
 IP=`limactl shell bpfdev -- ip -brief address show lima0 | awk '{print $3}' | awk -F/ '{print $1}'`
 validate() {
     touch progids.txt tmp out.json names.txt err
-    curl -sSL http://${IP}:7080/l3af/configs/v1/lima0 >out.json 2>&1
+    curl -sS http://${IP}:7080/l3af/configs/v1/lima0 >out.json 2>&1
     echo >> out.json
     if cmp -s out.json $1.json; then
-        curl -sSL http://${IP}:8899/bpfs/lima0 | jq ".[].ProgID" >progids.txt 2>err
+        curl -sS http://${IP}:8899/bpfs/lima0 | jq ".[].ProgID" >progids.txt 2>err
         if [ -s err ]; then
             cat err
             logerr "curl request to debug api failed"
         fi
-        curl -sSL http://$IP:8899/bpfs/lima0 | jq ".[].Program.name" >names.txt 2>err
+        curl -sS http://$IP:8899/bpfs/lima0 | jq ".[].Program.name" >names.txt 2>err
         if [ -s err ]; then
             cat err
             logerr "curl request to debug api failed"
@@ -63,12 +63,12 @@ validate() {
 
 rl_datapath_verification(){
     if grep -q "ratelimiting" names.txt;then
-        before_rl_drop_count=`curl -sSL $IP:8898/metrics | grep rl_drop_count_map_0_scalar | awk '{print $NF}'`
-        before_rl_recv_count=`curl -sSL $IP:8898/metrics | grep rl_recv_count_map_0_max-rate | awk '{print $NF}'`
+        before_rl_drop_count=`curl -sS $IP:8898/metrics | grep rl_drop_count_map_0_scalar | awk '{print $NF}'`
+        before_rl_recv_count=`curl -sS $IP:8898/metrics | grep rl_recv_count_map_0_max-rate | awk '{print $NF}'`
         hey -n 200 -c 20 http://$IP:8080 > /dev/null
         for i in {1..120}; do
-          after_rl_drop_count=`curl -sSL $IP:8898/metrics | grep rl_drop_count_map_0_scalar | awk '{print $NF}'`
-          after_rl_recv_count=`curl -sSL $IP:8898/metrics | grep rl_recv_count_map_0_max-rate | awk '{print $NF}'`
+          after_rl_drop_count=`curl -sS $IP:8898/metrics | grep rl_drop_count_map_0_scalar | awk '{print $NF}'`
+          after_rl_recv_count=`curl -sS $IP:8898/metrics | grep rl_recv_count_map_0_max-rate | awk '{print $NF}'`
           if [[ $((after_rl_drop_count - before_rl_drop_count)) -ne 0 && $((after_rl_recv_count - before_rl_recv_count)) -ne 0 ]];then
             logsuc "ratelimiting updated the metrics maps"
             return
@@ -80,10 +80,10 @@ rl_datapath_verification(){
 }
 cl_datapath_verification(){
     if grep -q "connection-limit" names.txt;then
-        before_cl_recv_count=`curl -sSL $IP:8898/metrics | grep cl_recv_count_map_0_scalar | awk '{print $NF}'`
+        before_cl_recv_count=`curl -sS $IP:8898/metrics | grep cl_recv_count_map_0_scalar | awk '{print $NF}'`
         hey -n 200 -c 20 http://$IP:8080 > /dev/null
         for i in {1..120}; do
-          after_cl_recv_count=`curl -sSL $IP:8898/metrics | grep cl_recv_count_map_0_scalar | awk '{print $NF}'`
+          after_cl_recv_count=`curl -sS $IP:8898/metrics | grep cl_recv_count_map_0_scalar | awk '{print $NF}'`
           if [ $((after_cl_recv_count - before_cl_recv_count)) -ne 0 ];then
             logsuc "connection-limit updated the metrics maps"
             return
@@ -143,7 +143,7 @@ api_runner() {
     file=$2
     num=$3
     touch tmpr
-    curl -sSL -X POST http://${IP}:7080/l3af/configs/v1/${name} -d "@${file}" > tmpr 2>&1
+    curl -sS -X POST http://${IP}:7080/l3af/configs/v1/${name} -d "@${file}" > tmpr 2>&1
     if [ -s tmpr ]; then
         cat tmpr
         logerr "curl request to the ${name} API falied"
