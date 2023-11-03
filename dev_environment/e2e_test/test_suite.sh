@@ -147,7 +147,7 @@ api_runner() {
     echo $file
     echo $num
     echo $IP
-    curl -v -sS -X POST http://${IP}:7080/l3af/configs/v1/${name} -d "@${file}" > tmpr 2>&1
+    curl -v -sS -X POST https://${IP}:7080/l3af/configs/v1/${name} -d "@${file}" > tmpr 2>&1
     if [ -s tmpr ]; then
         cat tmpr
         logerr "curl request to the ${name} API falied"
