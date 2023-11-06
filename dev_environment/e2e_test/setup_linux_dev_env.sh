@@ -9,6 +9,7 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 # Check for kernel version 5.15
+FULL_KERNEL_VERSION=$(uname -r)
 CURRENT_KERNEL_VERSION=$(uname -r | cut -d"." -f1-2)
 CURRENT_KERNEL_MAJOR_VERSION=$(echo "${CURRENT_KERNEL_VERSION}" | cut -d"." -f1)
 CURRENT_KERNEL_MINOR_VERSION=$(echo "${CURRENT_KERNEL_VERSION}" | cut -d"." -f2)
@@ -104,13 +105,13 @@ apt-get install -y bc \
       libpcap-dev \
       libssl-dev \
       linux-headers-generic \
-      linux-tools-$(uname-r) \
+      linux-tools-$FULL_KERNEL_VERSION \
       linux-tools-common \
       linux-tools-generic \
       llvm \
       prometheus \
       rsync \
-      linux-cloud-tools-$(uname -r)
+      linux-cloud-tools-$FULL_KERNEL_VERSION
 #install the latest go lang version
   os=`uname|tr '[:upper:]' '[:lower:]'`
   go_filename=`curl -s https://go.dev/dl/?mode=json|jq '.[0].files[].filename'|grep $os|grep $arch|egrep -v "ppc"|tr -d '"'`
