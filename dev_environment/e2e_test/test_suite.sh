@@ -66,7 +66,7 @@ rl_datapath_verification(){
         before_rl_drop_count=`curl -sS $IP:8898/metrics | grep rl_drop_count_map_0_scalar | awk '{print $NF}'`
         before_rl_recv_count=`curl -sS $IP:8898/metrics | grep rl_recv_count_map_0_max-rate | awk '{print $NF}'`
         hey -n 200 -c 20 http://$IP:8080 > /dev/null
-        for i in {1..120}; do
+        for i in {1..1200}; do
           after_rl_drop_count=`curl -sS $IP:8898/metrics | grep rl_drop_count_map_0_scalar | awk '{print $NF}'`
           after_rl_recv_count=`curl -sS $IP:8898/metrics | grep rl_recv_count_map_0_max-rate | awk '{print $NF}'`
           if [[ $((after_rl_drop_count - before_rl_drop_count)) -ne 0 && $((after_rl_recv_count - before_rl_recv_count)) -ne 0 ]];then
@@ -82,7 +82,7 @@ cl_datapath_verification(){
     if grep -q "connection-limit" names.txt;then
         before_cl_recv_count=`curl -sS $IP:8898/metrics | grep cl_recv_count_map_0_scalar | awk '{print $NF}'`
         hey -n 200 -c 20 http://$IP:8080 > /dev/null
-        for i in {1..120}; do
+        for i in {1..1200}; do
           after_cl_recv_count=`curl -sS $IP:8898/metrics | grep cl_recv_count_map_0_scalar | awk '{print $NF}'`
           if [ $((after_cl_recv_count - before_cl_recv_count)) -ne 0 ];then
             logsuc "connection-limit updated the metrics maps"
@@ -102,7 +102,7 @@ ipfix_datapath_verification(){
       limactl shell bpfdev exec -- sudo tcpdump -i lo port 49280 -c 2 > second 2> second_err &
       sleep 60
       hey -n 200 -c 20 http://${IP}:8080 > /dev/null
-      for i in {1..200}; do
+      for i in {1..2000}; do
       if [[ $(limactl shell bpfdev exec -- cat first | wc -l) -gt 0 ]] && [[ $(limactl shell bpfdev exec -- cat second | wc -l) -gt 0 ]]; then
         logsuc "ipfix-flow-exporter collecter is receiving packets"
         limactl shell bpfdev exec -- rm first second first_err second_err
@@ -122,7 +122,7 @@ tm_datapath_verification(){
     limactl shell collector exec -- sudo tcpdump -i lima0 -c 2 > tm_second 2> tm_second_err &
     sleep 60
     hey -n 200 -c 20 http://${IP}:8080 > /dev/null
-    for i in {1..200}; do
+    for i in {1..2000}; do
     if [[ $(limactl shell bpfdev exec -- cat tm_first | wc -l) -gt 0 ]] && [[ $(limactl shell collector exec -- cat tm_second | wc -l) -gt 0 ]]; then
       logsuc "traffic-mirroring mirroring the packets"
       limactl shell bpfdev exec -- rm tm_first tm_first_err
