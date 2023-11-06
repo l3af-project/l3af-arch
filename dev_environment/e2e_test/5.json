@@ -76,7 +76,7 @@
         "cfg_version": 1,
         "start_args": {
           "collector_ip": "127.0.0.1",
-          "collector_port": "49280",
+          "collector_port": "49289",
           "verbose": "2"
         },
         "stop_args": null,
@@ -115,7 +115,7 @@
         "cfg_version": 1,
         "start_args": {
           "collector_ip": "127.0.0.1",
-          "collector_port": "49280",
+          "collector_port": "49289",
           "verbose": "2"
         },
         "stop_args": null,
