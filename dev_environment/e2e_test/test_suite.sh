@@ -100,9 +100,8 @@ ipfix_datapath_verification(){
       limactl shell bpfdev exec -- touch first first_err second second_err
       limactl shell bpfdev exec -- sudo tcpdump -i lima0 port 8080 -c 2 > first 2> first_err &
       limactl shell bpfdev exec -- sudo tcpdump -i lo port 49289 -c 2 > second 2> second_err &
-      sleep 60
-      hey -n 200 -c 20 http://${IP}:8080 > /dev/null
       for i in {1..2000}; do
+        hey -n 200 -c 20 http://${IP}:8080 > /dev/null
       if [[ $(limactl shell bpfdev exec -- cat first | wc -l) -gt 0 ]] && [[ $(limactl shell bpfdev exec -- cat second | wc -l) -gt 0 ]]; then
         logsuc "ipfix-flow-exporter collecter is receiving packets"
         limactl shell bpfdev exec -- rm first second first_err second_err
@@ -120,9 +119,8 @@ tm_datapath_verification(){
     limactl shell collector exec -- touch tm_second tm_second_err
     limactl shell bpfdev exec -- sudo tcpdump -i gue1 -c 2 > tm_first 2> tm_first_err &
     limactl shell collector exec -- sudo tcpdump -i lima0 -c 2 > tm_second 2> tm_second_err &
-    sleep 60
-    hey -n 200 -c 20 http://${IP}:8080 > /dev/null
     for i in {1..2000}; do
+      hey -n 200 -c 20 http://${IP}:8080 > /dev/null
     if [[ $(limactl shell bpfdev exec -- cat tm_first | wc -l) -gt 0 ]] && [[ $(limactl shell collector exec -- cat tm_second | wc -l) -gt 0 ]]; then
       logsuc "traffic-mirroring mirroring the packets"
       limactl shell bpfdev exec -- rm tm_first tm_first_err
