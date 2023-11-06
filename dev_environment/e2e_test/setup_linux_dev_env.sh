@@ -104,12 +104,12 @@ apt-get install -y bc \
       libpcap-dev \
       libssl-dev \
       linux-headers-generic \
+      linux-tools-$(uname-r) \
       linux-tools-common \
       linux-tools-generic \
       llvm \
       prometheus \
       rsync \
-      linux-tools-$(uname-r) \
       linux-cloud-tools-$(uname -r)
 #install the latest go lang version
   os=`uname|tr '[:upper:]' '[:lower:]'`
