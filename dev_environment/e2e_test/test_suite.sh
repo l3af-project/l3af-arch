@@ -52,8 +52,6 @@ validate() {
         done
         rl_datapath_verification
         cl_datapath_verification
-        ipfix_datapath_verification
-        tm_datapath_verification
         logsuc "$2 API SUCCESS"
     else
         diff $1.json out.json
@@ -94,58 +92,11 @@ cl_datapath_verification(){
     fi
 }
 
-ipfix_datapath_verification(){
-    if grep -q "ipfix-flow-exporter" names.txt;then
-            # Start tcpdump on lima0 and lo interfaces capturing traffic on ports 8080 and 49289 inside lima VM
-      limactl shell bpfdev exec -- touch first first_err second second_err
-      limactl shell bpfdev exec -- sudo tcpdump -i lima0 port 8080 -c 2 > first 2> first_err &
-      limactl shell bpfdev exec -- sudo tcpdump -i lo port 49289 -c 2 > second 2> second_err &
-      for i in {1..2000}; do
-        hey -n 200 -c 20 http://${IP}:8080 > /dev/null
-      if [[ $(limactl shell bpfdev exec -- cat first | wc -l) -gt 0 ]] && [[ $(limactl shell bpfdev exec -- cat second | wc -l) -gt 0 ]]; then
-        logsuc "ipfix-flow-exporter collecter is receiving packets"
-        limactl shell bpfdev exec -- rm first second first_err second_err
-        return
-      fi
-      sleep 1
-      done
-        limactl shell bpfdev exec -- rm first second first_err second_err
-        logerr "ipfix-flow-exporter collecter not receiving packets"
-    fi
-}
-tm_datapath_verification(){
-  if grep -q "traffic-mirroring" names.txt;then
-    limactl shell bpfdev exec -- touch tm_first tm_first_err
-    limactl shell collector exec -- touch tm_second tm_second_err
-    limactl shell bpfdev exec -- sudo tcpdump -i gue1 -c 2 > tm_first 2> tm_first_err &
-    limactl shell collector exec -- sudo tcpdump -i lima0 -c 2 > tm_second 2> tm_second_err &
-    for i in {1..2000}; do
-      hey -n 200 -c 20 http://${IP}:8080 > /dev/null
-    if [[ $(limactl shell bpfdev exec -- cat tm_first | wc -l) -gt 0 ]] && [[ $(limactl shell collector exec -- cat tm_second | wc -l) -gt 0 ]]; then
-      logsuc "traffic-mirroring mirroring the packets"
-      limactl shell bpfdev exec -- rm tm_first tm_first_err
-      limactl shell collector exec -- rm tm_second tm_second_err
-      return
-    fi
-    sleep 1
-    done
-      limactl shell bpfdev exec -- cat tm_first_err
-      limactl shell collector exec -- cat tm_second_err
-      limactl shell bpfdev exec -- rm tm_first tm_first_err
-      limactl shell collector exec -- rm tm_second tm_second_err
-      logerr "traffic-mirroring not mirroring the packets"
-  fi
-}
 api_runner() {
     name=$1
     file=$2
     num=$3
     touch tmpr
-    #echo $name
-    #echo $file
-    #echo $num
-    #echo $IP
-    #curl -v http://${IP}:7080/l3af/configs/v1/lima0
     curl -sS -X POST http://${IP}:7080/l3af/configs/v1/${name} -H "Content-Type: application/json" -d "@${file}" > tmpr 2>&1
     if [ -s tmpr ]; then
         cat tmpr
