@@ -100,7 +100,7 @@ ipfix_datapath_verification(){
       limactl shell bpfdev exec -- touch first first_err second second_err
       limactl shell bpfdev exec -- sudo tcpdump -i lima0 port 8080 -c 2 > first 2> first_err &
       limactl shell bpfdev exec -- sudo tcpdump -i lo port 49280 -c 2 > second 2> second_err &
-      sleep 60
+      sleep 300
       hey -n 200 -c 20 http://${IP}:8080 > /dev/null
       for i in {1..2000}; do
       if [[ $(limactl shell bpfdev exec -- cat first | wc -l) -gt 0 ]] && [[ $(limactl shell bpfdev exec -- cat second | wc -l) -gt 0 ]]; then
