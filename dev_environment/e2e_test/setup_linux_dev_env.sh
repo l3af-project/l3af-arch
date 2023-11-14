@@ -120,6 +120,12 @@ apt-get install -y bc \
   export PATH=$PATH:/usr/local/go/bin
   echo export PATH=$PATH:/usr/local/go/bin >> /root/.bashrc
 
+if [ ! -d "/root/l3af-arch" ];
+then
+  git clone https://github.com/l3af-project/l3af-arch.git
+else
+  echo "/root/l3af-arch directory already exists"
+fi
 
 # Copy grafana configs and dashboards into place
 if [ -d "/var/lib/grafana/dashboards" ];
