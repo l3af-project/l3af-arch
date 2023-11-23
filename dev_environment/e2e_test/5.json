@@ -1,0 +1,133 @@
+{
+  "host_name": "lima-bpfdev",
+  "iface": "ibpfbr",
+  "bpf_programs": {
+    "xdp_ingress": [
+      {
+        "id": 0,
+        "name": "ratelimiting",
+        "seq_id": 1,
+        "artifact": "l3af_ratelimiting.tar.gz",
+        "map_name": "xdp_rl_ingress_next_prog",
+        "cmd_start": "",
+        "cmd_stop": "",
+        "cmd_status": "",
+        "cmd_config": "",
+        "cmd_update": "",
+        "version": "latest",
+        "user_program_daemon": false,
+        "is_plugin": false,
+        "cpu": 0,
+        "memory": 0,
+        "admin_status": "enabled",
+        "prog_type": "xdp",
+        "rules_file": "",
+        "rules": "",
+        "config_file_path": "",
+        "cfg_version": 1,
+        "start_args": null,
+        "stop_args": null,
+        "status_args": null,
+        "update_args": null,
+        "map_args": {
+          "rl_config_map": "2",
+          "rl_ports_map": "8080,8081"
+        },
+        "config_args": null,
+        "monitor_maps": [
+          {
+            "name": "rl_drop_count_map",
+            "key": 0,
+            "aggregator": "scalar"
+          },
+          {
+            "name": "rl_recv_count_map",
+            "key": 0,
+            "aggregator": "max-rate"
+          }
+        ],
+        "ebpf_package_repo_url": "",
+        "object_file": "ratelimiting_kern.o",
+        "entry_function_name": "_xdp_ratelimiting"
+      }
+    ],
+    "tc_ingress": [
+      {
+        "id": 0,
+        "name": "ipfix-flow-exporter",
+        "seq_id": 1,
+        "artifact": "l3af_bpf_ipfix.tar.gz",
+        "map_name": "ipfix_ingress_jmp_table",
+        "cmd_start": "bpf_ipfix_ingress",
+        "cmd_stop": "",
+        "cmd_status": "",
+        "cmd_config": "",
+        "cmd_update": "",
+        "version": "latest",
+        "user_program_daemon": true,
+        "is_plugin": false,
+        "cpu": 0,
+        "memory": 0,
+        "admin_status": "enabled",
+        "prog_type": "tc",
+        "rules_file": "",
+        "rules": "",
+        "config_file_path": "",
+        "cfg_version": 1,
+        "start_args": {
+          "collector_ip": "127.0.0.1",
+          "collector_port": "49280",
+          "verbose": "2"
+        },
+        "stop_args": null,
+        "status_args": null,
+        "update_args": null,
+        "map_args": null,
+        "config_args": null,
+        "monitor_maps": null,
+        "ebpf_package_repo_url": "",
+        "object_file": "bpf_ipfix_ingress_kern.o",
+        "entry_function_name": "_ingress_flow_monitoring"
+      }
+    ],
+    "tc_egress": [
+      {
+        "id": 0,
+        "name": "ipfix-flow-exporter",
+        "seq_id": 1,
+        "artifact": "l3af_bpf_ipfix.tar.gz",
+        "map_name": "ipfix_egress_jmp_table",
+        "cmd_start": "bpf_ipfix_egress",
+        "cmd_stop": "",
+        "cmd_status": "",
+        "cmd_config": "",
+        "cmd_update": "",
+        "version": "latest",
+        "user_program_daemon": true,
+        "is_plugin": false,
+        "cpu": 0,
+        "memory": 0,
+        "admin_status": "enabled",
+        "prog_type": "tc",
+        "rules_file": "",
+        "rules": "",
+        "config_file_path": "",
+        "cfg_version": 1,
+        "start_args": {
+          "collector_ip": "127.0.0.1",
+          "collector_port": "49280",
+          "verbose": "2"
+        },
+        "stop_args": null,
+        "status_args": null,
+        "update_args": null,
+        "map_args": null,
+        "config_args": null,
+        "monitor_maps": null,
+        "ebpf_package_repo_url": "",
+        "object_file": "bpf_ipfix_egress_kern.o",
+        "entry_function_name": "_egress_flow_monitoring"
+      }
+    ]
+  }
+}
