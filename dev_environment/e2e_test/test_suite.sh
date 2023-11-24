@@ -10,7 +10,7 @@ NC='\033[0m' # No Color
 GREEN='\033[0;32m'
 
 close() {
-    files=("err" "progids.txt" "tmp" "out.json" "names.txt" "tmpr","l3afd.log","l3afd.pid")
+    files=("err" "progids.txt" "tmp" "output.json" "names.txt" "tmpr" "map_names.txt" "l3afd.log" "l3afd.pid")
     for d in ${files[@]}; do
         if test -f $d; then
             rm $d
@@ -46,7 +46,7 @@ traffic_gen() {
 validate() {
     exp_output=$1
     api_name=$2
-    touch progids.txt tmp out.json names.txt err
+    touch progids.txt tmp output.json names.txt err
     curl -sS http://${IP}:7080/l3af/configs/v1/ibpfbr >output.json 2>&1
     echo >>output.json
     if cmp -s output.json /root/l3af-arch/dev_environment/e2e_test/$exp_output; then
@@ -208,3 +208,4 @@ api_runner "delete" "del_tm_payload.json" "exp_output_nil.json"
 l3afdID=$(pgrep l3afd)
 kill -9 $l3afdID
 logsuc "TEST COMPLETED"
+close
