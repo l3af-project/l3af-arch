@@ -1,6 +1,7 @@
 ## Installing Grafana and Prometheus on Windows System
 
-### Installation of Grafana on Window
+### Installation of Grafana on Windows
+
 
 Navigate to https://grafana.com/grafana/download?platform=windows and Download Grafana for windows (https://dl.grafana.com/enterprise/release/grafana-enterprise-9.0.3.windows-amd64.msi)
 
