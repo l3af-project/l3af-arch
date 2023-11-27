@@ -1,5 +1,5 @@
 {
-  "host_name": "lima-bpfdev",
+  "host_name": "l3af-test-host",
   "iface": "ibpfbr",
   "bpf_programs": {
     "xdp_ingress": [
