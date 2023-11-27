@@ -28,7 +28,6 @@
                     "monitor_maps": [],
                     "object_file": "mirroring_ingress_kern.o",
                     "entry_function_name": "_ingress_redirect"
-
                 }
             ],
             "tc_egress": [
