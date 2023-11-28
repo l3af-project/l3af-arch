@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 ip netns add bpf
 ip link add ibpf type veth peer name ibpfbr
 ip link set ibpf netns bpf
