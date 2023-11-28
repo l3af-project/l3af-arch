@@ -236,7 +236,7 @@ chmod +rx /root/l3af-arch/dev_environment/start_test_servers.sh
 
 # Starting test servers and l3afd daemon
 if [ "$1" == "--ci-build" ];then
-  ip netns exec bpf bash /root/l3af-arch/dev_environment/e2e_test/start_test_servers.sh
+  ip netns exec bpf bash /root/l3af-arch/dev_environment/start_test_servers.sh
   ./l3afd --config /root/l3af-arch/dev_environment/cfg/l3afd.cfg > l3afd.log 2>&1 &
 else
   /root/l3af-arch/dev_environment/start_test_servers.sh
