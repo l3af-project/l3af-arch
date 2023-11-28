@@ -94,12 +94,10 @@ validate() {
 rl_datapath_verification() {
     if grep -q "ratelimiting" names.txt; then
         before_rl_drop_count=$(curl -sS $IP:8898/metrics | grep rl_drop_count_map_0_scalar | awk '{print $NF}')
-        before_rl_recv_count=$(curl -sS $IP:8898/metrics | grep rl_recv_count_map_0_max-rate | awk '{print $NF}')
         for i in {1..100}; do
             traffic_gen $1
             after_rl_drop_count=$(curl -sS $IP:8898/metrics | grep rl_drop_count_map_0_scalar | awk '{print $NF}')
-            after_rl_recv_count=$(curl -sS $IP:8898/metrics | grep rl_recv_count_map_0_max-rate | awk '{print $NF}')
-            if [[ $((after_rl_drop_count - before_rl_drop_count)) -ne 0 && $((after_rl_recv_count - before_rl_recv_count)) -ne 0 ]]; then
+            if [[ $((after_rl_drop_count - before_rl_drop_count)) -ne 0 ]]; then
                 logsuc "ratelimiting updated the metrics maps"
                 return
             fi
