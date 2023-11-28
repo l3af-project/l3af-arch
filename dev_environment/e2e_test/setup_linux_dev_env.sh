@@ -2,7 +2,7 @@
 
 set -eux
 
-# this script needs to run as root account, check it
+# This script needs to run as root account, check it
 if [[ $EUID -ne 0 ]]; then
     echo "This script must be run as root"
     exit 1
@@ -72,19 +72,19 @@ esac
 
 cd /root
 
-# install packages
+# Install packages
 apt-get update 
 apt-get install -y software-properties-common wget
 
-# get grafana package
+# Get grafana package
 wget -q -O - https://packages.grafana.com/gpg.key | apt-key add -
 echo "deb https://packages.grafana.com/oss/deb stable main" | tee -a /etc/apt/sources.list.d/grafana.list
 apt-get clean
 apt-get update
 # -end-
 
-# install all necessary packages
-# gcc-multilib      not existed for arm64 repos
+# Install all necessary packages
+# gcc-multilib does not exist for arm64 repos
 apt-get install -y bc \
       bison \
       build-essential \
@@ -111,7 +111,7 @@ apt-get install -y bc \
       rsync \
       linux-tools-5.15.0-86-generic \
       linux-cloud-tools-5.15.0-86-generic
-#install the latest go lang version
+# Install the latest go lang version
   os=`uname|tr '[:upper:]' '[:lower:]'`
   go_filename=`curl -s https://go.dev/dl/?mode=json|jq '.[0].files[].filename'|grep $os|grep $arch|egrep -v "ppc"|tr -d '"'`
   wget https://go.dev/dl/$go_filename
@@ -155,7 +155,7 @@ then
   /etc/init.d/grafana-server stop || true
   /etc/init.d/grafana-server start || true
 else
-  # the configuration got copied, restart the prometheus service
+  # The configuration got copied, restart the prometheus service
   systemctl daemon-reload
   systemctl restart prometheus prometheus-node-exporter
   systemctl enable prometheus.service
@@ -207,11 +207,11 @@ then
 fi
 cd eBPF-Package-Repository
 
-# declare an array variable
+# Declare an array variable
 declare -a progs=("xdp-root" "ratelimiting" "connection-limit" "tc-root" "ipfix-flow-exporter" "traffic-mirroring")
 
 codename=`lsb_release -c -s`
-# now loop through the above array and build the L3AF eBPF programs
+# Now loop through the above array and build the L3AF eBPF programs
 for prog in "${progs[@]}"
 do
 	cd $prog
@@ -227,10 +227,10 @@ cd /root/l3afd
 make install
 cd ../go/bin/
 
-# start all test servers
+# Start all test servers
 chmod +rx /root/l3af-arch/dev_environment/e2e_test/start_test_servers.sh
 /root/l3af-arch/dev_environment/e2e_test/start_test_servers.sh
 ip netns exec bpf bash /root/l3af-arch/dev_environment/e2e_test/start_test_servers.sh
 
-# start l3afd
+# Start l3afd
 ./l3afd --config /root/l3af-arch/dev_environment/cfg/l3afd.cfg > l3afd.log 2>&1 &
