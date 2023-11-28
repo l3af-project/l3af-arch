@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
-
 set -eux
 
-# this script needs to run as root account, check it
+# This script needs to run as root account, check it
 if [[ $EUID -ne 0 ]]; then
     echo "This script must be run as root"
     exit 1
@@ -72,19 +71,18 @@ esac
 
 cd /root
 
-# install packages
+# Install packages
 apt-get update
 apt-get install -y software-properties-common wget
 
-# get grafana package
+# Get grafana package
 wget -q -O - https://packages.grafana.com/gpg.key | apt-key add -
 echo "deb https://packages.grafana.com/oss/deb stable main" | tee -a /etc/apt/sources.list.d/grafana.list
 apt-get clean
 apt-get update
-# -end-
 
-# install all necessary packages
-# gcc-multilib      not existed for arm64 repos
+# Install all necessary packages
+# gcc-multilib does not exist for arm64 repos
 apt-get install -y bc \
       bison \
       build-essential \
@@ -110,7 +108,7 @@ apt-get install -y bc \
       prometheus \
       rsync
 
-#install the latest go lang version
+# Install the latest go lang version
   os=`uname|tr '[:upper:]' '[:lower:]'`
   go_filename=`curl -s https://go.dev/dl/?mode=json|jq '.[0].files[].filename'|grep $os|grep $arch|egrep -v "ppc"|tr -d '"'`
   wget https://go.dev/dl/$go_filename
@@ -118,8 +116,8 @@ apt-get install -y bc \
   export PATH=$PATH:/usr/local/go/bin
   echo export PATH=$PATH:/usr/local/go/bin >> /root/.bashrc
 
-# clone the l3afd repo in to root directly
-# can use mapped directory i.e. at /home/ubuntu/Home
+# Clone the l3afd repo in to root directly
+# Can use mapped directory i.e. at /home/ubuntu/Home
 if [ ! -d "/root/l3afd" ];
 then
   git clone https://github.com/l3af-project/l3afd.git
@@ -163,7 +161,7 @@ then
   /etc/init.d/grafana-server stop || true
   /etc/init.d/grafana-server start || true
 else
-  # the configuration got copied, restart the prometheus service
+  # The configuration got copied, restart the prometheus service
   systemctl daemon-reload
   systemctl restart prometheus prometheus-node-exporter
   systemctl enable prometheus.service
@@ -215,15 +213,15 @@ then
 fi
 cd eBPF-Package-Repository
 
-# declare an array variable
+# Declare an array variable
 declare -a progs=("xdp-root" "ratelimiting" "connection-limit" "tc-root" "ipfix-flow-exporter" "traffic-mirroring")
-
-# now loop through the above array and build the L3AF eBPF programs
+codename=`lsb_release -c -s`
+# Now loop through the above array and build the L3AF eBPF programs
 for prog in "${progs[@]}"
 do
 	cd $prog
 	make
-	PROG_ARTIFACT_DIR=$BUILD_ARTIFACT_DIR/$prog/latest/focal
+	PROG_ARTIFACT_DIR=$BUILD_ARTIFACT_DIR/$prog/latest/$codename
 	mkdir -p $PROG_ARTIFACT_DIR
 	mv *.tar.gz $PROG_ARTIFACT_DIR
 	cd ../
@@ -234,9 +232,13 @@ cd /root/l3afd
 make install
 cd ../go/bin/
 
-# start all test servers
 chmod +rx /root/l3af-arch/dev_environment/start_test_servers.sh
-/root/l3af-arch/dev_environment/start_test_servers.sh
 
-# start l3afd
-./l3afd --config /root/l3af-arch/dev_environment/cfg/l3afd.cfg &
+# Starting test servers and l3afd daemon
+if [ "$1" == "--ci-build" ];then
+  ip netns exec bpf bash /root/l3af-arch/dev_environment/e2e_test/start_test_servers.sh
+  ./l3afd --config /root/l3af-arch/dev_environment/cfg/l3afd.cfg > l3afd.log 2>&1 &
+else
+  /root/l3af-arch/dev_environment/start_test_servers.sh
+  ./l3afd --config /root/l3af-arch/dev_environment/cfg/l3afd.cfg &
+fi
