@@ -103,6 +103,7 @@ rl_datapath_verification() {
                 logsuc "ratelimiting updated the metrics maps"
                 return
             fi
+            sleep 1
         done
         logerr "ratelimiting not updating maps"
     fi
@@ -118,6 +119,7 @@ cl_datapath_verification() {
                 logsuc "connection-limit updated the metrics maps"
                 return
             fi
+            sleep 1
         done
         logerr "connection-limit not updating the metrics maps"
     fi
