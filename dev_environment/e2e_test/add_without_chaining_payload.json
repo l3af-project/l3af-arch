@@ -1,0 +1,63 @@
+[
+  {
+    "host_name" : "l3af-test-host",
+    "iface" : "ibpfbr",
+    "bpf_programs" : {
+      "xdp_ingress" : [
+        {
+          "name": "ratelimiting",
+          "seq_id": 1,
+          "artifact": "l3af_ratelimiting.tar.gz",
+          "map_name": "xdp_rl_ingress_next_prog",
+          "version": "latest",
+          "admin_status": "enabled",
+          "prog_type": "xdp",
+          "cfg_version": 1,
+          "map_args": { "rl_ports_map": "8080,8081", "rl_config_map": "2" },
+          "monitor_maps": [
+            { "name": "rl_drop_count_map", "key": 0, "aggregator": "scalar"},
+            { "name": "rl_recv_count_map", "key": 0, "aggregator": "max-rate"}
+          ],
+          "object_file": "ratelimiting_kern.o",
+          "entry_function_name": "_xdp_ratelimiting"
+        }
+      ],
+      "tc_egress": [
+        {
+          "name": "ipfix-flow-exporter",
+          "seq_id": 1,
+          "artifact": "l3af_bpf_ipfix.tar.gz",
+          "map_name": "ipfix_egress_jmp_table",
+          "cmd_start": "bpf_ipfix_egress",
+          "version": "latest",
+          "user_program_daemon": true,
+          "admin_status": "enabled",
+          "prog_type": "tc",
+          "cfg_version": 1,
+          "start_args": { "collector_ip": "127.0.0.1", "collector_port": "49280", "verbose":"2" },
+          "monitor_maps": null,
+          "object_file": "bpf_ipfix_egress_kern.o",
+          "entry_function_name": "_egress_flow_monitoring"
+        }
+      ],
+      "tc_ingress": [
+        {
+          "name": "ipfix-flow-exporter",
+          "seq_id": 1,
+          "artifact": "l3af_bpf_ipfix.tar.gz",
+          "map_name": "ipfix_ingress_jmp_table",
+          "cmd_start": "bpf_ipfix_ingress",
+          "version": "latest",
+          "user_program_daemon": true,
+          "admin_status": "enabled",
+          "prog_type": "tc",
+          "cfg_version": 1,
+          "start_args": { "collector_ip": "127.0.0.1", "collector_port": "49280", "verbose":"2" },
+          "monitor_maps": null,
+          "object_file": "bpf_ipfix_ingress_kern.o",
+          "entry_function_name": "_ingress_flow_monitoring"
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,15 @@
+[
+    {
+        "host_name": "l3af-test-host",
+        "iface": "ibpfbr",
+        "bpf_programs": {
+            "xdp_ingress": null,
+            "tc_ingress": [
+                "traffic-mirroring"
+            ],
+            "tc_egress": [
+                "traffic-mirroring"
+            ]
+        }
+    }
+]

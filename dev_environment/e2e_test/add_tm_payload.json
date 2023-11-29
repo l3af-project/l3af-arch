@@ -1,0 +1,62 @@
+[
+    {
+        "host_name": "l3af-test-host",
+        "iface": "ibpfbr",
+        "bpf_programs": {
+            "tc_ingress": [
+                {
+                    "name": "traffic-mirroring",
+                    "seq_id": 2,
+                    "artifact": "l3af_traffic_mirroring.tar.gz",
+                    "cmd_start": "mirroring",
+                    "version": "latest",
+                    "map_name": "mirroring_ingress_jmp_table",
+                    "admin_status": "enabled",
+                    "prog_type": "tc",
+                    "cfg_version": 1,
+                    "start_args": {
+                        "src-address": "0.0.0.0",
+                        "tunnel-type": "gue",
+                        "tunnel-local-port": "6080",
+                        "tunnel-remote-port": "6081",
+                        "tunnel-remote-address": "127.0.0.1",
+                        "redirect-to": "lo",
+                        "src-port": "0",
+                        "dst-port": "8080",
+                        "protocol": "tcp,icmp"
+                    },
+                    "monitor_maps": [],
+                    "object_file": "mirroring_ingress_kern.o",
+                    "entry_function_name": "_ingress_redirect"
+                }
+            ],
+            "tc_egress": [
+                {
+                    "name": "traffic-mirroring",
+                    "seq_id": 2,
+                    "artifact": "l3af_traffic_mirroring.tar.gz",
+                    "cmd_start": "mirroring",
+                    "version": "latest",
+                    "map_name": "mirroring_egress_jmp_table",
+                    "admin_status": "enabled",
+                    "prog_type": "tc",
+                    "cfg_version": 1,
+                    "start_args": {
+                        "dst-address": "0.0.0.0",
+                        "tunnel-type": "gue",
+                        "tunnel-local-port": "6080",
+                        "tunnel-remote-port": "6081",
+                        "tunnel-remote-address": "127.0.0.1",
+                        "redirect-to": "lo",
+                        "src-port": "0",
+                        "dst-port": "0",
+                        "protocol": "tcp,icmp"
+                    },
+                    "monitor_maps": [],
+                    "object_file": "mirroring_egress_kern.o",
+                    "entry_function_name": "_egress_redirect"
+                }
+            ]
+        }
+    }
+]
