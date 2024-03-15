@@ -80,7 +80,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "l3afd_NFMonitorMap{ebpf_program=\"ratelimiting\",map_name=\"rl_recv_count_map_0_max-rate\"}",
+          "expr": "l3afd_BPFMonitorMap{ebpf_program=\"ratelimiting\",map_name=\"rl_recv_count_map_0_max-rate\"}",
           "hide": false,
           "interval": "30s",
           "legendFormat": "{{host}}",
@@ -184,7 +184,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(irate(l3afd_NFMonitorMap{map_name=\"rl_drop_count_map_0_scalar\",ebpf_program=\"ratelimiting\"}[5m])) by (host)",
+          "expr": "sum(irate(l3afd_BPFMonitorMap{map_name=\"rl_drop_count_map_0_scalar\",ebpf_program=\"ratelimiting\"}[5m])) by (host)",
           "interval": "",
           "legendFormat": "{{host}}",
           "refId": "A"

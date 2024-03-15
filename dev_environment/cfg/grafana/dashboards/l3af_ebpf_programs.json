@@ -74,7 +74,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "l3afd_NFRunning{ebpf_program=~\".*$KF.*\"}",
+          "expr": "l3afd_BPFRunning{ebpf_program=~\".*$BPF.*\"}",
           "hide": false,
           "interval": "",
           "legendFormat": "{{host}}:{{direction}}",
@@ -171,7 +171,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(l3afd_NFRunning{ebpf_program=~\".*$KF.*\"})by(direction)",
+          "expr": "sum(l3afd_BPFRunning{ebpf_program=~\".*$BPF.*\"})by(direction)",
           "hide": false,
           "interval": "",
           "legendFormat": "{{direction}}",
@@ -269,7 +269,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "l3afd_NFStartCount{ebpf_program=~\".*$KF.*\"}",
+          "expr": "l3afd_BPFStartCount{ebpf_program=~\".*$BPF.*\"}",
           "hide": false,
           "interval": "",
           "legendFormat": "{{host}}:{{direction}}",
@@ -366,7 +366,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "l3afd_NFStopCount{ebpf_program=~\".*$KF.*\"}",
+          "expr": "l3afd_BPFStopCount{ebpf_program=~\".*$BPF.*\"}",
           "hide": false,
           "interval": "",
           "legendFormat": "{{host}}:{{direction}}",
@@ -432,9 +432,9 @@
         "error": null,
         "hide": 0,
         "includeAll": false,
-        "label": "KF",
+        "label": "BPF",
         "multi": false,
-        "name": "KF",
+        "name": "BPF",
         "options": [
           {
             "selected": true,
@@ -450,9 +450,14 @@
             "selected": false,
             "text": "ipfix-flow-exporter",
             "value": "ipfix"
+          },
+          {
+            "selected": false,
+            "text": "traffic-mirroring",
+            "value": "traffic-mirroring"
           }
         ],
-        "query": "ratelimiting,connection-limit,ipfix",
+        "query": "ratelimiting,connection-limit,ipfix,traffic-mirroring",
         "queryValue": "",
         "skipUrlSync": false,
         "type": "custom"
