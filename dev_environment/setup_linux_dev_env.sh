@@ -71,13 +71,21 @@ esac
 
 cd /root
 
+
 # Install packages
 apt-get update
-apt-get install -y apt-transport-https software-properties-common wget
+apt-get install -y apt-transport-https software-properties-common wget dpkg
+sudo apt-get install -y adduser libfontconfig1 musl
 # Get grafana package
-mkdir -p /etc/apt/keyrings/
-wget -q -O - https://apt.grafana.com/gpg.key | gpg --dearmor | tee /etc/apt/keyrings/grafana.gpg > /dev/null
-echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" | tee -a /etc/apt/sources.list.d/grafana.list
+if [ "$arch" == amd64 ];then
+   wget https://dl.grafana.com/oss/release/grafana_10.4.1_amd64.deb
+   sudo dpkg -i grafana_10.4.1_amd64.deb
+elif [ "$arch" == arm64 ];then
+   wget https://dl.grafana.com/oss/release/grafana_10.4.1_arm64.deb
+   sudo dpkg -i grafana_10.4.1_arm64.deb
+else
+  echo "grafana installation is not available for this cpu architecture"
+fi	   
 apt-get clean
 apt-get update
 
@@ -92,7 +100,6 @@ apt-get install -y bc \
       flex \
       gcc-9 \
       gnutls-bin \
-      grafana \
       jq \
       libc6-dev \
       libcurl4-openssl-dev \
