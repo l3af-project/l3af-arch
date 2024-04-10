@@ -74,7 +74,7 @@ cd /root
 
 # Install packages
 apt-get update
-apt-get install -y apt-transport-https software-properties-common wget
+apt-get install -y apt-transport-https software-properties-common wget dpkg
 sudo apt-get install -y adduser libfontconfig1 musl
 # Get grafana package
 if [ "$arch" == amd64 ];then
