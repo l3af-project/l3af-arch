@@ -78,8 +78,8 @@ apt-get install -y apt-transport-https software-properties-common wget
 sudo apt-get install -y adduser libfontconfig1 musl
 # Get grafana package
 if [ "$arch" == amd64 ];then
-	wget https://dl.grafana.com/oss/release/grafana_10.4.1_amd64.deb
-	sudo dpkg -i grafana_10.4.1_amd64.deb
+   wget https://dl.grafana.com/oss/release/grafana_10.4.1_amd64.deb
+   sudo dpkg -i grafana_10.4.1_amd64.deb
 elif [ "$arch" == arm64 ];then
    wget https://dl.grafana.com/oss/release/grafana_10.4.1_arm64.deb
    sudo dpkg -i grafana_10.4.1_arm64.deb
