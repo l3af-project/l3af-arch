@@ -22,7 +22,7 @@ systemctl daemon-reload
 systemctl start grafana-server
 systemctl enable grafana-server.service
 
-# Copy opentelemetry collector config and restart opentelemetry collector
+# Copy opentelemetry collector config and start opentelemetry collector
 mkdir -p "/etc/otelcol/"
 cp /vagrant/cfg/otel-collector-config.yml /etc/otelcol/config.yml
 systemctl daemon-reload

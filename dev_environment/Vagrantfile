@@ -91,7 +91,7 @@ Vagrant.configure("2") do |config|
         rsync
     SHELL
 
-    # Install Opentelemetry collector deb package
+    # Install Opentelemetry collector
     l3af.vm.provision "shell", inline: <<-SHELL
       curl --proto '=https' --tlsv1.2 -fOL https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v0.97.0/otelcol_0.97.0_linux_amd64.tar.gz
       tar -xvf otelcol_0.97.0_linux_amd64.tar.gz
