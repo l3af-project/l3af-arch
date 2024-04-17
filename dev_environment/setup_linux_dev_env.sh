@@ -108,6 +108,10 @@ apt-get install -y bc \
       prometheus \
       rsync
 
+# Install OTEL collector
+curl --proto '=https' --tlsv1.2 -fOL https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v0.97.0/otelcol_0.97.0_linux_amd64.tar.gz
+tar -xvf otelcol_0.97.0_linux_amd64.tar.gz
+
 # Install the latest go lang version
   os=`uname|tr '[:upper:]' '[:lower:]'`
   go_filename=`curl -s https://go.dev/dl/?mode=json|jq '.[0].files[].filename'|grep $os|grep $arch|egrep -v "ppc"|tr -d '"'`
@@ -149,6 +153,11 @@ chown root:grafana /etc/grafana/provisioning/datasources/*.yaml
 
 # Copy prometheus config and restart prometheus
 cp /root/l3af-arch/dev_environment/cfg/prometheus.yml /etc/prometheus/prometheus.yml
+
+# Copy OTEL collector config and start OTEL collector
+mkdir -p "/etc/otelcol/"
+cp /root/l3af-arch/dev_environment/cfg/otel-collector-config.yml /etc/otelcol/config.yml
+
 if uname -a | grep -q 'WSL';
 then
   echo "WSL DETECTED"
@@ -160,6 +169,9 @@ then
   sleep 1
   /etc/init.d/grafana-server stop || true
   /etc/init.d/grafana-server start || true
+
+  # Start OTEL collector
+  ./root/otelcol --config=/etc/otelcol/config.yml &
 else
   # The configuration got copied, restart the prometheus service
   systemctl daemon-reload
@@ -170,6 +182,9 @@ else
   # Start and enable Grafana
   systemctl restart grafana-server
   systemctl enable grafana-server.service
+
+  # Start OTEL collector
+  ./root/otelcol --config=/etc/otelcol/config.yml &
 fi
 
 # Get Linux source code to build our eBPF programs against
