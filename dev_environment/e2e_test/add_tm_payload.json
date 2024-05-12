@@ -1,6 +1,6 @@
 [
     {
-        "host_name": "l3af-local-test",
+        "host_name": "l3af-test-host",
         "iface": "ibpfbr",
         "bpf_programs": {
             "tc_ingress": [
