@@ -171,7 +171,7 @@ then
   /etc/init.d/grafana-server start || true
 
   # Start OTEL collector
-  ./root/otelcol --config=/etc/otelcol/config.yml &
+  /usr/local/bin/otelcol --config=/etc/otelcol/config.yml &
 else
   # The configuration got copied, restart the prometheus service
   systemctl daemon-reload
@@ -184,7 +184,7 @@ else
   systemctl enable grafana-server.service
 
   # Start OTEL collector
-  ./root/otelcol --config=/etc/otelcol/config.yml &
+  /usr/local/bin/otelcol --config=/etc/otelcol/config.yml &
 fi
 
 # Get Linux source code to build our eBPF programs against

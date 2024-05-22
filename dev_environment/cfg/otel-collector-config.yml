@@ -14,12 +14,12 @@ receivers:
         scrape_interval: 5s
         static_configs:
         - targets: ['localhost:8898']
-      
+
 processors:
   batch:
 
 exporters:
-  prometheusremotewrite: 
+  prometheusremotewrite:
     endpoint:
 
 service:
