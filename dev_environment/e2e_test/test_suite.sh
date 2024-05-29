@@ -49,7 +49,7 @@ validate() {
     touch progids.txt tmp output.json names.txt err
     curl -sS http://${IP}:7080/l3af/configs/v1/ibpfbr >output.json 2>&1
     echo >>output.json
-    if cmp -s output.json /home/atulroot/l3af-arch/dev_environment/e2e_test/$exp_output; then
+    if cmp -s output.json /root/l3af-arch/dev_environment/e2e_test/$exp_output; then
         curl -sS http://${IP}:8899/bpfs/ibpfbr | jq ".[].ProgID" >progids.txt 2>err
         if [ -s err ]; then
             cat err
@@ -172,7 +172,7 @@ tm_datapath_verification() {
 
 api_runner() {
     api_name=$1
-    payload="/home/atulroot/l3af-arch/dev_environment/e2e_test/$2"
+    payload="/root/l3af-arch/dev_environment/e2e_test/$2"
     exp_output=$3
     touch tmpr
     curl -sS -X POST http://${IP}:7080/l3af/configs/v1/${api_name} -H "Content-Type: application/json" -d "@${payload}" >tmpr 2>&1
@@ -194,8 +194,8 @@ api_runner "delete" "del_payload.json" "exp_output_nil.json"
 l3afdID=$(pgrep l3afd)
 kill -9 $l3afdID
 rm -f /var/l3afd/l3af-config.json
-sed -i 's/bpf-chaining-enabled: true/bpf-chaining-enabled: false/' /home/atulroot/l3af-arch/dev_environment/cfg/l3afd.cfg
-/home/atulroot/l3afd/l3afd --config /home/atulroot/l3af-arch/dev_environment/cfg/l3afd.cfg >l3afd.log 2>&1 &
+sed -i 's/bpf-chaining-enabled: true/bpf-chaining-enabled: false/' /root/l3af-arch/dev_environment/cfg/l3afd.cfg
+/root/go/bin/l3afd --config /root/l3af-arch/dev_environment/cfg/l3afd.cfg >l3afd.log 2>&1 &
 sleep 10
 
 echo "without chaining"
