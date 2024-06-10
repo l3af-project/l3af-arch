@@ -20,7 +20,7 @@ processors:
 
 exporters:
   prometheusremotewrite:
-    endpoint:
+    endpoint: # Update the endpoint field with your desired remote backend
 
 service:
   pipelines:
