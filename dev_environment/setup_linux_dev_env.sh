@@ -109,8 +109,49 @@ apt-get install -y bc \
       rsync
 
 # Install OTEL collector
-curl --proto '=https' --tlsv1.2 -fOL https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v0.97.0/otelcol_0.97.0_linux_amd64.tar.gz
-tar -xvf otelcol_0.97.0_linux_amd64.tar.gz
+OTEL_VERSION="0.97.0"
+case $ARCH in
+  arm)
+    echo "Installing OTELC for arm"
+    OTEL_ARCH="arm"
+    ;;
+
+  aarch64)
+    echo "Installing OTELC for arm"
+    OTEL_ARCH="arm64"
+    ;;
+
+  x86_64)
+    echo "Installing OTELC for amd64"
+    OTEL_ARCH="amd64"
+    ;;
+  i386)
+    KERNEL=$(uname -m)
+    if [ "$KERNEL" = "x86_64" ];
+    then
+      echo "Installing OTELC for amd64"
+      OTEL_ARCH="amd64"
+    elif [ "$KERNEL" = "i386" ];
+    then
+      echo "Installing OTELC for i386"
+      OTEL_ARCH="386"
+    else
+      echo "The CPU kernel $KERNEL is not supported by the script"
+      exit 1
+    fi
+  ;;
+
+  *)
+    echo "The CPU architecture $ARCH is not supported by the script"
+    exit 1
+  ;;
+esac
+OTEL_BINARY="otelcol_${OTEL_VERSION}_linux_${OTEL_ARCH}.tar.gz"
+OTEL_DIR="otelcol_${OTEL_VERSION}_linux_${OTEL_ARCH}"
+curl --proto '=https' --tlsv1.2 -fOL "https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v${OTEL_VERSION}/${OTEL_BINARY}"
+tar -xvf ${OTEL_BINARY}
+sudo mv ${OTEL_DIR}/otelcol /usr/local/bin/otelcol
+sudo chmod +x /usr/local/bin/otelcol
 
 # Install the latest go lang version
   os=`uname|tr '[:upper:]' '[:lower:]'`
