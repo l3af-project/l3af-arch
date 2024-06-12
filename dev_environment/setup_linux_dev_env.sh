@@ -121,16 +121,15 @@ apt-get install -y bc \
   wget https://go.dev/dl/$go_filename
   tar -C /usr/local -xzf $go_filename && rm -f $go_filename
   export PATH=$PATH:/usr/local/go/bin
-  export GOCOVERDIR="/root/coverdata/int"
-  echo export PATH=$PATH:/root/coverdata/int >> /root/.bashrc
+  echo export PATH=$PATH:/usr/local/go/bin >> /root/.bashrc
 
 # Test coverdata
   mkdir /root/coverdata
   mkdir /root/coverdata/int
   mkdir /root/coverdata/unit
   mkdir /root/coverdata/combined
-  echo export PATH=$PATH:/usr/local/go/bin >> /root/.bashrc
-  source /root/.bashrc
+  export GOCOVERDIR="/root/coverdata/int"
+  echo export GOCOVERDIR="/root/coverdata/int" >> /root/.bashrc
 
 # Clone the l3afd repo in to root directly
 # Can use mapped directory i.e. at /home/ubuntu/Home
