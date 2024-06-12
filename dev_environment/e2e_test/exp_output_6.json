@@ -128,6 +128,7 @@
         "object_file": "bpf_ipfix_egress_kern.o",
         "entry_function_name": "_egress_flow_monitoring"
       }
-    ]
+    ],
+    "probes": null
   }
 }

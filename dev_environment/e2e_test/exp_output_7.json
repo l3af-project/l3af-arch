@@ -92,6 +92,7 @@
         "object_file": "mirroring_egress_kern.o",
         "entry_function_name": "_egress_redirect"
       }
-    ]
+    ],
+    "probes": null
   }
 }

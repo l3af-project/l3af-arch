@@ -4,6 +4,7 @@
   "bpf_programs": {
     "xdp_ingress": null,
     "tc_ingress": null,
-    "tc_egress": null
+    "tc_egress": null,
+    "probes": null
   }
 }
