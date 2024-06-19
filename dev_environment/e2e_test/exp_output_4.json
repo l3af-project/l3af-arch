@@ -47,7 +47,7 @@
           }
         ],
         "ebpf_package_repo_url": "",
-        "object_file": "ratelimiting_kern.o",
+        "object_file": "ratelimiting.bpf.o",
         "entry_function_name": "_xdp_ratelimiting"
       },
       {
@@ -99,7 +99,7 @@
           }
         ],
         "ebpf_package_repo_url": "",
-        "object_file": "connection_limit_kern.o",
+        "object_file": "connection_limit.bpf.o",
         "entry_function_name": "_xdp_limit_conn"
       }
     ],
@@ -144,7 +144,7 @@
         "config_args": null,
         "monitor_maps": [],
         "ebpf_package_repo_url": "",
-        "object_file": "mirroring_ingress_kern.o",
+        "object_file": "mirroring_ingress.bpf.o",
         "entry_function_name": "_ingress_redirect"
       }
     ],
@@ -189,7 +189,7 @@
         "config_args": null,
         "monitor_maps": [],
         "ebpf_package_repo_url": "",
-        "object_file": "mirroring_egress_kern.o",
+        "object_file": "mirroring_egress.bpf.o",
         "entry_function_name": "_egress_redirect"
       }
     ]

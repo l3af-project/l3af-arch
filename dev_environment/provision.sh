@@ -33,8 +33,16 @@ else
 fi
 LINUX_SRC_DIR=/usr/src/linux
 cd $LINUX_SRC_DIR
-make defconfig
+sed -i '229a\
+        if [ "${pahole_ver}" -ge "124" ]; then\
+                extra_paholeopt="${extra_paholeopt} --skip_encoding_btf_enum64"\
+        fi' scripts/link-vmlinux.sh
+
+echo "CONFIG_DEBUG_INFO_BTF=y" >> .config
+echo "CONFIG_MODULES=y" >> .config
+make oldconfig
 make prepare
+yes | make -j$(nproc)
 make headers_install
 
 mkdir -p /var/log/l3af
@@ -56,6 +64,19 @@ else
     git clone https://github.com/l3af-project/eBPF-Package-Repository.git
 fi
 cd eBPF-Package-Repository
+
+if [ "$(which bpftool)" == "" ]; 
+then
+  git clone --branch v7.2.0 --recurse-submodules https://github.com/libbpf/bpftool.git
+  cd bpftool/src
+  yes | make
+  cp bpftool /usr/local/bin/
+  cd ../../
+  rm -rf bpftool
+fi
+
+mkdir -p headers
+bpftool btf dump file /sys/kernel/btf/vmlinux format c > headers/vmlinux.h
 
 # declare an array variable
 declare -a progs=("xdp-root" "ratelimiting" "connection-limit" "tc-root" "ipfix-flow-exporter" "traffic-mirroring")
