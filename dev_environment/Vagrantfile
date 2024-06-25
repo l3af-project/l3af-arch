@@ -63,7 +63,10 @@ Vagrant.configure("2") do |config|
 
     # Install package dependencies
     l3af.vm.provision "shell", inline: <<-SHELL
+      export DEBIAN_FRONTEND=noninteractive
+      export TZ=Etc/UTC
       apt-get install -y bc \
+        tzdata \
         bison \
         build-essential \
         clang \
@@ -88,7 +91,11 @@ Vagrant.configure("2") do |config|
         llvm \
         net-tools \
         prometheus \
-        rsync
+        rsync   \
+        dwarves \
+        zlib1g  \
+        libelf1 \
+        pkg-config 
     SHELL
 
     # # Install latest golang version
