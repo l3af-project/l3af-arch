@@ -130,6 +130,14 @@ apt-get install -y bc \
   export PATH=$PATH:/usr/local/go/bin
   echo export PATH=$PATH:/usr/local/go/bin >> /root/.bashrc
 
+# Test coverdata
+  mkdir /root/coverdata
+  mkdir /root/coverdata/int
+  mkdir /root/coverdata/unit
+  mkdir /root/coverdata/combined
+  export GOCOVERDIR="/root/coverdata/int"
+  echo export GOCOVERDIR="/root/coverdata/int" >> /root/.bashrc
+
 # Clone the l3afd repo in to root directly
 # Can use mapped directory i.e. at /home/ubuntu/Home
 if [ ! -d "/root/l3afd" ];
@@ -278,3 +286,4 @@ else
   /root/l3af-arch/dev_environment/start_test_servers.sh
   ./l3afd --config /root/l3af-arch/dev_environment/cfg/l3afd.cfg &
 fi
+

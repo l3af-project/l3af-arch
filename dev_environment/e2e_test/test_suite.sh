@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -eu
+export GOCOVERDIR="/root/coverdata/int"
 # this script needs to run as root account, check it
 if [[ $EUID -ne 0 ]]; then
     echo "This script must be run as root"
@@ -192,7 +193,7 @@ api_runner "delete" "del_ipfix_payload.json" "exp_output_4.json"
 api_runner "delete" "del_payload.json" "exp_output_nil.json"
 
 l3afdID=$(pgrep l3afd)
-kill -9 $l3afdID
+kill -2 $l3afdID
 rm -f /var/l3afd/l3af-config.json
 sed -i 's/bpf-chaining-enabled: true/bpf-chaining-enabled: false/' /root/l3af-arch/dev_environment/cfg/l3afd.cfg
 /root/go/bin/l3afd --config /root/l3af-arch/dev_environment/cfg/l3afd.cfg >l3afd.log 2>&1 &
@@ -206,6 +207,31 @@ api_runner "add" "add_tm_payload.json" "exp_output_7.json"
 api_runner "delete" "del_tm_payload.json" "exp_output_nil.json"
 
 l3afdID=$(pgrep l3afd)
-kill -9 $l3afdID
+kill -2 $l3afdID
+
+
+# TEST COVERAGE
+TESTCOVERAGE_THRESHOLD=50
+echo "Quality Gate: checking test coverage is above threshold ..."
+echo "Threshold             : $TESTCOVERAGE_THRESHOLD %"
+
+cd /root/l3afd
+/usr/local/go/bin/go test -cover ./... -args -test.gocoverdir="/root/coverdata/unit"
+/usr/local/go/bin/go tool covdata merge -i=/root/coverdata/int,/root/coverdata/unit -o /root/coverdata/combined
+/usr/local/go/bin/go tool covdata textfmt -i=/root/coverdata/combined -o profile.txt
+cov=`go tool cover -func=profile.txt | grep total | awk '{print $3}' | tr -d %`
+rm -rf profile.txt
+totalCoverage=$(echo "($cov+0.5)/1" | bc)
+echo "Current test coverage : $totalCoverage %"
+
+if [[ $totalCoverage -ge $TESTCOVERAGE_THRESHOLD ]]; then
+	logsuc "OK"
+else
+	logerr "Current test coverage is below threshold. Please add more unit tests or adjust threshold to a lower value."
+	logerr "Failed"
+	close
+	exit 1
+
+fi
 logsuc "TEST COMPLETED"
 close
