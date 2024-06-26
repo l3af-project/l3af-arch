@@ -266,6 +266,7 @@
         "object_file": "mirroring_egress.bpf.o",
         "entry_function_name": "_egress_redirect"
       }
-    ]
+    ],
+    "probes": null
   }
 }
