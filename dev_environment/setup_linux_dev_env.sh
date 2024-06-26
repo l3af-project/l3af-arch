@@ -253,9 +253,9 @@ elif [ $# -ge 1 ] && [ "$1" == "--docker" ]; then
   cp /root/go/bin/l3afd .
   cp /root/l3afd/config/l3afd.cfg .
   /root/l3af-arch/dev_environment/start_test_servers.sh
-  docker build -t l3afd:v2.0.0 -f Dockerfile .
+  docker build -t l3afd:latest -f Dockerfile .
   docker images
-  docker run -d -v /srv/l3afd:/srv/l3afd -v /sys/fs/bpf:/sys/fs/bpf -v /sys/kernel/debug/:/sys/kernel/debug/ -v /dev/shm:/dev/shm --privileged --net=host l3afd:v2.0.0
+  docker run -d -v /srv/l3afd:/srv/l3afd -v /sys/fs/bpf:/sys/fs/bpf -v /sys/kernel/debug/:/sys/kernel/debug/ -v /dev/shm:/dev/shm --privileged --net=host l3afd:latest
   docker logs $(docker ps -q)
 else
   /root/l3af-arch/dev_environment/start_test_servers.sh
