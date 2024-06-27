@@ -11,5 +11,6 @@ There are different ways to create a Linux (i.e., Ubuntu 20.04) VM. On a local c
 # Trying out L3AF
 1. Log into the Linux virtual machine, and run "sudo -i" to change to the root user.
 2. Run the script `setup_linux_dev_env.sh`
+3. Pass `--docker` argument to `setup_linux_dev_env.sh` for running L3AFd as a docker container
 
 Now go back to the [README.md](README.md) for the host to configure L3AFD to execute sample eBPF programs.
