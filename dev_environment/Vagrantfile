@@ -92,47 +92,49 @@ Vagrant.configure("2") do |config|
     SHELL
 
     # Install Opentelemetry collector
-    l3af.vm.provision "shell", inline: <<-SHELL
-      OTEL_VERSION="0.97.0"
-      ARCH=$(uname -p)
-      case $ARCH in
-        arm)
-          echo "Installing OTELC for arm"
-          OTEL_ARCH=arm64
-          ;;
-        aarch64)
-          echo "Installing OTELC for arm"
-          OTEL_ARCH=arm64
-          ;;
-        x86_64)
-          echo "Installing OTELC for amd64"
-          OTEL_ARCH=amd64
-          ;;
-        i386)
-          KERNEL=$(uname -m)
-          if [ "$KERNEL" = "x86_64" ];
-          then
+    if cfg['otel_collector'] == "true"
+      l3af.vm.provision "shell", inline: <<-SHELL
+        OTEL_VERSION="0.97.0"
+        ARCH=$(uname -p)
+        case $ARCH in
+          arm)
+            echo "Installing OTELC for arm"
+            OTEL_ARCH=arm64
+            ;;
+          aarch64)
+            echo "Installing OTELC for arm"
+            OTEL_ARCH=arm64
+            ;;
+          x86_64)
             echo "Installing OTELC for amd64"
             OTEL_ARCH=amd64
-          elif [ "$KERNEL" = "i386" ];
-          then
-            echo "Installing OTELC for i386"
-            OTEL_ARCH=386
-          else
-            echo "The CPU kernel $KERNEL is not supported by the script"
+            ;;
+          i386)
+            KERNEL=$(uname -m)
+            if [ "$KERNEL" = "x86_64" ];
+            then
+              echo "Installing OTELC for amd64"
+              OTEL_ARCH=amd64
+            elif [ "$KERNEL" = "i386" ];
+            then
+              echo "Installing OTELC for i386"
+              OTEL_ARCH=386
+            else
+              echo "The CPU kernel $KERNEL is not supported by the script"
+              exit 1
+            fi
+            ;;
+          *)
+            echo "The CPU architecture $ARCH is not supported by the script"
             exit 1
-          fi
-          ;;
-        *)
-          echo "The CPU architecture $ARCH is not supported by the script"
-          exit 1
-          ;;
-      esac
-      OTEL_BINARY="otelcol_${OTEL_VERSION}_linux_${OTEL_ARCH}.tar.gz"
-      OTEL_DIR="otelcol_${OTEL_VERSION}_linux_${OTEL_ARCH}"
-      curl --proto '=https' --tlsv1.2 -fOL "https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v${OTEL_VERSION}/${OTEL_BINARY}"
-      tar -xvf ${OTEL_BINARY}
-    SHELL
+            ;;
+        esac
+        OTEL_BINARY="otelcol_${OTEL_VERSION}_linux_${OTEL_ARCH}.tar.gz"
+        OTEL_DIR="otelcol_${OTEL_VERSION}_linux_${OTEL_ARCH}"
+        curl --proto '=https' --tlsv1.2 -fOL "https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v${OTEL_VERSION}/${OTEL_BINARY}"
+        tar -xvf ${OTEL_BINARY}
+      SHELL
+    end
 
     # # Install latest golang version
     l3af.vm.provision "shell", inline: <<-SHELL
@@ -183,6 +185,16 @@ Vagrant.configure("2") do |config|
 
     # Reboot for updated kernel to load
     l3af.vm.provision :reload
+
+    # Copy opentelemetry collector config and start opentelemetry collector
+    if cfg['otel_collector'] == "true"
+      l3af.vm.provision "shell", inline: <<-SHELL
+        mkdir -p "/etc/otelcol/"
+        cp /vagrant/cfg/otel-collector-config.yml /etc/otelcol/config.yml
+        ./otelcol --config=/etc/otelcol/config.yml &
+      SHELL
+    end
+
     l3af.vm.provision :shell, path: "provision.sh"
 
     # Always start test servers because they aren't managed services
