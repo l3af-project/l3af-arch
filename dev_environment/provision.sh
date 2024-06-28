@@ -22,12 +22,6 @@ systemctl daemon-reload
 systemctl start grafana-server
 systemctl enable grafana-server.service
 
-# Copy opentelemetry collector config and start opentelemetry collector
-mkdir -p "/etc/otelcol/"
-cp /vagrant/cfg/otel-collector-config.yml /etc/otelcol/config.yml
-systemctl daemon-reload
-./otelcol --config=/etc/otelcol/config.yml &
-
 # Get Linux source code to build our eBPF programs against
 # TODO: Support building against the Linux source from the distro's source
 # package.
