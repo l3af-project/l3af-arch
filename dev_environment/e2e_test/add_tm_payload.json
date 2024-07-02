@@ -16,7 +16,7 @@
                     "cfg_version": 1,
                     "start_args": {
                         "src-address": "0.0.0.0",
-                        "tunnel-type": "gue",
+                        "tunnel-interface-name": "gue1",
                         "tunnel-local-port": "6080",
                         "tunnel-remote-port": "6081",
                         "tunnel-remote-address": "127.0.0.1",
@@ -43,7 +43,7 @@
                     "cfg_version": 1,
                     "start_args": {
                         "dst-address": "0.0.0.0",
-                        "tunnel-type": "gue",
+                        "tunnel-interface-name": "gue1",
                         "tunnel-local-port": "6080",
                         "tunnel-remote-port": "6081",
                         "tunnel-remote-address": "127.0.0.1",
