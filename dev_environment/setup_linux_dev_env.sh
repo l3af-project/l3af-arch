@@ -354,6 +354,17 @@ if [ $# -ge 1 ] && [ "$1" == "--ci-build" ]; then
   /root/l3af-arch/dev_environment/start_test_servers.sh --ci-build
   ip netns exec bpf bash /root/l3af-arch/dev_environment/start_test_servers.sh --ci-build
   ./l3afd --config /root/l3af-arch/dev_environment/cfg/l3afd.cfg > l3afd.log 2>&1 &
+elif [ $# -ge 1 ] && [ "$1" == "--docker" ]; then
+  echo "Running L3AFD as a docker container"
+  apt-get install -y docker docker.io
+  cd /root/l3afd/build-docker
+  cp /root/go/bin/l3afd .
+  cp /root/l3afd/config/l3afd.cfg .
+  /root/l3af-arch/dev_environment/start_test_servers.sh
+  docker build -t l3afd:latest -f Dockerfile .
+  docker images
+  docker run -d -v /srv/l3afd:/srv/l3afd -v /sys/fs/bpf:/sys/fs/bpf -v /sys/kernel/debug/:/sys/kernel/debug/ -v /dev/shm:/dev/shm --privileged --net=host l3afd:latest
+  docker logs $(docker ps -q)
 else
   /root/l3af-arch/dev_environment/start_test_servers.sh
   ./l3afd --config /root/l3af-arch/dev_environment/cfg/l3afd.cfg &
