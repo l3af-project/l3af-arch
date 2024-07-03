@@ -154,8 +154,6 @@ if [ $# -ge 1 ] && [ "$1" == "--otel-collector" ]; then
   sudo mv ${OTEL_DIR}/otelcol /usr/local/bin/otelcol
   sudo chmod +x /usr/local/bin/otelcol
   echo "OTEL Collector version ${OTEL_VERSION} installed successfully."
-else
-  echo "Skipping OTEL Collector installation."
 fi
 
 
@@ -206,8 +204,6 @@ if [ $# -ge 1 ] && [ "$1" == "--otel-collector" ]; then
   echo "Copying OTEL Collector config."
   mkdir -p "/etc/otelcol/"
   cp /root/l3af-arch/dev_environment/cfg/otel-collector-config.yml /etc/otelcol/config.yml
-else
-  echo "Skipping copying of OTEL Collector config."
 fi
 
 
