@@ -75,3 +75,7 @@ Here is a visual overview:
   3. Start traffic mirrroing via `curl -X POST http://localhost:37080/l3af/configs/v1/add -d "@cfg/traffic_mirroring_payload.json"` from the host
   4. Delete the default route by executing this command (`sudo ip r del 192.168.10.50 via 192.168.10.1 dev enp0s8`) on l3af-VM as it is not required in the current vagrant environment
   5. SSH into Collector VM via `vagrant ssh collector` command and execute `sudo tcpdump -i enp0s8` to see the mirrored-GUE packets and `sudo tcpdump -i gue1` to see the mirrored-original packets when we send traffic to the l3af VM web server (`hey -n 200 -c 20 http://localhost:18080`) from the host
+* Additional steps if you would like to use a custom backend instead of Prometheus for observability through Opentelemetry Collector:
+  1. Set `otel_collector: 'true'` in [config.yaml](config.yaml)
+  2. Set `endpoint` field in [otel-collector-config.yaml](../dev_environment/cfg/otel-collector-config.yml) under `exporters` > `prometheusremotewrite`. Refer [Opentelemetry Exporters](https://opentelemetry.io/docs/collector/configuration/#exporters) documentation to know more.
+  3. Redeploy the Vagrant script (`vagrant reload --provision`) to install the Opentelemetry Collector binary.

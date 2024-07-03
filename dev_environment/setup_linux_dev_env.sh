@@ -122,6 +122,55 @@ apt-get install -y bc \
       libelf1 \
       pkg-config
 
+# Install OTEL collector
+if [ $# -ge 1 ] && [ "$1" == "--otel-collector" ]; then
+  OTEL_VERSION="0.97.0"
+  case $ARCH in
+    arm)
+      echo "Installing OTELC for arm"
+      OTEL_ARCH="arm"
+      ;;
+
+    aarch64)
+      echo "Installing OTELC for arm"
+      OTEL_ARCH="arm64"
+      ;;
+
+    x86_64)
+      echo "Installing OTELC for amd64"
+      OTEL_ARCH="amd64"
+      ;;
+    i386)
+      KERNEL=$(uname -m)
+      if [ "$KERNEL" = "x86_64" ];
+      then
+        echo "Installing OTELC for amd64"
+        OTEL_ARCH="amd64"
+      elif [ "$KERNEL" = "i386" ];
+      then
+        echo "Installing OTELC for i386"
+        OTEL_ARCH="386"
+      else
+        echo "The CPU kernel $KERNEL is not supported by the script"
+        exit 1
+      fi
+    ;;
+
+    *)
+      echo "The CPU architecture $ARCH is not supported by the script"
+      exit 1
+    ;;
+  esac
+  OTEL_BINARY="otelcol_${OTEL_VERSION}_linux_${OTEL_ARCH}.tar.gz"
+  OTEL_DIR="otelcol_${OTEL_VERSION}_linux_${OTEL_ARCH}"
+  curl --proto '=https' --tlsv1.2 -fOL "https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v${OTEL_VERSION}/${OTEL_BINARY}"
+  tar -xvf ${OTEL_BINARY}
+  sudo mv ${OTEL_DIR}/otelcol /usr/local/bin/otelcol
+  sudo chmod +x /usr/local/bin/otelcol
+  echo "OTEL Collector version ${OTEL_VERSION} installed successfully."
+fi
+
+
 # Install the latest go lang version
   os=`uname|tr '[:upper:]' '[:lower:]'`
   go_filename=`curl -s https://go.dev/dl/?mode=json|jq '.[0].files[].filename'|grep $os|grep $arch|egrep -v "ppc"|tr -d '"'`
@@ -171,6 +220,15 @@ chown root:grafana /etc/grafana/provisioning/datasources/*.yaml
 
 # Copy prometheus config and restart prometheus
 cp /root/l3af-arch/dev_environment/cfg/prometheus.yml /etc/prometheus/prometheus.yml
+
+# Copy OTEL collector config and start OTEL collector
+if [ $# -ge 1 ] && [ "$1" == "--otel-collector" ]; then
+  echo "Copying OTEL Collector config."
+  mkdir -p "/etc/otelcol/"
+  cp /root/l3af-arch/dev_environment/cfg/otel-collector-config.yml /etc/otelcol/config.yml
+fi
+
+
 if uname -a | grep -q 'WSL';
 then
   echo "WSL DETECTED"
@@ -182,6 +240,13 @@ then
   sleep 1
   /etc/init.d/grafana-server stop || true
   /etc/init.d/grafana-server start || true
+
+  # Start OTEL collector
+  if [ $# -ge 1 ] && [ "$1" == "--otel-collector" ]; then
+    /usr/local/bin/otelcol --config=/etc/otelcol/config.yml &
+  else
+    echo "Skipping OTEL collector binary startup."
+  fi
 else
   # The configuration got copied, restart the prometheus service
   systemctl daemon-reload
@@ -192,6 +257,13 @@ else
   # Start and enable Grafana
   systemctl restart grafana-server
   systemctl enable grafana-server.service
+
+  # Start OTEL collector
+  if [ $# -ge 1 ] && [ "$1" == "--otel-collector" ]; then
+    /usr/local/bin/otelcol --config=/etc/otelcol/config.yml &
+  else
+    echo "Skipping OTEL collector binary startup."
+  fi
 fi
 
 # Get Linux source code to build our eBPF programs against
