@@ -135,7 +135,7 @@
           "tunnel-local-port": "6080",
           "tunnel-remote-address": "127.0.0.1",
           "tunnel-remote-port": "6081",
-          "tunnel-type": "gue"
+          "tunnel-interface-name": "gue1"
         },
         "stop_args": null,
         "status_args": null,
@@ -180,7 +180,7 @@
           "tunnel-local-port": "6080",
           "tunnel-remote-address": "127.0.0.1",
           "tunnel-remote-port": "6081",
-          "tunnel-type": "gue"
+          "tunnel-interface-name": "gue1"
         },
         "stop_args": null,
         "status_args": null,
