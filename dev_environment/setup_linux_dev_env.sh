@@ -180,10 +180,10 @@ fi
   echo export PATH=$PATH:/usr/local/go/bin >> /root/.bashrc
 
 # Test coverdata
-  mkdir /root/coverdata
-  mkdir /root/coverdata/int
-  mkdir /root/coverdata/unit
-  mkdir /root/coverdata/combined
+  mkdir -p /root/coverdata
+  mkdir -p /root/coverdata/int
+  mkdir -p /root/coverdata/unit
+  mkdir -p /root/coverdata/combined
   export GOCOVERDIR="/root/coverdata/int"
   echo export GOCOVERDIR="/root/coverdata/int" >> /root/.bashrc
 
