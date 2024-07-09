@@ -283,7 +283,7 @@ sed -i '229a\
 
 echo "CONFIG_DEBUG_INFO_BTF=y" >> .config
 echo "CONFIG_MODULES=y" >> .config
-make oldconfig
+make olddefconfig
 make prepare
 yes | make -j$(nproc)
 make headers_install
