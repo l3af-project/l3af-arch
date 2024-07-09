@@ -325,9 +325,6 @@ then
   rm -rf bpftool
 fi
 
-mkdir -p headers
-bpftool btf dump file /sys/kernel/btf/vmlinux format c > headers/vmlinux.h
-
 # Declare an array variable
 declare -a progs=("xdp-root" "ratelimiting" "connection-limit" "tc-root" "ipfix-flow-exporter" "traffic-mirroring")
 codename=`lsb_release -c -s`
