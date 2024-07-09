@@ -179,13 +179,6 @@ fi
   export PATH=$PATH:/usr/local/go/bin
   echo export PATH=$PATH:/usr/local/go/bin >> /root/.bashrc
 
-# Test coverdata
-  mkdir -p /root/coverdata
-  mkdir -p /root/coverdata/int
-  mkdir -p /root/coverdata/unit
-  mkdir -p /root/coverdata/combined
-  export GOCOVERDIR="/root/coverdata/int"
-  echo export GOCOVERDIR="/root/coverdata/int" >> /root/.bashrc
 
 # Clone the l3afd repo in to root directly
 # Can use mapped directory i.e. at /home/ubuntu/Home
@@ -347,7 +340,17 @@ cd ../go/bin/
 chmod +rx /root/l3af-arch/dev_environment/start_test_servers.sh
 
 # Starting test servers and l3afd daemon
-if [ $# -ge 1 ] && [ "$1" == "--ci-build" ]; then
+if [ $# -ge 1 ] && [ "$1" == "--ci-build" ]; then  
+  # Test coverdata
+  mkdir -p /root/coverdata
+  mkdir -p /root/coverdata/int
+  mkdir -p /root/coverdata/unit
+  mkdir -p /root/coverdata/combined
+  export GOCOVERDIR="/root/coverdata/int"
+  echo export GOCOVERDIR="/root/coverdata/int" >> /root/.bashrc
+  cd /root/l3afd
+  make cibuild
+  cd ../go/bin/
   /root/l3af-arch/dev_environment/start_test_servers.sh --ci-build
   ip netns exec bpf bash /root/l3af-arch/dev_environment/start_test_servers.sh --ci-build
   ./l3afd --config /root/l3af-arch/dev_environment/cfg/l3afd.cfg > l3afd.log 2>&1 &
