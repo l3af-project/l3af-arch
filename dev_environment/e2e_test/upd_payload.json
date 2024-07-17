@@ -13,7 +13,10 @@
           "admin_status": "enabled",
           "prog_type": "xdp",
           "cfg_version": 1,
-          "map_args": { "rl_ports_map": "8080,8081", "rl_config_map": "2" },
+          "map_args": [
+            {"name": "rl_ports_map", "args": [{"key": 8080, "value": 1}, {"key": 8081, "value": 1}]}, 
+            {"name": "rl_config_map", "args": [{"key": 0, "value": 2}]}
+          ],
           "monitor_maps": [
             { "name": "rl_drop_count_map", "key": 0, "aggregator": "scalar"},
             { "name": "rl_recv_count_map", "key": 0, "aggregator": "max-rate"}
@@ -31,7 +34,10 @@
           "admin_status": "enabled",
           "prog_type": "xdp",
           "cfg_version": 1,
-          "map_args": { "cl_tcp_conns": "8080,8081", "cl_max_conn": "5" },
+          "map_args": [
+            {"name": "cl_tcp_conns", "args": [{"key": 8080, "value": 1}, {"key": 8081, "value": 1}]}, 
+            {"name": "cl_max_conn", "args": [{"key": 0, "value": 5}]}
+          ],
           "monitor_maps": [
             { "name": "cl_recv_count_map", "key": 0, "aggregator": "scalar"},
             { "name": "cl_drop_count_map", "key": 0, "aggregator": "scalar" },
