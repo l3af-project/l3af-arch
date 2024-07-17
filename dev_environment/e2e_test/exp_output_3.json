@@ -29,30 +29,10 @@
         "stop_args": null,
         "status_args": null,
         "update_args": null,
-        "map_args": [
-          {
-            "name": "rl_ports_map",
-            "args": [
-              {
-                "key": 8080,
-                "value": 1
-              },
-              {
-                "key": 8081,
-                "value": 1
-              }
-            ]
-          },
-          {
-            "name": "rl_config_map",
-            "args": [
-              {
-                "key": 0,
-                "value": 2
-              }
-            ]
-          }
-        ],
+        "map_args": {
+          "rl_config_map": "2",
+          "rl_ports_map": "8080,8081"
+        },
         "config_args": null,
         "monitor_maps": [
           {
@@ -96,30 +76,10 @@
         "stop_args": null,
         "status_args": null,
         "update_args": null,
-        "map_args": [
-          {
-            "name": "cl_tcp_conns",
-            "args": [
-              {
-                "key": 8080,
-                "value": 1
-              },
-              {
-                "key": 8081,
-                "value": 1
-              }
-            ]
-          },
-          {
-            "name": "cl_max_conn",
-            "args": [
-              {
-                "key": 0,
-                "value": 5
-              }
-            ]
-          }
-        ],
+        "map_args": {
+          "cl_max_conn": "5",
+          "cl_tcp_conns": "8080,8081"
+        },
         "config_args": null,
         "monitor_maps": [
           {
