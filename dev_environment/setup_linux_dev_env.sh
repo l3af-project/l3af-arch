@@ -179,13 +179,6 @@ fi
   export PATH=$PATH:/usr/local/go/bin
   echo export PATH=$PATH:/usr/local/go/bin >> /root/.bashrc
 
-# Test coverdata
-  mkdir /root/coverdata
-  mkdir /root/coverdata/int
-  mkdir /root/coverdata/unit
-  mkdir /root/coverdata/combined
-  export GOCOVERDIR="/root/coverdata/int"
-  echo export GOCOVERDIR="/root/coverdata/int" >> /root/.bashrc
 
 # Clone the l3afd repo in to root directly
 # Can use mapped directory i.e. at /home/ubuntu/Home
@@ -283,7 +276,7 @@ sed -i '229a\
 
 echo "CONFIG_DEBUG_INFO_BTF=y" >> .config
 echo "CONFIG_MODULES=y" >> .config
-make oldconfig
+make olddefconfig
 make prepare
 yes | make -j$(nproc)
 make headers_install
@@ -325,9 +318,6 @@ then
   rm -rf bpftool
 fi
 
-mkdir -p headers
-bpftool btf dump file /sys/kernel/btf/vmlinux format c > headers/vmlinux.h
-
 # Declare an array variable
 declare -a progs=("xdp-root" "ratelimiting" "connection-limit" "tc-root" "ipfix-flow-exporter" "traffic-mirroring")
 codename=`lsb_release -c -s`
@@ -350,7 +340,17 @@ cd ../go/bin/
 chmod +rx /root/l3af-arch/dev_environment/start_test_servers.sh
 
 # Starting test servers and l3afd daemon
-if [ $# -ge 1 ] && [ "$1" == "--ci-build" ]; then
+if [ $# -ge 1 ] && [ "$1" == "--ci-build" ]; then  
+  # Test coverdata
+  mkdir -p /root/coverdata
+  mkdir -p /root/coverdata/int
+  mkdir -p /root/coverdata/unit
+  mkdir -p /root/coverdata/combined
+  export GOCOVERDIR="/root/coverdata/int"
+  echo export GOCOVERDIR="/root/coverdata/int" >> /root/.bashrc
+  cd /root/l3afd
+  make cibuild
+  cd ../go/bin/
   /root/l3af-arch/dev_environment/start_test_servers.sh --ci-build
   ip netns exec bpf bash /root/l3af-arch/dev_environment/start_test_servers.sh --ci-build
   ./l3afd --config /root/l3af-arch/dev_environment/cfg/l3afd.cfg > l3afd.log 2>&1 &

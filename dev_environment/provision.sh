@@ -40,7 +40,7 @@ sed -i '229a\
 
 echo "CONFIG_DEBUG_INFO_BTF=y" >> .config
 echo "CONFIG_MODULES=y" >> .config
-make oldconfig
+make olddefconfig
 make prepare
 yes | make -j$(nproc)
 make headers_install
@@ -75,8 +75,6 @@ then
   rm -rf bpftool
 fi
 
-mkdir -p headers
-bpftool btf dump file /sys/kernel/btf/vmlinux format c > headers/vmlinux.h
 
 # declare an array variable
 declare -a progs=("xdp-root" "ratelimiting" "connection-limit" "tc-root" "ipfix-flow-exporter" "traffic-mirroring")
