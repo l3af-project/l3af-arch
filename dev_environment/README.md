@@ -47,8 +47,8 @@ Here is a visual overview:
   most traffic clustered near the top of the graph at very low latency.<p align="center"><img src="https://user-images.githubusercontent.com/106849610/179866166-597bef0d-2f5f-4ae7-89ee-1acdda5fd060.png" width="400" height="200"/></p>
 * Run `vagrant ssh l3af`, this will log you into the virtual machine
 * On the VM, go to `~/code/l3afd` and run `make install`
-* On the VM, go to `~/go/bin` and run `l3afd` as root:
-  `sudo ./l3afd --config /vagrant/cfg/l3afd.cfg`
+* Run `l3afd` as root:
+  `sudo /usr/local/l3afd/latest/l3afd --config /usr/local/l3afd/latest/l3afd.cfg`
 * On the host, configure L3AFD to execute sample eBPF programs by running
   `curl -X POST http://localhost:37080/l3af/configs/v1/add -d
   "@cfg/payload.json"`. The [payload.json](cfg/payload.json) file can be

@@ -185,22 +185,36 @@ api_runner() {
     close
 }
 
+do_graceful_restart() {
+    touch tmpr
+    curl -sS -X PUT http://${IP}:7080/l3af/configs/v1/restart -H "Content-Type: application/json" -d "@restart.json" >tmpr 2>&1
+    if [ -s tmpr ]; then
+        cat tmpr
+	rm -rf tmpr
+        logerr "curl request to the restart API falied"
+    fi
+    rm -rf tmpr
+}
+
 echo "with chaining"
 api_runner "add" "add_payload.json" "exp_output_1.json"
+do_graceful_restart
 api_runner "update" "upd_payload.json" "exp_output_2.json"
 api_runner "add" "add_tm_payload.json" "exp_output_3.json"
+do_graceful_restart
 api_runner "delete" "del_ipfix_payload.json" "exp_output_4.json"
 api_runner "delete" "del_payload.json" "exp_output_nil.json"
 
 l3afdID=$(pgrep l3afd)
 kill -2 $l3afdID
 rm -f /var/l3afd/l3af-config.json
-sed -i 's/bpf-chaining-enabled: true/bpf-chaining-enabled: false/' /root/l3af-arch/dev_environment/cfg/l3afd.cfg
-/root/go/bin/l3afd --config /root/l3af-arch/dev_environment/cfg/l3afd.cfg >l3afd.log 2>&1 &
+sed -i 's/bpf-chaining-enabled: true/bpf-chaining-enabled: false/' /usr/local/l3afd/latest/l3afd.cfg
+/usr/local/l3afd/latest/l3afd --config /usr/local/l3afd/latest/l3afd.cfg >l3afd.log 2>&1 &
 sleep 10
 
 echo "without chaining"
 api_runner "add" "add_without_chaining_payload.json" "exp_output_5.json"
+do_graceful_restart
 api_runner "update" "upd_without_chaining_payload.json" "exp_output_6.json"
 api_runner "delete" "del_without_chaining_payload.json" "exp_output_nil.json"
 api_runner "add" "add_tm_payload.json" "exp_output_7.json"

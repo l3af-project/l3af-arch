@@ -79,10 +79,12 @@ sudo apt-get install -y adduser libfontconfig1 musl
 # Get grafana package
 if [ "$arch" == amd64 ];then
    wget https://dl.grafana.com/oss/release/grafana_10.4.1_amd64.deb
-   sudo dpkg -i grafana_10.4.1_amd64.deb
+   sudo dpkg -i grafana_10.4.1_amd64.deb 
+   rm -rf grafana_10.4.1_amd64.deb
 elif [ "$arch" == arm64 ];then
    wget https://dl.grafana.com/oss/release/grafana_10.4.1_arm64.deb
    sudo dpkg -i grafana_10.4.1_arm64.deb
+   rm -rf grafana_10.4.1_arm64.deb
 else
   echo "grafana installation is not available for this cpu architecture"
 fi	   
@@ -167,6 +169,7 @@ if [ $# -ge 1 ] && [ "$1" == "--otel-collector" ]; then
   tar -xvf ${OTEL_BINARY}
   sudo mv ${OTEL_DIR}/otelcol /usr/local/bin/otelcol
   sudo chmod +x /usr/local/bin/otelcol
+  rm -rf ${OTEL_BINARY}
   echo "OTEL Collector version ${OTEL_VERSION} installed successfully."
 fi
 
@@ -335,9 +338,19 @@ done
 # Compile L3AFD daemon and start the control plane
 cd /root/l3afd
 make install
-cd ../go/bin/
 
 chmod +rx /root/l3af-arch/dev_environment/start_test_servers.sh
+mkdir -p /usr/local/l3afd/latest
+mkdir -p /usr/local/l3afd/v2/l3afd
+
+# for dev purposes I made simlink for v2 version to your local
+ln -s /root/go/bin/l3afd /usr/local/l3afd/v2/l3afd/l3afd
+ln -s /root/l3af-arch/dev_environment/cfg/l3afd.cfg /usr/local/l3afd/v2/l3afd.cfg
+
+cd /usr/local/l3afd/latest
+ln -s /usr/local/l3afd/v2/l3afd/l3afd l3afd
+ln -s /usr/local/l3afd/v2/l3afd/l3afd.cfg l3afd.cfg
+
 
 # Starting test servers and l3afd daemon
 if [ $# -ge 1 ] && [ "$1" == "--ci-build" ]; then  
@@ -350,10 +363,9 @@ if [ $# -ge 1 ] && [ "$1" == "--ci-build" ]; then
   echo export GOCOVERDIR="/root/coverdata/int" >> /root/.bashrc
   cd /root/l3afd
   make cibuild
-  cd ../go/bin/
   /root/l3af-arch/dev_environment/start_test_servers.sh --ci-build
   ip netns exec bpf bash /root/l3af-arch/dev_environment/start_test_servers.sh --ci-build
-  ./l3afd --config /root/l3af-arch/dev_environment/cfg/l3afd.cfg > l3afd.log 2>&1 &
+  /usr/local/l3afd/latest/l3afd --config /usr/local/l3afd/latest/l3afd.cfg > l3afd.log 2>&1 &
 elif [ $# -ge 1 ] && [ "$1" == "--docker" ]; then
   echo "Running L3AFD as a docker container"
   apt-get install -y docker docker.io
@@ -367,6 +379,6 @@ elif [ $# -ge 1 ] && [ "$1" == "--docker" ]; then
   docker logs $(docker ps -q)
 else
   /root/l3af-arch/dev_environment/start_test_servers.sh
-  ./l3afd --config /root/l3af-arch/dev_environment/cfg/l3afd.cfg &
+  /usr/local/l3afd/latest/l3afd --config /usr/local/l3afd/latest/l3afd.cfg &
 fi
 

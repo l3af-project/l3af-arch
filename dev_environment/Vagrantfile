@@ -140,6 +140,10 @@ Vagrant.configure("2") do |config|
         OTEL_DIR="otelcol_${OTEL_VERSION}_linux_${OTEL_ARCH}"
         curl --proto '=https' --tlsv1.2 -fOL "https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v${OTEL_VERSION}/${OTEL_BINARY}"
         tar -xvf ${OTEL_BINARY}
+        sudo mv ${OTEL_DIR}/otelcol /usr/local/bin/otelcol
+        sudo chmod +x /usr/local/bin/otelcol
+        rm -rf ${OTEL_BINARY}
+        echo "OTEL Collector version ${OTEL_VERSION} installed successfully."
       SHELL
     end
 
@@ -198,7 +202,7 @@ Vagrant.configure("2") do |config|
       l3af.vm.provision "shell", inline: <<-SHELL
         mkdir -p "/etc/otelcol/"
         cp /vagrant/cfg/otel-collector-config.yml /etc/otelcol/config.yml
-        ./otelcol --config=/etc/otelcol/config.yml &
+        /usr/local/bin/otelcol --config=/etc/otelcol/config.yml &
       SHELL
     end
 
@@ -206,6 +210,16 @@ Vagrant.configure("2") do |config|
 
     # Always start test servers because they aren't managed services
     l3af.vm.provision :shell, path: "start_test_servers.sh", run: 'always'
+    l3af.vm.provision "shell", inline: <<-SHELL
+       mkdir -p /usr/local/l3afd/latest
+       mkdir -p /usr/local/l3afd/v2/l3afd
+       # for dev purposes I made simlink for v2 version to your local
+       ln -s /home/vagrant/go/bin/l3afd /usr/local/l3afd/v2/l3afd/l3afd
+       ln -s ./cfg/l3afd.cfg /usr/local/l3afd/v2/l3afd.cfg
+       ln -s /usr/local/l3afd/v2/l3afd/l3afd /usr/local/l3afd/latest/l3afd
+       ln -s /usr/local/l3afd/v2/l3afd/l3afd.cfg /usr/local/l3afd/latest/l3afd.cfg
+      SHELL
+    end
     
    # Provision the GUE interface for traffic mirroring inside the l3af VM
     if cfg['traffic_mirroring'] == "true"
