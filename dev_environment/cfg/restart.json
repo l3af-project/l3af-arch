@@ -1,5 +1,5 @@
 {
-	"hostname": "l3af-test-host",
-	"version": "v2",
-	"artifacturl": "file:///srv/l3afd/pkg/l3afd.tar.gz"
+    "hostname": "l3af-test-host",
+    "version": "v2.0.0"
 }
+

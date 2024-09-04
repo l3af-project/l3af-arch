@@ -212,12 +212,12 @@ Vagrant.configure("2") do |config|
     l3af.vm.provision :shell, path: "start_test_servers.sh", run: 'always'
     l3af.vm.provision "shell", inline: <<-SHELL
        mkdir -p /usr/local/l3afd/latest
-       mkdir -p /usr/local/l3afd/v2/l3afd
-       # for dev purposes I made simlink for v2 version to your local
-       ln -s /home/vagrant/go/bin/l3afd /usr/local/l3afd/v2/l3afd/l3afd
-       ln -s ./cfg/l3afd.cfg /usr/local/l3afd/v2/l3afd.cfg
-       ln -s /usr/local/l3afd/v2/l3afd/l3afd /usr/local/l3afd/latest/l3afd
-       ln -s /usr/local/l3afd/v2/l3afd/l3afd.cfg /usr/local/l3afd/latest/l3afd.cfg
+       mkdir -p /usr/local/l3afd/v2.0.0/l3afd
+       # for dev purposes I made simlink for v2.0.0 version to your local
+       ln -s /home/vagrant/go/bin/l3afd /usr/local/l3afd/v2.0.0/l3afd/l3afd
+       ln -s ./cfg/l3afd.cfg /usr/local/l3afd/v2.0.0/l3afd/l3afd.cfg
+       ln -s /usr/local/l3afd/v2.0.0/l3afd/l3afd /usr/local/l3afd/latest/l3afd
+       ln -s /usr/local/l3afd/v2.0.0/l3afd/l3afd.cfg /usr/local/l3afd/latest/l3afd.cfg
       SHELL
     end
     

@@ -341,16 +341,15 @@ make install
 
 chmod +rx /root/l3af-arch/dev_environment/start_test_servers.sh
 mkdir -p /usr/local/l3afd/latest
-mkdir -p /usr/local/l3afd/v2/l3afd
+mkdir -p /usr/local/l3afd/v2.0.0/l3afd
 
-# for dev purposes I made simlink for v2 version to your local
-ln -s /root/go/bin/l3afd /usr/local/l3afd/v2/l3afd/l3afd
-ln -s /root/l3af-arch/dev_environment/cfg/l3afd.cfg /usr/local/l3afd/v2/l3afd.cfg
+# for dev purposes I made simlink for v2.0.0 version to your local
+ln -s /root/go/bin/l3afd /usr/local/l3afd/v2.0.0/l3afd/l3afd
+ln -s /root/l3af-arch/dev_environment/cfg/l3afd.cfg /usr/local/l3afd/v2.0.0/l3afd/l3afd.cfg
 
 cd /usr/local/l3afd/latest
-ln -s /usr/local/l3afd/v2/l3afd/l3afd l3afd
-ln -s /usr/local/l3afd/v2/l3afd/l3afd.cfg l3afd.cfg
-
+ln -s /usr/local/l3afd/v2.0.0/l3afd/l3afd l3afd
+ln -s /usr/local/l3afd/v2.0.0/l3afd/l3afd.cfg l3afd.cfg
 
 # Starting test servers and l3afd daemon
 if [ $# -ge 1 ] && [ "$1" == "--ci-build" ]; then  

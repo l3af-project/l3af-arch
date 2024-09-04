@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -eu
+set -eux
 export GOCOVERDIR="/root/coverdata/int"
 # this script needs to run as root account, check it
 if [[ $EUID -ne 0 ]]; then
@@ -11,7 +11,7 @@ NC='\033[0m' # No Color
 GREEN='\033[0;32m'
 
 close() {
-    files=("err" "progids.txt" "tmp" "output.json" "names.txt" "tmpr" "map_names.txt" "l3afd.log" "l3afd.pid")
+    files=("err" "progids.txt" "tmp" "output.json" "names.txt" "map_names.txt" "l3afd.log")
     for d in ${files[@]}; do
         if test -f $d; then
             rm $d
@@ -175,49 +175,65 @@ api_runner() {
     api_name=$1
     payload="/root/l3af-arch/dev_environment/e2e_test/$2"
     exp_output=$3
-    touch tmpr
-    curl -sS -X POST http://${IP}:7080/l3af/configs/v1/${api_name} -H "Content-Type: application/json" -d "@${payload}" >tmpr 2>&1
-    if [ -s tmpr ]; then
-        cat tmpr
+    curl --max-time 120 -v -X POST http://${IP}:7080/l3af/configs/v1/${api_name} -H "Content-Type: application/json" -d "@${payload}"
+    if [ $? -ne 0 ]; then
         logerr "curl request to the ${api_name} API falied"
+        return
     fi
     validate $exp_output $api_name
     close
 }
 
 do_graceful_restart() {
-    touch tmpr
-    curl -sS -X PUT http://${IP}:7080/l3af/configs/v1/restart -H "Content-Type: application/json" -d "@restart.json" >tmpr 2>&1
-    if [ -s tmpr ]; then
-        cat tmpr
-	rm -rf tmpr
+    payload="/root/l3af-arch/dev_environment/e2e_test/restart.json"
+    old_pid=$(cat /var/run/l3afd.pid)
+    curl --max-time 120 -v -X PUT http://${IP}:7080/l3af/configs/v1/restart -H "Content-Type: application/json" -d "@${payload}"
+    if [ $? -ne 0 ]; then
         logerr "curl request to the restart API falied"
+        return 
     fi
-    rm -rf tmpr
+    sleep 5
+    if [ $(cat /var/run/l3afd.pid) -eq $old_pid ]; then
+        logerr "curl request to the restart API falied"
+        return 
+    fi
+    logsuc "Restart API is successful"
 }
-
+sleep 5
 echo "with chaining"
 api_runner "add" "add_payload.json" "exp_output_1.json"
+sleep 2
 do_graceful_restart
+sleep 5
 api_runner "update" "upd_payload.json" "exp_output_2.json"
+sleep 2
 api_runner "add" "add_tm_payload.json" "exp_output_3.json"
+sleep 2
 do_graceful_restart
+sleep 5
 api_runner "delete" "del_ipfix_payload.json" "exp_output_4.json"
+sleep 2
 api_runner "delete" "del_payload.json" "exp_output_nil.json"
 
 l3afdID=$(pgrep l3afd)
 kill -2 $l3afdID
 rm -f /var/l3afd/l3af-config.json
-sed -i 's/bpf-chaining-enabled: true/bpf-chaining-enabled: false/' /usr/local/l3afd/latest/l3afd.cfg
+sed -i --follow-symlinks 's/bpf-chaining-enabled: true/bpf-chaining-enabled: false/' $(readlink -f /usr/local/l3afd/latest/l3afd.cfg)
+
 /usr/local/l3afd/latest/l3afd --config /usr/local/l3afd/latest/l3afd.cfg >l3afd.log 2>&1 &
-sleep 10
+sleep 5
 
 echo "without chaining"
 api_runner "add" "add_without_chaining_payload.json" "exp_output_5.json"
+sleep 2
 do_graceful_restart
+sleep 5
 api_runner "update" "upd_without_chaining_payload.json" "exp_output_6.json"
+sleep 2
 api_runner "delete" "del_without_chaining_payload.json" "exp_output_nil.json"
+sleep 2
 api_runner "add" "add_tm_payload.json" "exp_output_7.json"
+sleep 2
 api_runner "delete" "del_tm_payload.json" "exp_output_nil.json"
 
 l3afdID=$(pgrep l3afd)
