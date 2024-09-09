@@ -116,6 +116,7 @@ apt-get install -y bc \
       linux-headers-generic \
       linux-tools-common \
       linux-tools-generic \
+      linux-tools-$(uname -r) \
       llvm \
       prometheus \
       rsync    \
