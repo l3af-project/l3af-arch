@@ -18,8 +18,8 @@
             {"name": "rl_config_map", "args": [{"key": 0, "value": 2}]}
           ],
           "monitor_maps": [
-            { "name": "rl_drop_count_map", "key": 0, "aggregator": "scalar"},
-            { "name": "rl_recv_count_map", "key": 0, "aggregator": "max-rate"}
+            { "name": "rl_drop_count_map", "key": "0", "aggregator": "scalar", "key_type": "int"},
+            { "name": "rl_recv_count_map", "key": "0", "aggregator": "max-rate", "key_type": "int"}
           ],
           "object_file": "ratelimiting.bpf.o",
           "entry_function_name": "_xdp_ratelimiting"
