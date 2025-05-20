@@ -273,10 +273,9 @@ fi
 
 LINUX_SRC_DIR=/usr/src/linux
 cd $LINUX_SRC_DIR
-scripts/config --disable SYSTEM_BLACKLIST_KEYRING
-scripts/config --set-str SYSTEM_REVOCATION_LIST ""
-yes "" | make olddefconfig
 make prepare
+mkdir -p debian
+touch debian/canonical-certs.pem
 yes | make -j$(nproc)
 make headers_install
 
