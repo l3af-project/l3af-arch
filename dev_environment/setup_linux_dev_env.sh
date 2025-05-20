@@ -273,6 +273,8 @@ fi
 
 LINUX_SRC_DIR=/usr/src/linux
 cd $LINUX_SRC_DIR
+mkdir -p debian
+touch debian/canonical-certs.pem
 make olddefconfig
 make prepare
 yes | make -j$(nproc)
