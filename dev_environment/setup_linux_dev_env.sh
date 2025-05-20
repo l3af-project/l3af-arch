@@ -268,18 +268,11 @@ if [ -d "/usr/src/linux" ];
 then
   echo "Linux source code already exists, skipping download"
 else
-  git clone --branch v5.15 --depth 1 https://github.com/torvalds/linux.git /usr/src/linux
+  git clone --branch v6.8 --depth 1 https://github.com/torvalds/linux.git /usr/src/linux
 fi
 
 LINUX_SRC_DIR=/usr/src/linux
 cd $LINUX_SRC_DIR
-sed -i '229a\
-        if [ "${pahole_ver}" -ge "124" ]; then\
-                extra_paholeopt="${extra_paholeopt} --skip_encoding_btf_enum64"\
-        fi' scripts/link-vmlinux.sh
-
-echo "CONFIG_DEBUG_INFO_BTF=y" >> .config
-echo "CONFIG_MODULES=y" >> .config
 make olddefconfig
 make prepare
 yes | make -j$(nproc)
@@ -308,7 +301,8 @@ cd $BUILD_DIR
 # Get the eBPF-Package-Repository repo containing the eBPF programs
 if [ ! -d "$BUILD_DIR/eBPF-Package-Repository" ];
 then
-  git clone https://github.com/l3af-project/eBPF-Package-Repository.git
+  #git clone https://github.com/l3af-project/eBPF-Package-Repository.git
+  git clone -b usr-prog-fix-orc https://github.com/Atul-source/eBPF-Package-Repository.git
 fi
 cd eBPF-Package-Repository
 
