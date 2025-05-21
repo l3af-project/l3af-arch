@@ -277,8 +277,6 @@ make oldconfig
 scripts/config --disable SYSTEM_TRUSTED_KEYS
 scripts/config --disable SYSTEM_REVOCATION_KEYS
 make prepare
-#mkdir -p debian
-#touch debian/canonical-certs.pem
 yes | make -j$(nproc)
 make headers_install
 
