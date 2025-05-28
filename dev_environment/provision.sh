@@ -22,33 +22,11 @@ systemctl daemon-reload
 systemctl start grafana-server
 systemctl enable grafana-server.service
 
-# Get Linux source code to build our eBPF programs against
-# TODO: Support building against the Linux source from the distro's source
-# package.
-if [ -d "/usr/src/linux" ]
-then
-    echo "Directory /usr/src/linux exists."
-else
-    git clone --branch v5.15 --depth 1 https://github.com/torvalds/linux.git /usr/src/linux
-fi
-LINUX_SRC_DIR=/usr/src/linux
-cd $LINUX_SRC_DIR
-sed -i '229a\
-        if [ "${pahole_ver}" -ge "124" ]; then\
-                extra_paholeopt="${extra_paholeopt} --skip_encoding_btf_enum64"\
-        fi' scripts/link-vmlinux.sh
-
-echo "CONFIG_DEBUG_INFO_BTF=y" >> .config
-echo "CONFIG_MODULES=y" >> .config
-make olddefconfig
-make prepare
-yes | make -j$(nproc)
-make headers_install
 
 mkdir -p /var/log/l3af
 mkdir -p /var/l3afd
 
-BUILD_DIR=$LINUX_SRC_DIR/samples/bpf/
+BUILD_DIR=/root
 
 # Where to store the tar.gz build artifacts
 BUILD_ARTIFACT_DIR=/srv/l3afd
