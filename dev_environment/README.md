@@ -68,7 +68,8 @@ Here is a visual overview:
   is more distributed.<p align="center"><img src="https://user-images.githubusercontent.com/106849610/179867246-406a2841-5a49-4102-b42c-e9cbf07ce2c3.png" width="400" height="200"/></p>
 * To see the eBPF program metrics, browse to `http://localhost:33000` on the
   host and log in to Grafana with the default username and password of `admin`.
-  After logging in you will be able to view the preconfigured dashboards.
+  After logging in you will be able to view the preconfigured dashboards. Example
+ <p align="center"><img src="../images/dashboard_preview.png" alt="alt text" width="400" height="200"/></p>
 * Additional steps for testing out traffic mirroring:
   1. Set `traffic_mirroring: 'true'` in [config.yaml](config.yaml)
   2. Redeploy the Vagrant script (`vagrant reload --provision`) to reflect new changes, such as creation of a GUE tunnel and an additional VM (Collector)
