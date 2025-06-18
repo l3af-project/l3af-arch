@@ -95,7 +95,9 @@ Vagrant.configure("2") do |config|
         dwarves \
         zlib1g  \
         libelf1 \
-        pkg-config 
+	pkg-config \
+	libbpf-dev \
+	libzstd-dev
     SHELL
 
     # Install Opentelemetry collector

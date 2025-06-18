@@ -123,7 +123,9 @@ apt-get install -y bc \
       dwarves \
       zlib1g  \
       libelf1 \
-      pkg-config
+      pkg-config \
+      libbpf-dev \
+      libzstd-dev
 
 # Install OTEL collector
 if [ $# -ge 1 ] && [ "$1" == "--otel-collector" ]; then
@@ -263,28 +265,6 @@ else
   fi
 fi
 
-# Get Linux source code to build our eBPF programs against
-if [ -d "/usr/src/linux" ];
-then
-  echo "Linux source code already exists, skipping download"
-else
-  git clone --branch v5.15 --depth 1 https://github.com/torvalds/linux.git /usr/src/linux
-fi
-
-LINUX_SRC_DIR=/usr/src/linux
-cd $LINUX_SRC_DIR
-sed -i '229a\
-        if [ "${pahole_ver}" -ge "124" ]; then\
-                extra_paholeopt="${extra_paholeopt} --skip_encoding_btf_enum64"\
-        fi' scripts/link-vmlinux.sh
-
-echo "CONFIG_DEBUG_INFO_BTF=y" >> .config
-echo "CONFIG_MODULES=y" >> .config
-make olddefconfig
-make prepare
-yes | make -j$(nproc)
-make headers_install
-
 if [ ! -d "/var/log/l3af" ];
 then
   mkdir -p /var/log/l3af
@@ -294,7 +274,7 @@ then
   mkdir -p /var/l3afd
 fi
 
-BUILD_DIR=$LINUX_SRC_DIR/samples/bpf/
+BUILD_DIR=/root
 
 # Where to store the tar.gz build artifacts
 BUILD_ARTIFACT_DIR=/srv/l3afd
