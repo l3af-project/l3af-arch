@@ -184,6 +184,9 @@ fi
   tar -C /usr/local -xzf $go_filename && rm -f $go_filename
   export PATH=$PATH:/usr/local/go/bin
   echo export PATH=$PATH:/usr/local/go/bin >> /root/.bashrc
+  go_version=$(go env GOVERSION)
+  fallback_toolchain="$go_version+auto"
+  go env -w GOTOOLCHAIN=$fallback_toolchain
 
 
 # Clone the l3afd repo in to root directly
