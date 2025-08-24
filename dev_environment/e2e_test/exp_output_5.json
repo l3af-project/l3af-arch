@@ -57,13 +57,15 @@
         "monitor_maps": [
           {
             "name": "rl_drop_count_map",
-            "key": 0,
-            "aggregator": "scalar"
+            "key": "0",
+            "aggregator": "scalar",
+            "key_type": "int"
           },
           {
             "name": "rl_recv_count_map",
-            "key": 0,
-            "aggregator": "max-rate"
+            "key": "0",
+            "aggregator": "max-rate",
+            "key_type": "int"
           }
         ],
         "ebpf_package_repo_url": "",
