@@ -183,7 +183,7 @@
         "update_args": null,
         "map_args": null,
         "config_args": null,
-        "monitor_maps": [],
+        "monitor_maps": null,
         "ebpf_package_repo_url": "",
         "object_file": "mirroring_ingress.bpf.o",
         "entry_function_name": "_ingress_redirect"
@@ -228,7 +228,7 @@
         "update_args": null,
         "map_args": null,
         "config_args": null,
-        "monitor_maps": [],
+        "monitor_maps": null,
         "ebpf_package_repo_url": "",
         "object_file": "mirroring_egress.bpf.o",
         "entry_function_name": "_egress_redirect"
