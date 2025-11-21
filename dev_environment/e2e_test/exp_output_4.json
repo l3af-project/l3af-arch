@@ -1,6 +1,7 @@
 {
   "host_name": "l3af-test-host",
   "iface": "ibpfbr",
+  "ipv4_address": "192.168.15.80",
   "bpf_programs": {
     "xdp_ingress": [
       {
@@ -182,7 +183,7 @@
         "update_args": null,
         "map_args": null,
         "config_args": null,
-        "monitor_maps": null,
+        "monitor_maps": [],
         "ebpf_package_repo_url": "",
         "object_file": "mirroring_ingress.bpf.o",
         "entry_function_name": "_ingress_redirect"
@@ -227,7 +228,7 @@
         "update_args": null,
         "map_args": null,
         "config_args": null,
-        "monitor_maps": null,
+        "monitor_maps": [],
         "ebpf_package_repo_url": "",
         "object_file": "mirroring_egress.bpf.o",
         "entry_function_name": "_egress_redirect"
