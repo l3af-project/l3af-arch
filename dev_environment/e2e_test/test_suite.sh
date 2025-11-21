@@ -86,7 +86,7 @@ validate() {
         logsuc "$api_name API SUCCESS"
         printf "\n"
     else
-        diff $exp_output output.json
+        diff /root/l3af-arch/dev_environment/e2e_test/$exp_output output.json
         logerr "$api_name API FAILED"
         printf "\n"
     fi
