@@ -2,6 +2,7 @@
     {
         "host_name": "l3af-test-host",
         "iface": "ibpfbr",
+	"ipv4_address": "192.168.15.80",
         "bpf_programs": {
             "xdp_ingress": null,
             "tc_ingress": [
