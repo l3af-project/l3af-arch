@@ -301,6 +301,7 @@ then
   cd bpftool/src
   yes | make
   cp bpftool /usr/local/bin/
+  cp bpftool /usr/sbin/
   cd ../../
   rm -rf bpftool
 fi
