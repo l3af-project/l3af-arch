@@ -296,7 +296,7 @@ fi
 cd eBPF-Package-Repository
 
 # Check if bpftool is installed, if not install it from source.
-# This a workaround for 6.14+ kernel versions where bpftool is missing in linux-tools generic package.
+# This a workaround for 6.14+ kernel versions where bpftool is missing in linux-tools-generic package.
 # We check the kernel version and only install bpftool if the kernel version is greater than 6.13, install it from the source
 BT_MIN_KVER="6.14"
 if [ -z "$(which bpftool)" ] || [ "$(printf '%s\n' "$BT_MIN_KVER"  "$CURRENT_KERNEL_VERSION" | sort -V | head -n1)" == "$BT_MIN_KVER" ];
@@ -311,7 +311,7 @@ fi
 
 # Declare an array variable
 declare -a progs=("xdp-root" "ratelimiting" "connection-limit" "tc-root" "ipfix-flow-exporter" "traffic-mirroring")
-codename=`lsb_release -c -s`
+codename=$(lsb_release -c -s)
 # Now loop through the above array and build the L3AF eBPF programs
 for prog in "${progs[@]}"
 do
@@ -363,7 +363,7 @@ elif [ $# -ge 1 ] && [ "$1" == "--docker" ]; then
   docker build -t l3afd:latest -f Dockerfile .
   docker images
   docker run -d -v /srv/l3afd:/srv/l3afd -v /sys/fs/bpf:/sys/fs/bpf -v /sys/kernel/debug/:/sys/kernel/debug/ -v /dev/shm:/dev/shm --privileged --net=host l3afd:latest
-  docker logs $(docker ps -q)
+  docker logs "$(docker ps -q)"
 else
   /root/l3af-arch/dev_environment/start_test_servers.sh
   /usr/local/l3afd/latest/l3afd --config /usr/local/l3afd/latest/l3afd.cfg &
