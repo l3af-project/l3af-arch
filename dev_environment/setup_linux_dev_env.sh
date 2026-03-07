@@ -295,13 +295,16 @@ then
 fi
 cd eBPF-Package-Repository
 
-if [ "$(which bpftool)" == "" ]; 
+# Check if bpftool is installed, if not install it from source.
+# This a workaround for 6.14+ kernel versions where bpftool is missing in linux-tools generic package.
+# We check the kernel version and only install bpftool if the kernel version is greater than 6.13, install it from the source
+BT_MIN_KVER="6.14"
+if [ -z "$(which bpftool)" ] || [ "$(printf '%s\n' "$BT_MIN_KVER"  "$CURRENT_KERNEL_VERSION" | sort -V | head -n1)" == "$BT_MIN_KVER" ];
 then
   git clone --branch v7.2.0 --recurse-submodules https://github.com/libbpf/bpftool.git
   cd bpftool/src
   yes | make
   cp bpftool /usr/local/bin/
-  cp bpftool /usr/sbin/
   cd ../../
   rm -rf bpftool
 fi
