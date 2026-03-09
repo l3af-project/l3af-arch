@@ -305,7 +305,6 @@ then
   cd bpftool/src
   yes | make
   cp bpftool /usr/local/bin/
-  cp bpftool /usr/sbin/
   cd ../../
   rm -rf bpftool
 fi
@@ -369,3 +368,4 @@ else
   /root/l3af-arch/dev_environment/start_test_servers.sh
   /usr/local/l3afd/latest/l3afd --config /usr/local/l3afd/latest/l3afd.cfg &
 fi
+
