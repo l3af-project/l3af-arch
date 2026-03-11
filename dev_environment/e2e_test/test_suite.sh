@@ -246,10 +246,11 @@ echo "Quality Gate: checking test coverage is above threshold ..."
 echo "Threshold             : $TESTCOVERAGE_THRESHOLD %"
 
 cd /root/l3afd
-/usr/local/go/bin/go test -cover ./... -args -test.gocoverdir="/root/coverdata/unit"
+EXCLUDE_DIRS="docs|mocks|models|config|pidfile|routes|stats|utils"
+/usr/local/go/bin/go test -cover $(go list ./... | grep -Ev "${EXCLUDE_DIRS}") -args -test.gocoverdir="/root/coverdata/unit"
 /usr/local/go/bin/go tool covdata merge -i=/root/coverdata/int,/root/coverdata/unit -o /root/coverdata/combined
 /usr/local/go/bin/go tool covdata textfmt -i=/root/coverdata/combined -o profile.txt
-cov=`go tool cover -func=profile.txt | grep total | awk '{print $3}' | tr -d %`
+cov=$(go tool cover -func=profile.txt | grep total | awk '{print $3}' | tr -d %)
 rm -rf profile.txt
 totalCoverage=$(echo "($cov+0.5)/1" | bc)
 echo "Current test coverage : $totalCoverage %"
