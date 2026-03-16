@@ -58,13 +58,15 @@
         "monitor_maps": [
           {
             "name": "rl_drop_count_map",
-            "key": 0,
-            "aggregator": "scalar"
+            "key": "0",
+            "aggregator": "scalar",
+            "key_type": "int"
           },
           {
             "name": "rl_recv_count_map",
-            "key": 0,
-            "aggregator": "max-rate"
+            "key": "0",
+            "aggregator": "max-rate",
+            "key_type": "int"
           }
         ],
         "ebpf_package_repo_url": "",
@@ -125,18 +127,21 @@
         "monitor_maps": [
           {
             "name": "cl_recv_count_map",
-            "key": 0,
-            "aggregator": "scalar"
+            "key": "0",
+            "aggregator": "scalar",
+            "key_type": "int"
           },
           {
             "name": "cl_drop_count_map",
-            "key": 0,
-            "aggregator": "scalar"
+            "key": "0",
+            "aggregator": "scalar",
+            "key_type": "int"
           },
           {
             "name": "cl_conn_count",
-            "key": 0,
-            "aggregator": "scalar"
+            "key": "0",
+            "aggregator": "scalar",
+            "key_type": "int"
           }
         ],
         "ebpf_package_repo_url": "",
@@ -183,7 +188,7 @@
         "update_args": null,
         "map_args": null,
         "config_args": null,
-        "monitor_maps": null,
+        "monitor_maps": [],
         "ebpf_package_repo_url": "",
         "object_file": "mirroring_ingress.bpf.o",
         "entry_function_name": "_ingress_redirect"
@@ -228,7 +233,7 @@
         "update_args": null,
         "map_args": null,
         "config_args": null,
-        "monitor_maps": null,
+        "monitor_maps": [],
         "ebpf_package_repo_url": "",
         "object_file": "mirroring_egress.bpf.o",
         "entry_function_name": "_egress_redirect"
