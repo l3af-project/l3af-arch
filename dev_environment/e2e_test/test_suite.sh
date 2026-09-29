@@ -70,7 +70,7 @@ validate() {
         while IFS= read -r line; do
             idarray+=("$line")
         done <"progids.txt"
-        for str in ${idarray[@]}; do
+        for str in "${idarray[@]}"; do
             bpftool prog show id $str >tmp
             if [ ! -s tmp ]; then
                 logerr "Program with ProgID ${str} is not running"
