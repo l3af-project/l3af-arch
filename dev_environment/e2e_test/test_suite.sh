@@ -70,7 +70,7 @@ validate() {
         while IFS= read -r line; do
             idarray+=("$line")
         done <"progids.txt"
-        for str in ${idarray[@]}; do
+        for str in "${idarray[@]}"; do
             bpftool prog show id $str >tmp
             if [ ! -s tmp ]; then
                 logerr "Program with ProgID ${str} is not running"
@@ -247,7 +247,7 @@ echo "Threshold             : $TESTCOVERAGE_THRESHOLD %"
 
 cd /root/l3afd
 EXCLUDE_DIRS="docs|mocks|models|config|pidfile|routes|stats|utils"
-/usr/local/go/bin/go test -cover $(go list ./... | grep -Ev "${EXCLUDE_DIRS}") -args -test.gocoverdir="/root/coverdata/unit"
+/usr/local/go/bin/go test -race -cover $(go list ./... | grep -Ev "${EXCLUDE_DIRS}") -args -test.gocoverdir="/root/coverdata/unit"
 /usr/local/go/bin/go tool covdata merge -i=/root/coverdata/int,/root/coverdata/unit -o /root/coverdata/combined
 /usr/local/go/bin/go tool covdata textfmt -i=/root/coverdata/combined -o profile.txt
 cov=$(go tool cover -func=profile.txt | grep total | awk '{print $3}' | tr -d %)
