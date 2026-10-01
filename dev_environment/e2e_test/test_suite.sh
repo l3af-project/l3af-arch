@@ -247,7 +247,12 @@ echo "Threshold             : $TESTCOVERAGE_THRESHOLD %"
 
 cd /root/l3afd
 EXCLUDE_DIRS="docs|mocks|models|config|pidfile|routes|stats|utils"
-/usr/local/go/bin/go test -race -cover $(go list ./... | grep -Ev "${EXCLUDE_DIRS}") -args -test.gocoverdir="/root/coverdata/unit"
+# Race check runs standalone (no -cover): -race forces "atomic" coverage
+# counter mode, which clashes with the "set" mode counters recorded by the
+# running l3afd binary in /root/coverdata/int, and covdata merge cannot mix
+# the two modes.
+/usr/local/go/bin/go test -race $(go list ./... | grep -Ev "${EXCLUDE_DIRS}")
+/usr/local/go/bin/go test -cover $(go list ./... | grep -Ev "${EXCLUDE_DIRS}") -args -test.gocoverdir="/root/coverdata/unit"
 /usr/local/go/bin/go tool covdata merge -i=/root/coverdata/int,/root/coverdata/unit -o /root/coverdata/combined
 /usr/local/go/bin/go tool covdata textfmt -i=/root/coverdata/combined -o profile.txt
 cov=$(go tool cover -func=profile.txt | grep total | awk '{print $3}' | tr -d %)
